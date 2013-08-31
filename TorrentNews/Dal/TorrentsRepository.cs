@@ -1,6 +1,7 @@
 ﻿namespace TorrentNews.Dal
 {
     using System;
+    using System.Configuration;
 
     using MongoDB.Driver;
 
@@ -12,7 +13,8 @@
 
         public TorrentsRepository()
         {
-            var mc = new MongoClient("mongodb://127.0.0.1:27017");
+            var url = new MongoUrl(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
+            var mc = new MongoClient(url);
             var ms = mc.GetServer();
             
             var mdb = ms.GetDatabase("torrentnews");
