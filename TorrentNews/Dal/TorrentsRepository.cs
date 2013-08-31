@@ -1,5 +1,7 @@
 ﻿namespace TorrentNews.Dal
 {
+    using System;
+
     using MongoDB.Driver;
 
     using TorrentNews.Domain;
@@ -23,9 +25,9 @@
             this.torrentsCollection = mdb.GetCollection<Torrent>("torrents");
         }
 
-        public void Insert(Torrent entity)
+        public void Save(Torrent entity)
         {
-            this.torrentsCollection.Insert(entity);
+            this.torrentsCollection.Save(entity);
         }
 
         public void RemoveAll()

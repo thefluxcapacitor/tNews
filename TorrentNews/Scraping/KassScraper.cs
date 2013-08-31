@@ -7,38 +7,58 @@
 
     using CsQuery;
 
+    using TorrentNews.Controllers;
     using TorrentNews.Domain;
 
     public class KassScraper
     {
-        public IEnumerable<Torrent> GetTorrentsFromSearchResult(int minSeeds, int page)
+        private const int MaxDaysToKeepTorrents = 7 * 4;
+
+        public IEnumerable<Torrent> GetLatestTorrents(int minSeeds, OperationInfo operationInfo)
         {
             var client = new HttpClient(new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             });
 
-            var response = client.GetAsync(string.Format(
-                "http://kickass.to/usearch/category%3Amovies%20seeds%3A{0}/{1}/?field=time_add&sorder=desc",
-                minSeeds,
-                page)).Result;
-            
-            CQ document = response.Content.ReadAsStringAsync().Result;
-            var rows = document[".data tr"];
-
+            var nextPage = 1;
             var now = DateTime.UtcNow;
 
-            foreach (var row in rows)
+            while (nextPage > 0)
             {
-                var rowCq = row.Cq();
-                if (rowCq.HasClass("firstr"))
+                var response = client.GetAsync(string.Format(
+                    "http://kickass.to/usearch/category%3Amovies%20seeds%3A{0}/{1}/?field=time_add&sorder=desc",
+                    minSeeds,
+                    nextPage)).Result;
+
+                operationInfo.StatusInfo = string.Format("Scraping torrents page #{0}", nextPage);
+
+                CQ document = response.Content.ReadAsStringAsync().Result;
+                var rows = document[".data tr"];
+
+
+                foreach (var row in rows)
                 {
-                    continue;
+                    var rowCq = row.Cq();
+                    if (rowCq.HasClass("firstr"))
+                    {
+                        continue;
+                    }
+
+                    var torrent = this.CreateTorrentFromRow(rowCq, now);
+                    if (now.Date.Subtract(torrent.AddedOn).TotalDays > MaxDaysToKeepTorrents)
+                    {
+                        nextPage = -1;
+                        break;
+                    }
+
+                    yield return torrent;
                 }
 
-                var torrentDoc = this.CreateTorrentFromRow(rowCq, now);
-
-                yield return torrentDoc;
+                if (nextPage > 0)
+                {
+                    nextPage++;
+                }
             }
         }
 
@@ -49,6 +69,8 @@
             var torrentLink = rowCq.Find("div.torrentname > a.normalgrey");
             result.Title = torrentLink.Text();
             result.DetailsUrl = torrentLink.Attr("href");
+
+            result.Id = result.DetailsUrl.GetHashCode();
 
             var rowCells = rowCq.Find("td");
             result.Size = rowCells[1].Cq().Text();

@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-
-namespace TorrentNews
+﻿namespace TorrentNews.App_Start
 {
+    using System.Configuration;
+    using System.Web.Http;
+
+    using TorrentNews.Handlers;
+
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
         {
+            config.MessageHandlers.Add(new AuthorizationHandler(ConfigurationManager.AppSettings["secret"]));
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+                routeTemplate: "api/{controller}/{action}/{id}",
+                defaults: new { id = RouteParameter.Optional });
 
             // Uncomment the following line of code to enable query support for actions with an IQueryable or IQueryable<T> return type.
             // To avoid processing unexpected or malicious queries, use the validation settings on QueryableAttribute to validate incoming queries.

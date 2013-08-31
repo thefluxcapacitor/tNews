@@ -8,8 +8,8 @@
 
     public class Torrent
     {
-        [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
-        public ObjectId Id { get; set; }
+        [BsonId]
+        public int Id { get; set; }
 
         public string Title { get; set; }
 
