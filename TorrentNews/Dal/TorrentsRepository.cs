@@ -9,6 +9,8 @@
 
     public class TorrentsRepository
     {
+        private const string CollectionName = "torrents";
+
         private readonly MongoCollection<Torrent> torrentsCollection;
 
         public TorrentsRepository()
@@ -16,15 +18,14 @@
             var url = new MongoUrl(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
             var mc = new MongoClient(url);
             var ms = mc.GetServer();
-            
-            var mdb = ms.GetDatabase("torrentnews");
-            
-            if (!mdb.CollectionExists("torrents"))
+            var mdb = ms.GetDatabase(url.DatabaseName);
+
+            if (!mdb.CollectionExists(CollectionName))
             {
-                mdb.CreateCollection("torrents");
+                mdb.CreateCollection(CollectionName);
             }
 
-            this.torrentsCollection = mdb.GetCollection<Torrent>("torrents");
+            this.torrentsCollection = mdb.GetCollection<Torrent>(CollectionName);
         }
 
         public void Save(Torrent entity)
