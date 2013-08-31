@@ -11,13 +11,14 @@
     using System.Web.Http;
 
     using TorrentNews.Dal;
+    using TorrentNews.Filters;
     using TorrentNews.Scraping;
 
     public class TorrentNewsController : ApiController
     {
         private static readonly ConcurrentDictionary<string, OperationInfo> Operations = new ConcurrentDictionary<string, OperationInfo>();
 
-        [HttpGet]
+        [HttpGet, SecretRequired]
         public HttpResponseMessage UpdateNews(string secret)
         {
             var operationId = Guid.NewGuid().ToString();
@@ -87,7 +88,7 @@
             return this.Request.CreateResponse(HttpStatusCode.Accepted, operation.Id);
         }
 
-        [HttpGet]
+        [HttpGet, SecretRequired]
         public HttpResponseMessage RetrieveOperationStatus(string id, string secret)
         {
             OperationInfo op;
@@ -99,7 +100,7 @@
             return this.Request.CreateResponse(HttpStatusCode.OK, op);
         }
 
-        [HttpGet]
+        [HttpGet, SecretRequired]
         public HttpResponseMessage CancelOperation(string id, string secret)
         {
             OperationInfo op;

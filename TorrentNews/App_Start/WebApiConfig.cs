@@ -1,16 +1,11 @@
 ﻿namespace TorrentNews.App_Start
 {
-    using System.Configuration;
     using System.Web.Http;
-
-    using TorrentNews.Handlers;
 
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
         {
-            config.MessageHandlers.Add(new AuthorizationHandler(ConfigurationManager.AppSettings["secret"]));
-
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{action}/{id}",
