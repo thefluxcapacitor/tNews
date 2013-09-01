@@ -4,6 +4,7 @@
     using System.Configuration;
 
     using MongoDB.Driver;
+    using MongoDB.Driver.Builders;
 
     using TorrentNews.Domain;
 
@@ -45,6 +46,14 @@
         public MongoCursor<Torrent> FindAll()
         {
             return this.torrentsCollection.FindAll();
+        }
+
+        public long RemoveOldTorrents()
+        {
+            var fourWeeksAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7 * 4));
+            var query = Query<Torrent>.LT(t => t.AddedOn, fourWeeksAgo);
+            var result = this.torrentsCollection.Remove(query);
+            return result.DocumentsAffected;
         }
     }
 }

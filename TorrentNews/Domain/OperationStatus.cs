@@ -1,4 +1,4 @@
-﻿namespace TorrentNews.Controllers
+﻿namespace TorrentNews.Domain
 {
     public enum OperationStatus
     {
