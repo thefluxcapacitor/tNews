@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Configuration;
     using System.Globalization;
     using System.Net;
     using System.Net.Http;
@@ -40,6 +39,7 @@
                         {
                             var op2 = (OperationInfo)op;
                             op2.Status = OperationStatus.Running;
+                            op2.StartedOn = DateTime.UtcNow;
 
                             op2.CancellationTokenSource.Token.ThrowIfCancellationRequested();
 
@@ -64,6 +64,8 @@
                     (task, op) =>
                         {
                             var op2 = (OperationInfo)op;
+                            op2.FinishedOn = DateTime.UtcNow;
+
                             switch (task.Status)
                             {
                                 case TaskStatus.RanToCompletion:
@@ -81,9 +83,6 @@
                             }
                         },
                     operation);
-
-            //var result = torrentsRepo.FindAll().ToList();
-            //return result.ToJson();
 
             return this.Request.CreateResponse(HttpStatusCode.Accepted, operation.Id);
         }
