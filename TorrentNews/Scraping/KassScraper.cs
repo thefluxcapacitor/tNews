@@ -4,15 +4,26 @@
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
+    using System.Text;
 
     using CsQuery;
 
-    using TorrentNews.Controllers;
+    using TorrentNews.Dal;
     using TorrentNews.Domain;
 
     public class KassScraper
     {
         private const int MaxDaysToKeepTorrents = 7 * 4;
+
+        private readonly TorrentsRepository repo;
+
+        private readonly int maxPages;
+
+        public KassScraper(TorrentsRepository repo, int maxPages)
+        {
+            this.repo = repo;
+            this.maxPages = maxPages;
+        }
 
         public IEnumerable<Torrent> GetLatestTorrents(int minSeeds, OperationInfo operationInfo)
         {
@@ -24,7 +35,7 @@
             var nextPage = 1;
             var now = DateTime.UtcNow;
 
-            while (nextPage > 0)
+            while (nextPage > 0 && (this.maxPages < 0 || nextPage < this.maxPages))
             {
                 var response = client.GetAsync(string.Format(
                     "http://kickass.to/usearch/category%3Amovies%20seeds%3A{0}/{1}/?field=time_add&sorder=desc",
@@ -36,7 +47,6 @@
                 CQ document = response.Content.ReadAsStringAsync().Result;
                 var rows = document[".data tr"];
 
-
                 foreach (var row in rows)
                 {
                     var rowCq = row.Cq();
@@ -45,11 +55,16 @@
                         continue;
                     }
 
-                    var torrent = this.CreateTorrentFromRow(rowCq, now);
+                    var torrent = this.GetTorrentFromRow(rowCq, now);
                     if (now.Date.Subtract(torrent.AddedOn).TotalDays > MaxDaysToKeepTorrents)
                     {
                         nextPage = -1;
                         break;
+                    }
+
+                    if (string.IsNullOrEmpty(torrent.ImdbUrl))
+                    {
+                        torrent.ImdbUrl = this.GetImdbUrl(torrent.DetailsUrl, client);
                     }
 
                     yield return torrent;
@@ -62,24 +77,69 @@
             }
         }
 
-        private Torrent CreateTorrentFromRow(CQ rowCq, DateTime now)
+        private string GetImdbUrl(string torrentDetailsUrl, HttpClient client)
         {
-            var result = new Torrent();
+            const string ImdbPrefix = "http://www.imdb.com/title/";
 
+            if (torrentDetailsUrl[0] != '/')
+            {
+                torrentDetailsUrl = "/" + torrentDetailsUrl;
+            }
+
+            var response = client.GetAsync(string.Format("http://kickass.to{0}", torrentDetailsUrl)).Result;
+            var document = response.Content.ReadAsStringAsync().Result;
+
+            var pos = document.IndexOf(ImdbPrefix, StringComparison.OrdinalIgnoreCase);
+            if (pos < 0)
+            {
+                return "NA";
+            }
+
+            var result = new StringBuilder();
+            
+            pos = pos + ImdbPrefix.Length;
+            var docLength = document.Length;
+            var currChar = document[pos];
+            while (char.IsLetterOrDigit(currChar) && pos < docLength)
+            {
+                result.Append(currChar);
+                
+                pos++;
+                currChar = document[pos];
+            }
+
+            if (pos >= docLength)
+            {
+                return "ERROR";
+            }
+
+            return result.ToString();
+        }
+
+        private Torrent GetTorrentFromRow(CQ rowCq, DateTime now)
+        {
             var torrentLink = rowCq.Find("div.torrentname > a.normalgrey");
-            result.Title = torrentLink.Text();
-            result.DetailsUrl = torrentLink.Attr("href");
+            var torrentDetailsUrl = torrentLink.Attr("href");
+            var torrentId = torrentDetailsUrl.GetHashCode();
 
-            result.Id = result.DetailsUrl.GetHashCode();
+            var torrent = this.repo.Find(torrentId);
+            if (torrent == null)
+            {
+                torrent = new Torrent();
+                torrent.Id = torrentId;
+                torrent.DetailsUrl = torrentDetailsUrl;
+            }
+
+            torrent.Title = torrentLink.Text();
 
             var rowCells = rowCq.Find("td");
-            result.Size = rowCells[1].Cq().Text();
-            result.Files = rowCells[2].Cq().Text();
-            result.SetAddedOnFromAge(now, rowCells[3].InnerText);
-            result.Seed = rowCells[4].Cq().Text();
-            result.Leech = rowCells[5].Cq().Text();
+            torrent.Size = rowCells[1].Cq().Text();
+            torrent.Files = rowCells[2].Cq().Text();
+            torrent.SetAddedOnFromAge(now, rowCells[3].InnerText);
+            torrent.Seed = rowCells[4].Cq().Text();
+            torrent.Leech = rowCells[5].Cq().Text();
 
-            return result;
+            return torrent;
         }
     }
 }

@@ -3,6 +3,7 @@
     using System;
     using System.Configuration;
 
+    using MongoDB.Bson;
     using MongoDB.Driver;
     using MongoDB.Driver.Builders;
 
@@ -48,9 +49,14 @@
             return this.torrentsCollection.FindAll();
         }
 
+        public Torrent Find(BsonValue id)
+        {
+            return this.torrentsCollection.FindOneById(id);
+        }
+
         public long RemoveOldTorrents()
         {
-            var fourWeeksAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7 * 4));
+            var fourWeeksAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7 * 4 + 1));
             var query = Query<Torrent>.LT(t => t.AddedOn, fourWeeksAgo);
             var result = this.torrentsCollection.Remove(query);
             return result.DocumentsAffected;

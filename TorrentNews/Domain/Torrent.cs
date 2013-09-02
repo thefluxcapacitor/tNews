@@ -65,5 +65,7 @@
 
             throw new ArgumentException("Invalid unit for Age field", "age");
         }
+
+        public string ImdbUrl { get; set; }
     }
 }
