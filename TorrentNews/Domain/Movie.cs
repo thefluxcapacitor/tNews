@@ -23,7 +23,7 @@
 
         public string Poster { get; set; }
 
-        public double ImdbRating { get; set; }
+        public int ImdbRating { get; set; }
 
         public int ImdbVotes { get; set; }
 

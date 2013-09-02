@@ -13,7 +13,7 @@
         public void UpdateMovieDetails(Movie movie)
         {
             //movie = new Movie { Id = "tt0088763" }; //back to the future
-            movie = new Movie { Id = "tt0133093" }; //the matrix
+            //movie = new Movie { Id = "tt0133093" }; //the matrix
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Accept-Language", "en-US,en"); 
@@ -27,6 +27,43 @@
             {
                 this.UpdateMovieBasicDetails(movie, document);
             }
+
+            this.UpdateMovieScores(movie, document);
+        }
+
+        private void UpdateMovieScores(Movie movie, CQ d)
+        {
+            movie.ImdbRating = this.ParseImdbRating(d["span[itemprop=ratingValue]"].Text());
+            movie.ImdbVotes = this.ParseImdbVotes(d["span[itemprop=ratingCount]"].Text());
+
+            var metacriticAux = d["div.star-box-details > a[href=\"criticreviews?ref_=tt_ov_rt\"]"]; 
+            movie.McMetascore = this.ParseMetascore(metacriticAux.First().Text());
+            movie.McCriticsCount = this.ParseMcCriticsCount(metacriticAux[1].Cq().Text());
+        }
+
+        private int ParseMcCriticsCount(string mcCriticsCount)
+        {
+            return int.Parse(mcCriticsCount);
+        }
+
+        private int ParseMetascore(string metascore)
+        {
+            return int.Parse(metascore.Substring(0, metascore.IndexOf("/", StringComparison.OrdinalIgnoreCase)));
+        }
+
+        private int ParseImdbVotes(string votes)
+        {
+            return int.Parse(votes.Replace(",", string.Empty).Replace(".", string.Empty));
+        }
+
+        private int ParseImdbRating(string rating)
+        {
+            if (rating.Contains(".") || rating.Contains(","))
+            {
+                return int.Parse(rating.Replace(",", string.Empty).Replace(".", string.Empty));
+            }
+
+            return int.Parse(rating) * 10;
         }
 
         private void UpdateMovieBasicDetails(Movie movie, CQ d)
