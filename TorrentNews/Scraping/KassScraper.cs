@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Net;
     using System.Net.Http;
     using System.Text;
@@ -15,6 +16,8 @@
     {
         private const int MaxDaysToKeepTorrents = 7 * 4;
 
+        private const int MinSeeds = 20;
+
         private readonly TorrentsRepository repo;
 
         private readonly int maxPages;
@@ -25,8 +28,10 @@
             this.maxPages = maxPages;
         }
 
-        public IEnumerable<Torrent> GetLatestTorrents(int minSeeds, OperationInfo operationInfo)
+        public IEnumerable<Torrent> GetLatestTorrents(OperationInfo operationInfo)
         {
+            var torrentsScraped = 0;
+
             var client = new HttpClient(new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
@@ -39,7 +44,7 @@
             {
                 var response = client.GetAsync(string.Format(
                     "http://kickass.to/usearch/category%3Amovies%20seeds%3A{0}/{1}/?field=time_add&sorder=desc",
-                    minSeeds,
+                    MinSeeds,
                     nextPage)).Result;
 
                 operationInfo.StatusInfo = string.Format("Scraping torrents page #{0}", nextPage);
@@ -64,6 +69,9 @@
 
                     if (string.IsNullOrEmpty(torrent.ImdbUrl))
                     {
+                        torrentsScraped++;
+                        operationInfo.ExtraData["scraped"] = torrentsScraped.ToString(CultureInfo.InvariantCulture);
+
                         torrent.ImdbUrl = this.GetImdbUrl(torrent.DetailsUrl, client);
                     }
 

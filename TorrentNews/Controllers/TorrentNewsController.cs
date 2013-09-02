@@ -47,61 +47,7 @@
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Cannot start operation");
             }
 
-            Task.Factory.StartNew(
-                    (op) =>
-                    {
-                        var op2 = (OperationInfo)op;
-                        op2.CancellationTokenSource.Token.ThrowIfCancellationRequested();
-
-                        op2.Status = OperationStatus.Running;
-                        op2.StartedOn = DateTime.UtcNow;
-                        op2.ExtraData.Add("removed", "N/A");
-                        op2.ExtraData.Add("updated", "N/A");
-
-                        var torrentsRepo = new TorrentsRepository();
-
-                        op2.StatusInfo = "Removing old torrents";
-                        var torrentsRemoved = torrentsRepo.RemoveOldTorrents();
-                        op2.ExtraData["removed"] = torrentsRemoved.ToString(CultureInfo.InvariantCulture);
-
-                        var counter = 0;
-                        var scraper = new KassScraper(torrentsRepo, maxPages);
-                        var torrents = scraper.GetLatestTorrents(20, op2);
-                        foreach (var t in torrents)
-                        {
-                            torrentsRepo.Save(t);
-
-                            counter++;
-                            op2.ExtraData["updated"] = counter.ToString(CultureInfo.InvariantCulture);
-
-                            op2.CancellationTokenSource.Token.ThrowIfCancellationRequested();
-                        }
-                    },
-                    operation,
-                    operation.CancellationTokenSource.Token)
-                .ContinueWith(
-                    (task, op) =>
-                    {
-                        var op2 = (OperationInfo)op;
-                        op2.FinishedOn = DateTime.UtcNow;
-
-                        switch (task.Status)
-                        {
-                            case TaskStatus.RanToCompletion:
-                                op2.Status = OperationStatus.Completed;
-                                op2.StatusInfo = string.Format("Scraping done. Torrents saved: {0}", op2.ExtraData["updated"]);
-                                break;
-                            case TaskStatus.Faulted:
-                                op2.Status = OperationStatus.Faulted;
-                                op2.Error = task.Exception != null ?
-                                    task.Exception.ToString() : "Unexpected error";
-                                break;
-                            case TaskStatus.Canceled:
-                                op2.Status = OperationStatus.Cancelled;
-                                break;
-                        }
-                    },
-                    operation);
+            BatchProcessor.ProcessTorrentNews(maxPages, operation);
 
             var cancellationUrl = Url.Link("DefaultApi", new { controller = "TorrentNews", action = "CancelOperation", id = operationId, secret = "secret_here" });
             var statusUrl = Url.Link("DefaultApi", new { controller = "TorrentNews", action = "RetrieveOperationStatus", id = operationId, secret = "secret_here" });

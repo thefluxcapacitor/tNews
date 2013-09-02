@@ -1,7 +1,6 @@
 ﻿namespace TorrentNews.Dal
 {
     using System;
-    using System.Configuration;
 
     using MongoDB.Bson;
     using MongoDB.Driver;
@@ -9,7 +8,7 @@
 
     using TorrentNews.Domain;
 
-    public class TorrentsRepository
+    public class TorrentsRepository : BaseRepository
     {
         private const string CollectionName = "torrents";
 
@@ -17,14 +16,7 @@
 
         public TorrentsRepository()
         {
-            var url = new MongoUrl(
-                ConfigurationManager.AppSettings["MONGOHQ_URL"] ?? 
-                ConfigurationManager.AppSettings["MONGOLAB_URI"] ?? 
-                "mongodb://127.0.0.1:27017/torrentnews");
-
-            var mc = new MongoClient(url);
-            var ms = mc.GetServer();
-            var mdb = ms.GetDatabase(url.DatabaseName);
+            var mdb = this.GetDatabase();
 
             if (!mdb.CollectionExists(CollectionName))
             {
@@ -37,16 +29,6 @@
         public void Save(Torrent entity)
         {
             this.torrentsCollection.Save(entity);
-        }
-
-        public void RemoveAll()
-        {
-            this.torrentsCollection.RemoveAll();
-        }
-
-        public MongoCursor<Torrent> FindAll()
-        {
-            return this.torrentsCollection.FindAll();
         }
 
         public Torrent Find(BsonValue id)
