@@ -23,6 +23,8 @@
 
         public string Poster { get; set; }
 
+        public string ContentRating { get; set; }
+
         public int ImdbRating { get; set; }
 
         public int ImdbVotes { get; set; }
