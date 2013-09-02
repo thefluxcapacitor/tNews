@@ -68,11 +68,21 @@
 
         private int ParseImdbVotes(string votes)
         {
+            if (string.IsNullOrEmpty(votes))
+            {
+                return 0;
+            }
+
             return int.Parse(votes.Replace(",", string.Empty).Replace(".", string.Empty));
         }
 
         private int ParseImdbRating(string rating)
         {
+            if (string.IsNullOrEmpty(rating))
+            {
+                return 0;
+            }
+
             if (rating.Contains(".") || rating.Contains(","))
             {
                 return int.Parse(rating.Replace(",", string.Empty).Replace(".", string.Empty));
@@ -85,7 +95,19 @@
         {
             movie.Title = d["h1.header > span.itemprop[itemprop=name]"].First().Text();
             movie.Year = d["h1.header a[href^=\"/year/\"]"].First().Text();
-            movie.Plot = d["p[itemprop=description]"].First().Text();
+            
+            var plot = d["p[itemprop=description]"].First().Text();
+            if (!string.IsNullOrEmpty(plot))
+            {
+                plot = plot.Trim();
+                if (plot[0] == '\\' && plot[1] == 'n')
+                {
+                    plot = plot.Substring(2).Trim();
+                }
+            }
+
+            movie.Plot = plot;
+            
             movie.Directors = d["div[itemprop=director] span.itemprop[itemprop=name]"]
                 .Map(item => item.Cq().Text()).ToArray();
             movie.Genres = d["span.itemprop[itemprop=genre]"]

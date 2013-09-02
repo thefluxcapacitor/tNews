@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace TorrentNews.Controllers
+﻿namespace TorrentNews.Controllers
 {
+    using System;
     using System.Globalization;
     using System.Threading.Tasks;
 
@@ -45,16 +41,20 @@ namespace TorrentNews.Controllers
 
         private static void UpdateMovies(MoviesRepository moviesRepo, OperationInfo op)
         {
+            op.StatusInfo = "Scraping movies";
+
+            var scraper = new ImdbScraper();
+
             var moviesScraped = 0;
             var moviesToUpdate = moviesRepo.GetMoviesToUpdate();
             foreach (var movie in moviesToUpdate)
             {
-
+                scraper.UpdateMovieDetails(movie);
+                moviesRepo.Save(movie);
 
                 moviesScraped++;
                 op.ExtraData["moviesScraped"] = moviesScraped.ToString(CultureInfo.InvariantCulture);
             }
-
         }
 
         private static void UpdateProcessStatus(object op, Task task)
