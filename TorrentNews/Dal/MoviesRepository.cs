@@ -1,5 +1,7 @@
 ﻿namespace TorrentNews.Dal
 {
+    using System;
+
     using MongoDB.Bson;
     using MongoDB.Driver;
     using MongoDB.Driver.Builders;
@@ -36,7 +38,11 @@
 
         public MongoCursor<Movie> GetMoviesToUpdate()
         {
-            var query = Query<Movie>.LT(m => m.ImdbVotes, 1000);
+            var twoWeeksAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7 * 2));
+            var query = Query.And(
+                Query<Movie>.LT(m => m.ImdbVotes, 1000),
+                Query<Movie>.GT(m => m.FirstUpdatedOn, twoWeeksAgo));
+            
             return this.moviesCollection.Find(query);
         }
     }
