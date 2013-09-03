@@ -1,6 +1,7 @@
 ﻿namespace TorrentNews.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Threading.Tasks;
 
@@ -31,12 +32,69 @@
                         BatchProcessor.RemoveOldTorrents(op2, torrentsRepo);
                         BatchProcessor.UpdateTorrents(maxPages, torrentsRepo, op2, moviesRepo);
                         BatchProcessor.UpdateMovies(moviesRepo, op2);
+                        BatchProcessor.UpdateAwards(moviesRepo, torrentsRepo, op2);
                     },
                     operation,
                     operation.CancellationTokenSource.Token)
                 .ContinueWith(
                     (task, op) => BatchProcessor.UpdateProcessStatus(op, task),
                     operation);
+        }
+
+        private static void UpdateAwards(MoviesRepository moviesRepo, TorrentsRepository torrentsRepo, OperationInfo op)
+        {
+            ////1000 seeds or 20 comments: popular -> 100 points
+            ////3000 seeds or 100 comments: very popular -> 200 points
+            ////7 imdb rating: imdb ribbon (minimum of 1000 votes) -> 400 points
+            ////70 metacritic: metacritic ribbon (no minimum critics) -> 500 points
+
+            op.StatusInfo = "Updating awards";
+
+            var moviesCache = new Dictionary<string, Movie>();
+            var torrents = torrentsRepo.FindAll();
+            foreach (var t in torrents)
+            {
+                var isDirty = false;
+
+                Movie movie = null;
+                if (!string.IsNullOrEmpty(t.ImdbId) && t.ImdbId != "NA")
+                {
+                    if (!moviesCache.TryGetValue(t.ImdbId, out movie))
+                    {
+                        movie = moviesRepo.Find(t.ImdbId);
+                        moviesCache.Add(t.ImdbId, movie);
+                    }
+                }
+
+                if (movie != null)
+                {
+                    t.ImdbAward = GetValue(t.ImdbAward, movie.ImdbVotes >= 1000 && movie.ImdbRating >= 70, ref isDirty);
+                    t.MetacriticAward = GetValue(t.MetacriticAward, movie.McMetascore >= 70, ref isDirty);
+                }
+                else
+                {
+                    t.ImdbAward = GetValue(t.ImdbAward, false, ref isDirty);
+                    t.MetacriticAward = GetValue(t.MetacriticAward, false, ref isDirty);
+                }
+
+                t.SuperPopularityAward = GetValue(t.SuperPopularityAward, t.Seed >= 3000 || t.CommentsCount >= 100, ref isDirty);
+                t.PopularityAward = GetValue(t.PopularityAward, !t.SuperPopularityAward && (t.Seed >= 1000 || t.CommentsCount >= 20), ref isDirty);
+
+                if (isDirty)
+                {
+                    torrentsRepo.Save(t);
+                }
+            }
+        }
+
+        private static bool GetValue(bool originalValue, bool newValue, ref bool isDirty)
+        {
+            if (originalValue != newValue)
+            {
+                isDirty = true;
+            }
+
+            return newValue;
         }
 
         private static void UpdateMovies(MoviesRepository moviesRepo, OperationInfo op)
@@ -87,12 +145,12 @@
             {
                 torrentsRepo.Save(t);
 
-                if (t.ImdbUrl != "NA")
+                if (t.ImdbId != "NA")
                 {
-                    var movie = moviesRepo.Find(t.ImdbUrl);
+                    var movie = moviesRepo.Find(t.ImdbId);
                     if (movie == null)
                     {
-                        moviesRepo.Save(new Movie { Id = t.ImdbUrl });
+                        moviesRepo.Save(new Movie { Id = t.ImdbId });
                     }
                 }
 

@@ -93,6 +93,8 @@
 
         private void UpdateMovieBasicDetails(Movie movie, CQ d)
         {
+            movie.FirstUpdatedOn = DateTime.UtcNow;
+
             movie.Title = d["h1.header > span.itemprop[itemprop=name]"].First().Text();
             movie.Year = d["h1.header a[href^=\"/year/\"]"].First().Text();
             

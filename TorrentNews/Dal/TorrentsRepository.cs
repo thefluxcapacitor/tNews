@@ -43,5 +43,10 @@
             var result = this.torrentsCollection.Remove(query);
             return result.DocumentsAffected;
         }
+
+        public MongoCursor<Torrent> FindAll()
+        {
+            return this.torrentsCollection.FindAll();
+        }
     }
 }

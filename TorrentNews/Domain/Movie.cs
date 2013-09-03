@@ -1,5 +1,7 @@
 ﻿namespace TorrentNews.Domain
 {
+    using System;
+
     using MongoDB.Bson.Serialization.Attributes;
 
     public class Movie
@@ -32,5 +34,7 @@
         public int McMetascore { get; set; }
 
         public int McCriticsCount { get; set; }
+
+        public DateTime? FirstUpdatedOn { get; set; }
     }
 }

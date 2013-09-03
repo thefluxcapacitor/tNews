@@ -17,9 +17,11 @@
 
         public string Files { get; set; }
 
-        public string Seed { get; set; }
+        public int Seed { get; set; }
 
-        public string Leech { get; set; }
+        public int Leech { get; set; }
+
+        public int CommentsCount { get; set; }
 
         public DateTime AddedOn { get; set; }
 
@@ -64,6 +66,14 @@
             throw new ArgumentException("Invalid unit for Age field", "age");
         }
 
-        public string ImdbUrl { get; set; }
+        public string ImdbId { get; set; }
+
+        public bool ImdbAward { get; set; }
+
+        public bool MetacriticAward { get; set; }
+
+        public bool PopularityAward { get; set; }
+
+        public bool SuperPopularityAward { get; set; }
     }
 }

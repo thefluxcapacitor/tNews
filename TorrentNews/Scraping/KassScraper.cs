@@ -67,12 +67,12 @@
                         break;
                     }
 
-                    if (string.IsNullOrEmpty(torrent.ImdbUrl))
+                    if (string.IsNullOrEmpty(torrent.ImdbId))
                     {
                         torrentsScraped++;
                         operationInfo.ExtraData["scraped"] = torrentsScraped.ToString(CultureInfo.InvariantCulture);
 
-                        torrent.ImdbUrl = this.GetImdbUrl(torrent.DetailsUrl, client);
+                        torrent.ImdbId = this.GetImdbUrl(torrent.DetailsUrl, client);
                     }
 
                     yield return torrent;
@@ -144,8 +144,24 @@
             torrent.Size = rowCells[1].Cq().Text();
             torrent.Files = rowCells[2].Cq().Text();
             torrent.SetAddedOnFromAge(now, rowCells[3].InnerText);
-            torrent.Seed = rowCells[4].Cq().Text();
-            torrent.Leech = rowCells[5].Cq().Text();
+
+            var seed = rowCells[4].Cq().Text();
+            if (!string.IsNullOrEmpty(seed))
+            {
+                torrent.Seed = int.Parse(seed);
+            }
+
+            var leech = rowCells[5].Cq().Text();
+            if (!string.IsNullOrEmpty(leech))
+            {
+                torrent.Leech = int.Parse(leech);
+            }
+
+            var comments = rowCq.Find("a.icomment > em.iconvalue").Text();
+            if (!string.IsNullOrEmpty(comments))
+            {
+                torrent.CommentsCount = int.Parse(comments);
+            }
 
             return torrent;
         }
