@@ -118,15 +118,15 @@
                 .Map(item => item.Cq().Text()).ToArray();
             movie.ContentRating = d["span[itemprop=contentRating]"].First().Attr("content");
 
-            foreach (var image in d["img[itemprop=image]"])
-            {
-                var aux = image.Cq();
-                if (aux.Attr("title").ToLowerInvariant().Contains("poster"))
-                {
-                    movie.Poster = aux.Attr("src");
-                    break;
-                }
-            }
+            ////foreach (var image in d["img[itemprop=image]"])
+            ////{
+            ////    var aux = image.Cq();
+            ////    if (aux.Attr("title").ToLowerInvariant().Contains("poster"))
+            ////    {
+            ////        movie.Poster = aux.Attr("src");
+            ////        break;
+            ////    }
+            ////}
 
             foreach (var h4 in d["h4"])
             {

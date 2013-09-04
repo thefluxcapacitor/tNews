@@ -177,10 +177,29 @@ td {
 
 #moviesTable td.scoreCell {
     text-align: center;
+    width: 65px;
+    min-width: 65px;
+}
+
+#moviesTable td.movieInfoCell {
+    width: 385px;
+    min-width: 385px;
+}
+
+#moviesTable td.torrentInfoCell {
+    width: 420px;
+    min-width: 420px;
+}
+
+#moviesTable td.posterCell {
+    width: 220px;
+    min-width: 220px;
 }
 
 #moviesTable img {
     padding: 10px;
+    width: 200px;
+    height: 281px;
 }
 
 .score {

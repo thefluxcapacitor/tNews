@@ -72,7 +72,7 @@
                         torrentsScraped++;
                         operationInfo.ExtraData["scraped"] = torrentsScraped.ToString(CultureInfo.InvariantCulture);
 
-                        torrent.ImdbId = this.GetImdbUrl(torrent.DetailsUrl, client);
+                        this.ScrapeDetails(torrent, client);
                     }
 
                     yield return torrent;
@@ -85,10 +85,9 @@
             }
         }
 
-        private string GetImdbUrl(string torrentDetailsUrl, HttpClient client)
+        private void ScrapeDetails(Torrent torrent, HttpClient client)
         {
-            const string ImdbPrefix = "http://www.imdb.com/title/";
-
+            var torrentDetailsUrl = torrent.DetailsUrl;
             if (torrentDetailsUrl[0] != '/')
             {
                 torrentDetailsUrl = "/" + torrentDetailsUrl;
@@ -96,6 +95,37 @@
 
             var response = client.GetAsync(string.Format("http://kickass.to{0}", torrentDetailsUrl)).Result;
             var document = response.Content.ReadAsStringAsync().Result;
+            
+            torrent.ImdbId = this.GetImdbUrl(document);
+            torrent.Poster = this.GetPoster(document);
+        }
+
+        private string GetPoster(string document)
+        {
+            var result = string.Empty;
+
+            CQ doc = document;
+            var img = doc["a.movieCover img"].First();
+            if (img != null)
+            {
+                result = img.Attr("src");
+                if (!string.IsNullOrEmpty(result) && result.EndsWith("/nocover.png", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = string.Empty;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                result = "http:" + result;
+            }
+
+            return result;
+        }
+
+        private string GetImdbUrl(string document)
+        {
+            const string ImdbPrefix = "http://www.imdb.com/title/";
 
             var pos = document.IndexOf(ImdbPrefix, StringComparison.OrdinalIgnoreCase);
             if (pos < 0)

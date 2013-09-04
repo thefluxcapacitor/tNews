@@ -13,7 +13,7 @@
     var torrentDetailsUrl = "http://kickass.to" + t.DetailsUrl;
     
     <tr>
-        <td>
+        <td class="posterCell">
             @if (!string.IsNullOrEmpty(t.Poster))
             {
                 <a href="http://www.imdb.com/title/@t.ImdbId" target="_blank"><img src="@t.Poster"/></a>
@@ -24,7 +24,7 @@
             }
         </td>
         <td class="scoreCell"><span class="score">@t.Score</span></td>
-        <td>
+        <td class="movieInfoCell">
             <div>
                 @if (!string.IsNullOrEmpty(t.ImdbId) && t.ImdbId != "NA")
                 {
@@ -39,7 +39,7 @@
                 }
             </div>
         </td>
-        <td>
+        <td class="torrentInfoCell">
             <div>
                 <div class="title"><a href="@torrentDetailsUrl" target="_blank">@t.Title</a></div>
                 <p><span class="label">Size: </span>@t.Size (@t.Files files)</p>
