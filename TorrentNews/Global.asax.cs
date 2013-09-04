@@ -14,6 +14,8 @@ namespace TorrentNews
     using Newtonsoft.Json.Converters;
 
     using TorrentNews.App_Start;
+    using TorrentNews.Domain;
+    using TorrentNews.Models;
 
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
@@ -30,6 +32,29 @@ namespace TorrentNews
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             ConfigureWebApiFormatters();
+
+            ConfigureMappings();
+        }
+
+        private static void ConfigureMappings()
+        {
+            AutoMapper.Mapper.CreateMap<Torrent, TorrentModel>();
+            AutoMapper.Mapper.CreateMap<Movie, TorrentModel>()
+                .ForMember(
+                    dest => dest.Id, opt => opt.Ignore())
+                .ForMember(
+                    dest => dest.Title, opt => opt.Ignore())
+                .ForMember(
+                    dest => dest.MovieTitle, opt => opt.MapFrom(src => src.Title))
+                .ForMember(
+                    dest => dest.Directors,
+                    opt => opt.MapFrom(src => src.Directors.Any() ? src.Directors.Aggregate((c, n) => c + ", " + n) : string.Empty))
+                .ForMember(
+                    dest => dest.Genres,
+                    opt => opt.MapFrom(src => src.Genres.Any() ? src.Genres.Aggregate((c, n) => c + ", " + n) : string.Empty))
+                .ForMember(
+                    dest => dest.Cast,
+                    opt => opt.MapFrom(src => src.Cast.Any() ? src.Cast.Aggregate((c, n) => c + ", " + n) : string.Empty));
         }
 
         private static void ConfigureWebApiFormatters()

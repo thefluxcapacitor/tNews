@@ -1,0 +1,24 @@
+﻿@model TorrentNews.Models.PagedResultsModel
+
+<div class="pager">
+<span>
+@if (!string.IsNullOrEmpty(Model.PreviousPageUrl))
+{
+    <a href="@Model.PreviousPageUrl">&lt;</a>
+}
+else
+{
+    <a class="disabled">&lt;</a>
+}
+
+@if (!string.IsNullOrEmpty(Model.NextPageUrl))
+{
+    <a href="@Model.NextPageUrl">&gt;</a>
+}
+else
+{
+    <a class="disabled">&gt;</a>
+}
+</span>
+
+</div>

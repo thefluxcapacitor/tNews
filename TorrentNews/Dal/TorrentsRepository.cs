@@ -1,6 +1,7 @@
 ﻿namespace TorrentNews.Dal
 {
     using System;
+    using System.Collections.Generic;
 
     using MongoDB.Bson;
     using MongoDB.Driver;
@@ -34,6 +35,35 @@
         public Torrent Find(BsonValue id)
         {
             return this.torrentsCollection.FindOneById(id);
+        }
+
+        public MongoCursor<Torrent> GetPage(int page, string[] sortBy)
+        {
+            var sortOrder = GetSortOrder(sortBy);
+
+            return this.torrentsCollection
+                .FindAll()
+                .SetSortOrder(sortOrder)
+                .SetSkip(Constants.PageSize * (page - 1))
+                .SetLimit(Constants.PageSize);
+        }
+
+        private static SortByBuilder GetSortOrder(IEnumerable<string> sortBy)
+        {
+            var builder = new SortByBuilder();
+            foreach (var field in sortBy)
+            {
+                if (field[0] == '-')
+                {
+                    builder.Descending(field.Substring(1));
+                }
+                else
+                {
+                    builder.Ascending(field);
+                }
+            }
+
+            return builder;
         }
 
         public long RemoveOldTorrents()

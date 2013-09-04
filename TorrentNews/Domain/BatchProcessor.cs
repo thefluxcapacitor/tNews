@@ -1,4 +1,4 @@
-﻿namespace TorrentNews.Controllers
+﻿namespace TorrentNews.Domain
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
 
     using TorrentNews.Dal;
-    using TorrentNews.Domain;
     using TorrentNews.Scraping;
 
     public static class BatchProcessor
@@ -43,11 +42,6 @@
 
         private static void UpdateAwards(MoviesRepository moviesRepo, TorrentsRepository torrentsRepo, OperationInfo op)
         {
-            ////1000 seeds or 20 comments: popular -> 100 points
-            ////3000 seeds or 100 comments: very popular -> 200 points
-            ////7 imdb rating: imdb ribbon (minimum of 1000 votes) -> 400 points
-            ////70 metacritic: metacritic ribbon (no minimum critics) -> 500 points
-
             op.StatusInfo = "Updating awards";
 
             var moviesCache = new Dictionary<string, Movie>();
@@ -80,6 +74,8 @@
                 t.SuperPopularityAward = GetValue(t.SuperPopularityAward, t.Seed >= 3000 || t.CommentsCount >= 100, ref isDirty);
                 t.PopularityAward = GetValue(t.PopularityAward, !t.SuperPopularityAward && (t.Seed >= 1000 || t.CommentsCount >= 20), ref isDirty);
 
+                t.Score = GetValue(t.Score, CalcScore(t), ref isDirty);
+
                 if (isDirty)
                 {
                     torrentsRepo.Save(t);
@@ -87,9 +83,22 @@
             }
         }
 
-        private static bool GetValue(bool originalValue, bool newValue, ref bool isDirty)
+        private static int CalcScore(Torrent t)
         {
-            if (originalValue != newValue)
+            ////1000 seeds or 20 comments: popular -> 100 points
+            ////3000 seeds or 100 comments: very popular -> 200 points
+            ////7 imdb rating: imdb ribbon (minimum of 1000 votes) -> 400 points
+            ////70 metacritic: metacritic ribbon (no minimum critics) -> 500 points
+            
+            return Convert.ToInt32(t.PopularityAward) * 100 +
+                Convert.ToInt32(t.SuperPopularityAward) * 200 +
+                Convert.ToInt32(t.ImdbAward) * 400 +
+                Convert.ToInt32(t.MetacriticAward) * 500;
+        }
+
+        private static T GetValue<T>(T originalValue, T newValue, ref bool isDirty)
+        {
+            if (!originalValue.Equals(newValue))
             {
                 isDirty = true;
             }

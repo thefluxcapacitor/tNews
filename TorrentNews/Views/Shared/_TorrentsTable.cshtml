@@ -1,0 +1,53 @@
+﻿@model IEnumerable<TorrentNews.Models.TorrentModel>
+
+<table id="moviesTable">
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+
+@foreach (var t in Model)
+{
+    var torrentDetailsUrl = "http://kickass.to" + t.DetailsUrl;
+    
+    <tr>
+        <td>
+            @if (!string.IsNullOrEmpty(t.Poster))
+            {
+                <a href="http://www.imdb.com/title/@t.ImdbId" target="_blank"><img src="@t.Poster"/></a>
+            }
+            else
+            {
+                <img src="/Images/noimage-poster.png"/>
+            }
+        </td>
+        <td class="scoreCell"><span class="score">@t.Score</span></td>
+        <td>
+            <div>
+                @if (!string.IsNullOrEmpty(t.ImdbId) && t.ImdbId != "NA")
+                {
+                    <div class="title"><a href="http://www.imdb.com/title/@t.ImdbId" target="_blank">@t.MovieTitle</a> (@t.Year)</div>
+                    <p><span class="label">Genres: </span>@t.Genres</p>
+                    <p><span class="label">Director: </span>@t.Directors</p>
+                    <p><span class="label">Cast: </span>@t.Cast</p>
+                    <p><span class="label">Duration: </span>@t.Duration min.</p>
+                    <p><span class="label">Content rating: </span>@t.ContentRating</p>
+                    <p><span class="label">IMDB Rating: </span>@(Math.Round((decimal)t.ImdbRating / 10, 1)) (@t.ImdbVotes votes)</p>
+                    <p><span class="label">Metacritic Rating: </span>@t.McMetascore (@t.McCriticsCount critics)</p>
+                }
+            </div>
+        </td>
+        <td>
+            <div>
+                <div class="title"><a href="@torrentDetailsUrl" target="_blank">@t.Title</a></div>
+                <p><span class="label">Size: </span>@t.Size (@t.Files files)</p>
+                <p><span class="label">Seed/Leech: </span>@t.Seed / @t.Leech</p>
+                <p><span class="label">Comments: </span>@t.CommentsCount</p>
+                <p><span class="label">Added on: </span>@t.AddedOn</p>
+            </div>
+        </td>
+    </tr>
+}
+</table>

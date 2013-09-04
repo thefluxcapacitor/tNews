@@ -25,6 +25,18 @@
 
         public DateTime AddedOn { get; set; }
 
+        public string ImdbId { get; set; }
+
+        public bool ImdbAward { get; set; }
+
+        public bool MetacriticAward { get; set; }
+
+        public bool PopularityAward { get; set; }
+
+        public bool SuperPopularityAward { get; set; }
+
+        public int Score { get; set; }
+
         public void SetAddedOnFromAge(DateTime now, string age)
         {
             var span = this.GetAgeTimeSpan(age);
@@ -65,15 +77,5 @@
 
             throw new ArgumentException("Invalid unit for Age field", "age");
         }
-
-        public string ImdbId { get; set; }
-
-        public bool ImdbAward { get; set; }
-
-        public bool MetacriticAward { get; set; }
-
-        public bool PopularityAward { get; set; }
-
-        public bool SuperPopularityAward { get; set; }
     }
 }
