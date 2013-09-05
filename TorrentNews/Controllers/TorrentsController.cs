@@ -93,7 +93,7 @@
                 "Torrent news",
                 "Latest torrents",
                 new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host),
-                "LatestTorrentsFeed",
+                this.Request.Url.Scheme + "://" + this.Request.Url.Host + "/Torrents/MostRecentFeed",
                 DateTime.UtcNow);
 
             feed.Items = rssItems;
