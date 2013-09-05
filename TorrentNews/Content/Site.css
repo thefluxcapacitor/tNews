@@ -233,3 +233,7 @@ td {
     color: lightgray;
     text-decoration: none;
 }
+
+#moviesTable p.plot {
+    margin-bottom: 10px;
+}

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<TorrentNews.Models.TorrentModel>
+﻿@using TorrentNews.Extensions
+@model IEnumerable<TorrentNews.Models.TorrentModel>
 
 <table id="moviesTable">
     <tr>
@@ -29,13 +30,35 @@
                 @if (!string.IsNullOrEmpty(t.ImdbId) && t.ImdbId != "NA")
                 {
                     <div class="title"><a href="http://www.imdb.com/title/@t.ImdbId" target="_blank">@t.MovieTitle</a> (@t.Year)</div>
+                    <p class="plot">@t.Plot</p>
                     <p><span class="label">Genres: </span>@t.Genres</p>
-                    <p><span class="label">Director: </span>@t.Directors</p>
-                    <p><span class="label">Cast: </span>@t.Cast</p>
-                    <p><span class="label">Duration: </span>@t.Duration min.</p>
-                    <p><span class="label">Content rating: </span>@t.ContentRating</p>
-                    <p><span class="label">IMDB Rating: </span>@(Math.Round((decimal)t.ImdbRating / 10, 1)) (@t.ImdbVotes votes)</p>
-                    <p><span class="label">Metacritic Rating: </span>@t.McMetascore (@t.McCriticsCount critics)</p>
+                    
+                    <p><span class="label">Director: </span>@Html.ImdbNames(t.Directors)</p>
+                    <p><span class="label">Cast: </span>@Html.ImdbNames(t.Cast)</p>
+
+                    if (!string.IsNullOrEmpty(t.Duration))
+                    {
+                        <p><span class="label">Duration: </span>@t.Duration min.</p>
+                    }
+                    else
+                    {
+                        <p><span class="label">Duration: </span>N/A</p>
+                    }
+
+                    <p>
+                        <span class="label">Content rating: </span>
+                        <a target="_blank" href="http://www.imdb.com/title/@t.ImdbId/parentalguide">@(string.IsNullOrEmpty(t.ContentRating) ? "N/A" : t.ContentRating)</a>
+                    </p>
+                    
+                    <p>
+                        <span class="label">IMDB Rating: </span>
+                        <a target="_blank" href="http://www.imdb.com/title/@t.ImdbId/ratings">@(Math.Round((decimal)t.ImdbRating / 10, 1)) (@t.ImdbVotes votes)</a>
+                    </p>
+                    
+                    <p>
+                        <span class="label">Metacritic Rating: </span>
+                        <a target="_blank" href="http://www.imdb.com/title/@t.ImdbId/criticreviews">@t.McMetascore (@t.McCriticsCount critics)</a>
+                    </p>
                 }
             </div>
         </td>

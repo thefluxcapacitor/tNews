@@ -42,11 +42,11 @@
 
         public string Plot { get; set; }
 
-        public string Directors { get; set; }
+        public string[] Directors { get; set; }
 
         public string Genres { get; set; }
 
-        public string Cast { get; set; }
+        public string[] Cast { get; set; }
 
         public string Poster { get; set; }
 

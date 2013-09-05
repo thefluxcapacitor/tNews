@@ -176,6 +176,7 @@
     <Compile Include="Dal\TorrentsRepository.cs" />
     <Compile Include="Domain\Torrent.cs" />
     <Compile Include="Controllers\TorrentNewsController.cs" />
+    <Compile Include="Extensions\HtmlHelperExtensions.cs" />
     <Compile Include="Filters\SecretRequiredAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
