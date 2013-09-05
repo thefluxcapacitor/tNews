@@ -61,8 +61,13 @@
             </a>
         </div>
         <div>
+            @{
+                var rssUrl = Request.IsLocal ? 
+                    siteUrl + "/Torrents/MostRecentFeed" : 
+                    "http://feeds.feedburner.com/torrentnews-mostrecent";
+            }
             <a title="Subscribe to RSS feed"
-                href="@siteUrl/Torrents/MostRecentFeed" target="_blank">
+                href="@rssUrl" target="_blank">
                 <img src="/images/rss_32.png"/>
             </a>
         </div>
