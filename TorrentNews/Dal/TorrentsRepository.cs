@@ -78,5 +78,11 @@
         {
             return this.torrentsCollection.FindAll();
         }
+
+        public MongoCursor<Torrent> FindAll(string[] sortBy)
+        {
+            var sortOrder = GetSortOrder(sortBy);
+            return this.torrentsCollection.FindAll().SetSortOrder(sortOrder);
+        }
     }
 }
