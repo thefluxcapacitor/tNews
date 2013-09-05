@@ -92,7 +92,7 @@
             var feed = new SyndicationFeed(
                 "Torrent news",
                 "Latest torrents",
-                new Uri("http://torrentnews.apphb.com/"),
+                new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host),
                 "LatestTorrentsFeed",
                 DateTime.UtcNow);
 
