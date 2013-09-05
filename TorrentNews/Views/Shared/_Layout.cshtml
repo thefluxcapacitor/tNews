@@ -1,5 +1,10 @@
 ﻿<!DOCTYPE html>
 <html>
+    
+@{
+    var siteUrl = this.Request.Url.Scheme + "://" + this.Request.Url.Host;
+}
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
@@ -8,7 +13,9 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <header>
+    <div id="body">
+        <img id="beta-ribbon" src="/Images/beta-ribbon.gif" alt="beta ribbon"/>
+        <header>
         <div class="content-wrapper">
             <div class="float-left">
                 <p class="site-title">
@@ -26,9 +33,42 @@
         
         <div style="clear: both;"></div>
 
-    </header>
-    @RenderBody()
+        </header>
+        @RenderBody()
+    
+    </div>
 
+    <div id="footer"><span>© JR / <img src="/Images/twitter.png" /> @@FLXCAP</span></div>
+    
+    <div class="sharing-bar">
+        <div>
+            <a title="Share on Facebook"
+                href="https://www.facebook.com/sharer/sharer.php?u=@siteUrl" target="_blank">
+                <img src="/images/facebook_32.png"/>
+            </a>
+        </div>
+        <div>
+            <a title="Share on Twitter"
+                href="https://twitter.com/share?url=@siteUrl" target="_blank">
+                <img src="/images/twitter_32.png"/>
+            </a>
+        </div>
+        <div>
+            <a title="Share on Google+"
+                href="https://plus.google.com/share?url=@siteUrl" 
+                onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;">
+                <img src="/images/googleplus_32.png"/>
+            </a>
+        </div>
+        <div>
+            <a title="Subscribe to RSS feed"
+                href="@siteUrl/Torrents/MostRecentFeed" target="_blank">
+                <img src="/images/rss_32.png"/>
+            </a>
+        </div>
+
+    </div>
+    
     @Scripts.Render("~/bundles/jquery")
     @RenderSection("scripts", required: false)
 </body>

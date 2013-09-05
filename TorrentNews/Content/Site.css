@@ -9,10 +9,13 @@ body {
     color: #333;
     font-size: .85em;
     font-family: Verdana, Helvetica, Sans-Serif;
+    padding: 0;
+}
+
+#body {
     margin: 0 auto;
     max-width: 1200px;
-    padding: 0;
-    padding-bottom: 100px;
+    padding-bottom: 50px;
 }
 
 a {
@@ -31,7 +34,7 @@ a {
     }
 
 header {
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 header, footer, hgroup,
@@ -236,4 +239,44 @@ td {
 
 #moviesTable p.plot {
     margin-bottom: 10px;
+}
+
+.sharing-bar {
+    position: fixed;
+    left: 5px;
+    top: 200px;
+}
+
+.sharing-bar img:hover {
+    opacity: .75;
+}
+
+.sharing-bar div {
+    margin-bottom: 5px;
+}
+
+#beta-ribbon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0.2;
+}
+
+#footer {
+    position: fixed;
+    height: 30px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-top: solid 1px #e5e5e5;
+    background-color: #fdfdfd;
+    text-align: right;
+}
+
+#footer span {
+    margin-right: 20px;
+}
+
+#footer img {
+    margin-top: 5px;
 }

@@ -249,7 +249,14 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Images\beta-ribbon.gif" />
+    <Content Include="Images\delicious_32.png" />
+    <Content Include="Images\facebook_32.png" />
+    <Content Include="Images\googleplus_32.png" />
     <Content Include="Images\noimage-poster.png" />
+    <Content Include="Images\rss_32.png" />
+    <Content Include="Images\twitter.png" />
+    <Content Include="Images\twitter_32.png" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
