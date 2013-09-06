@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.ServiceModel.Syndication;
     using System.Text;
     using System.Web;
@@ -11,6 +12,7 @@
     using TorrentNews.Dal;
     using TorrentNews.Domain;
     using TorrentNews.Models;
+    using TorrentNews.Scraping;
 
     public class TorrentsController : Controller
     {
@@ -53,6 +55,15 @@
             }
 
             return this.View(tm);
+        }
+
+        public ActionResult Trailer(string title, string year)
+        {
+            var searchString = Server.UrlEncode(title + " " + year + " trailer");
+            var scraper = new YoutubeScraper();
+            var trailersData = scraper.GetTrailersUrl(searchString);
+
+            return this.PartialView("_Trailer", trailersData.First());
         }
 
         public ActionResult MostRecentFeed()

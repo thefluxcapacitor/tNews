@@ -29,7 +29,12 @@
             @Html.Partial("_MovieInfo", t)
         </td>
         <td class="torrentInfoCell">
-            @Html.Partial("_TorrentInfo", t)
+            <div class="torrentInfoCellWrapper">
+                @Html.Partial("_TorrentInfo", t)
+            </div>
+            <div class="torrentInfoCellButtonsContainer">
+                <button class="trailerButton normal" data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)"></button>
+            </div>
         </td>
     </tr>
 }

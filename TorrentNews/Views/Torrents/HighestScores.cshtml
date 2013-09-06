@@ -9,3 +9,12 @@
 @Html.Partial("_TorrentsTable", Model.Torrents)
 
 @Html.Partial("_Pager", Model)
+
+@section scripts
+{
+    <script type="text/javascript" src="/Scripts/trailer.js"></script>
+    
+    <script type="text/javascript">
+        configureTrailerButton();
+    </script>
+}

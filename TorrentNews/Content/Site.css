@@ -309,3 +309,47 @@ td {
     width: 200px;
     height: 281px;
 }
+
+.hidden {
+    display: none;
+}
+
+.torrentInfoCellWrapper {
+    position: relative;
+    height: 260px;
+}
+
+.torrentInfoCellButtonsContainer {
+    float: right; 
+}
+
+.trailerContainer {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.trailerButton {
+    background-image: url('/Images/youtube.gif');
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+}
+
+.trailerButton.normal {
+    opacity: 0.5;
+}
+
+.trailerButton.normal:hover {
+    opacity: 1;
+}
+
+.trailerButton.pushed {
+    opacity: 1;
+}
+
+.trailerButton.pushed:hover {
+    opacity: 0.5;
+}
