@@ -60,6 +60,8 @@
 
         public int McCriticsCount { get; set; }
 
+        public string Age { get; set; }
+
         public bool HasImdbId()
         {
             return !string.IsNullOrEmpty(this.ImdbId) && this.ImdbId != "NA";

@@ -149,6 +149,7 @@
             }
 
             html.Append("<div><b>Torrent: </b>" + model.Title + "</div>");
+            html.Append("<div><b>Age: </b>" + model.Age + "</div>");
 
             return html.ToString();
         }

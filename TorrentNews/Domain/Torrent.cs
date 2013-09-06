@@ -1,6 +1,7 @@
 ﻿namespace TorrentNews.Domain
 {
     using System;
+    using System.Globalization;
 
     using MongoDB.Bson.Serialization.Attributes;
 
@@ -38,6 +39,43 @@
         public bool SuperPopularityAward { get; set; }
 
         public int Score { get; set; }
+
+        public string GetAge()
+        {
+            var ts = DateTime.UtcNow.Subtract(this.AddedOn);
+            string unit;
+            
+            var value = ts.TotalDays;
+            if (value >= 1)
+            {
+                if (value >= 7)
+                {
+                    unit = "weeks";
+                    value = Math.Round(value / 7);
+                }
+                else
+                {
+                    unit = "days";
+                }
+            }
+            else
+            {
+                value = ts.TotalHours;
+                if (value >= 1)
+                {
+                    unit = "hours";
+                }
+                else
+                {
+                    value = ts.TotalMinutes;
+                    unit = "minutes";
+                }
+            }
+
+            value = Math.Round(value, 0);
+            return value.ToString(CultureInfo.InvariantCulture) + " " + 
+                (value == 1 ? unit.Remove(unit.Length - 1) : unit);
+        }
 
         public bool HasImdbId()
         {
