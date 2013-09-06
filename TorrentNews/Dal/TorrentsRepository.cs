@@ -42,7 +42,7 @@
             var sortOrder = GetSortOrder(sortBy);
 
             return this.torrentsCollection
-                .FindAll()
+                .Find(Query.NE("ImdbId", "NA"))
                 .SetSortOrder(sortOrder)
                 .SetSkip(Constants.PageSize * (page - 1))
                 .SetLimit(Constants.PageSize);
@@ -74,15 +74,17 @@
             return result.DocumentsAffected;
         }
 
-        public MongoCursor<Torrent> FindAll()
+        public MongoCursor<Torrent> GetAll()
         {
             return this.torrentsCollection.FindAll();
         }
 
-        public MongoCursor<Torrent> FindAll(string[] sortBy)
+        public MongoCursor<Torrent> GetRssItems(string[] sortBy)
         {
             var sortOrder = GetSortOrder(sortBy);
-            return this.torrentsCollection.FindAll().SetSortOrder(sortOrder);
+            return this.torrentsCollection
+                .Find(Query.NE("ImdbId", "NA"))
+                .SetSortOrder(sortOrder);
         }
     }
 }

@@ -45,7 +45,7 @@
             op.StatusInfo = "Updating awards";
 
             var moviesCache = new Dictionary<string, Movie>();
-            var torrents = torrentsRepo.FindAll();
+            var torrents = torrentsRepo.GetAll();
             foreach (var t in torrents)
             {
                 var isDirty = false;

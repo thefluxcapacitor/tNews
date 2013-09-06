@@ -64,7 +64,7 @@
 
             var rssItems = new List<SyndicationItem>();
 
-            var torrents = torrentsRepo.FindAll(new string[] { "-AddedOn", "Score" }).SetLimit(500);
+            var torrents = torrentsRepo.GetRssItems(new string[] { "-AddedOn", "Score" }).SetLimit(500);
             foreach (var t in torrents)
             {
                 Movie m = null;
