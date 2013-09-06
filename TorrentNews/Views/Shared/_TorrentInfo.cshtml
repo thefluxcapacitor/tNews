@@ -1,0 +1,14 @@
+﻿@model TorrentNews.Models.TorrentModel
+
+@{
+    var t = Model;
+    var torrentDetailsUrl = "http://kickass.to" + t.DetailsUrl;
+}
+
+<div>
+    <div class="title"><a href="@torrentDetailsUrl" target="_blank">@t.Title</a></div>
+    <p><span class="label">Size: </span>@t.Size (@t.Files files)</p>
+    <p><span class="label">Seed/Leech: </span>@t.Seed / @t.Leech</p>
+    <p><span class="label">Comments: </span>@t.CommentsCount</p>
+    <p><span class="label">Added on: </span>@t.AddedOn</p>
+</div>

@@ -51,7 +51,7 @@
                 var isDirty = false;
 
                 Movie movie = null;
-                if (!string.IsNullOrEmpty(t.ImdbId) && t.ImdbId != "NA")
+                if (t.HasImdbId())
                 {
                     if (!moviesCache.TryGetValue(t.ImdbId, out movie))
                     {

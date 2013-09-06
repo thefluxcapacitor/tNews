@@ -11,8 +11,6 @@
 
 @foreach (var t in Model)
 {
-    var torrentDetailsUrl = "http://kickass.to" + t.DetailsUrl;
-    
     <tr>
         <td class="posterCell">
             @if (!string.IsNullOrEmpty(t.Poster))
@@ -26,50 +24,10 @@
         </td>
         <td class="scoreCell"><span class="score">@t.Score</span></td>
         <td class="movieInfoCell">
-            <div>
-                @if (!string.IsNullOrEmpty(t.ImdbId) && t.ImdbId != "NA")
-                {
-                    <div class="title"><a href="http://www.imdb.com/title/@t.ImdbId" target="_blank">@t.MovieTitle</a> (@t.Year)</div>
-                    <p class="plot">@t.Plot</p>
-                    <p><span class="label">Genres: </span>@t.Genres</p>
-                    
-                    <p><span class="label">Director: </span>@Html.ImdbNames(t.Directors)</p>
-                    <p><span class="label">Cast: </span>@Html.ImdbNames(t.Cast)</p>
-
-                    if (!string.IsNullOrEmpty(t.Duration))
-                    {
-                        <p><span class="label">Duration: </span>@t.Duration min.</p>
-                    }
-                    else
-                    {
-                        <p><span class="label">Duration: </span>N/A</p>
-                    }
-
-                    <p>
-                        <span class="label">Content rating: </span>
-                        <a target="_blank" href="http://www.imdb.com/title/@t.ImdbId/parentalguide">@(string.IsNullOrEmpty(t.ContentRating) ? "N/A" : t.ContentRating)</a>
-                    </p>
-                    
-                    <p>
-                        <span class="label">IMDB Rating: </span>
-                        <a target="_blank" href="http://www.imdb.com/title/@t.ImdbId/ratings">@(Math.Round((decimal)t.ImdbRating / 10, 1)) (@t.ImdbVotes votes)</a>
-                    </p>
-                    
-                    <p>
-                        <span class="label">Metacritic Rating: </span>
-                        <a target="_blank" href="http://www.imdb.com/title/@t.ImdbId/criticreviews">@t.McMetascore (@t.McCriticsCount critics)</a>
-                    </p>
-                }
-            </div>
+            @Html.Partial("_MovieInfo", t)
         </td>
         <td class="torrentInfoCell">
-            <div>
-                <div class="title"><a href="@torrentDetailsUrl" target="_blank">@t.Title</a></div>
-                <p><span class="label">Size: </span>@t.Size (@t.Files files)</p>
-                <p><span class="label">Seed/Leech: </span>@t.Seed / @t.Leech</p>
-                <p><span class="label">Comments: </span>@t.CommentsCount</p>
-                <p><span class="label">Added on: </span>@t.AddedOn</p>
-            </div>
+            @Html.Partial("_TorrentInfo", t)
         </td>
     </tr>
 }

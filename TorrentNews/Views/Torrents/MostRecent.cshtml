@@ -1,5 +1,9 @@
 ﻿@model TorrentNews.Models.TorrentsListModel
 
+@{
+    ViewBag.Title = "Most recent torrents - Torrent news";
+}
+
 @Html.Partial("_Pager", Model)
 
 @Html.Partial("_TorrentsTable", Model.Torrents)

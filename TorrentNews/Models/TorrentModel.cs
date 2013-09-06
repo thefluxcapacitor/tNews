@@ -59,5 +59,10 @@
         public int McMetascore { get; set; }
 
         public int McCriticsCount { get; set; }
+
+        public bool HasImdbId()
+        {
+            return !string.IsNullOrEmpty(this.ImdbId) && this.ImdbId != "NA";
+        }
     }
 }

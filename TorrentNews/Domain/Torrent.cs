@@ -39,6 +39,11 @@
 
         public int Score { get; set; }
 
+        public bool HasImdbId()
+        {
+            return !string.IsNullOrEmpty(this.ImdbId) && this.ImdbId != "NA";
+        }
+
         public void SetAddedOnFromAge(DateTime now, string age)
         {
             var span = this.GetAgeTimeSpan(age);

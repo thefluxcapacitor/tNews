@@ -289,6 +289,9 @@
     <Content Include="Views\Shared\_TorrentsTable.cshtml" />
     <Content Include="Views\Shared\_Pager.cshtml" />
     <Content Include="Views\Torrents\HighestScores.cshtml" />
+    <Content Include="Views\Torrents\Details.cshtml" />
+    <Content Include="Views\Shared\_MovieInfo.cshtml" />
+    <Content Include="Views\Shared\_TorrentInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

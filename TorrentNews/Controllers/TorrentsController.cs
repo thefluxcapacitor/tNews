@@ -5,6 +5,7 @@
     using System.Globalization;
     using System.ServiceModel.Syndication;
     using System.Text;
+    using System.Web;
     using System.Web.Mvc;
 
     using TorrentNews.Dal;
@@ -28,6 +29,32 @@
             return this.GetTorrentsActionResult(page, new string[] { "-AddedOn", "Score" }, "MostRecent");
         }
 
+        public ActionResult Details(int id)
+        {
+            var torrentsRepo = new TorrentsRepository();
+            var moviesRepo = new MoviesRepository();
+
+            var torrent = torrentsRepo.Find(id);
+            if (torrent == null)
+            {
+                throw new HttpException(404, "Torrent not found");
+            }
+
+            var tm = new TorrentModel();
+            AutoMapper.Mapper.Map(torrent, tm);
+
+            if (torrent.HasImdbId())
+            {
+                var movie = moviesRepo.Find(torrent.ImdbId);
+                if (movie != null)
+                {
+                    AutoMapper.Mapper.Map(movie, tm);
+                }
+            }
+
+            return this.View(tm);
+        }
+
         public ActionResult MostRecentFeed()
         {
             var torrentsRepo = new TorrentsRepository();
@@ -41,7 +68,7 @@
             foreach (var t in torrents)
             {
                 Movie m = null;
-                if (!string.IsNullOrEmpty(t.ImdbId) && t.ImdbId != "NA")
+                if (t.HasImdbId())
                 {
                     if (!moviesCache.TryGetValue(t.ImdbId, out m))
                     {
@@ -82,9 +109,9 @@
                 var rssItem = new SyndicationItem(
                     rssItemTitle, 
                     SyndicationContent.CreateHtmlContent(this.GetSyndicationItemHtml(model)),
-                    new Uri("http://kickass.to" + t.DetailsUrl),
+                    new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host + "/Torrents/Details/" + t.Id.ToString(CultureInfo.InvariantCulture)),
                     t.Id.ToString(CultureInfo.InvariantCulture),
-                    DateTime.UtcNow);
+                    t.AddedOn);
                 
                 rssItems.Add(rssItem);
             }
@@ -105,7 +132,7 @@
         {
             var html = new StringBuilder();
             
-            if (!string.IsNullOrEmpty(model.ImdbId) && model.ImdbId != "NA")
+            if (model.HasImdbId())
             {
                 html.Append("<div style=\"margin-bottom: 10px;\">" + model.Plot + "</div>");
                 
@@ -113,13 +140,15 @@
                 html.Append("<div><b>Director: </b>" + model.Directors + "</div>");
                 html.Append("<div><b>Cast: </b>" + model.Cast + "</div>");
                 html.Append("<div><b>Content rating: </b>" + (model.ContentRating ?? "N/A") + "</div>");
-                html.AppendFormat("<div><b>IMDB link: </b><a href=\"{0}\">{0}</a></div>", "http://www.imdb.com/title/" + model.ImdbId);
+                ////html.AppendFormat("<div><b>IMDB link: </b><a href=\"{0}\">{0}</a></div>", "http://www.imdb.com/title/" + model.ImdbId);
             }
 
             if (model.Score > 0)
             {
                 html.Append("<div><b>Score: </b>" + model.Score.ToString(CultureInfo.InvariantCulture) + "</div>");
             }
+
+            html.Append("<div><b>Torrent: </b>" + model.Title + "</div>");
 
             return html.ToString();
         }
@@ -137,7 +166,7 @@
             foreach (var t in torrents)
             {
                 Movie m = null;
-                if (!string.IsNullOrEmpty(t.ImdbId) && t.ImdbId != "NA")
+                if (t.HasImdbId())
                 {
                     if (!moviesCache.TryGetValue(t.ImdbId, out m))
                     {

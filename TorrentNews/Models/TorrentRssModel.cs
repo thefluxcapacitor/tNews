@@ -25,5 +25,10 @@
         public string ContentRating { get; set; }
 
         public string ImdbId { get; set; }
+
+        public bool HasImdbId()
+        {
+            return !string.IsNullOrEmpty(this.ImdbId) && this.ImdbId != "NA";
+        }
     }
 }
