@@ -4,5 +4,14 @@
     ViewBag.Title = "Torrent details - Torrent news";
 }
 
-@Html.Partial("_MovieInfo", Model)
-@Html.Partial("_TorrentInfo", Model)
+<div class="detailsWrapper">
+    @if (!string.IsNullOrEmpty(Model.Poster))
+    {
+        <div class="detailsPoster"><img src="@Model.Poster"/></div>
+    }
+
+    <div class="detailsContainer">
+        @Html.Partial("_MovieInfo", Model)
+        @Html.Partial("_TorrentInfo", Model)
+    </div>
+</div>

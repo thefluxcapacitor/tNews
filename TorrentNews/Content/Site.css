@@ -280,3 +280,32 @@ td {
 #footer img {
     margin-top: 5px;
 }
+
+.detailsWrapper {
+    min-width: 800px;
+}
+
+.detailsContainer p {
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+
+.detailsContainer p.plot {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.detailsContainer .title {
+    margin-top: 20px;
+}
+
+.detailsPoster {
+    margin-left: 20px;
+    margin-top: 20px;
+    float: right;
+}
+
+.detailsPoster img {
+    width: 200px;
+    height: 281px;
+}

@@ -13,14 +13,16 @@
 {
     <tr>
         <td class="posterCell">
-            @if (!string.IsNullOrEmpty(t.Poster))
-            {
-                <a href="http://www.imdb.com/title/@t.ImdbId" target="_blank"><img src="@t.Poster"/></a>
-            }
-            else
-            {
-                <img src="/Images/noimage-poster.png"/>
-            }
+            <a href="@Url.Action("Details", new { id = t.Id })" target="_blank">
+                @if (!string.IsNullOrEmpty(t.Poster))
+                {
+                    <img src="@t.Poster"/>
+                }
+                else
+                {
+                    <img src="/Images/noimage-poster.png"/>
+                }
+            </a>
         </td>
         <td class="scoreCell"><span class="score">@t.Score</span></td>
         <td class="movieInfoCell">
