@@ -203,11 +203,8 @@ td {
     padding: 10px;
     width: 200px;
     height: 281px;
+    border: none;
 }
-
-/*#moviesTable tr {
-    height: 325px;
-}*/
 
 .score {
     font-size: 30px;
@@ -251,8 +248,13 @@ td {
     top: 200px;
 }
 
+.sharing-bar img {
+    border: none;
+}
+
 .sharing-bar img:hover {
     opacity: .75;
+    border: none;
 }
 
 .sharing-bar div {
@@ -381,23 +383,19 @@ td {
 .relatedTorrentsContainer {
     width: 400px;
     margin-top: 20px;
+    font-style: italic;
 }
 
-/*.tooltip{
-    display: inline;
-    position: relative;
-}*/
-
-/*.tooltip:hover:after{
+.tooltip {
     background: #333;
     background: rgba(0,0,0,.8);
     border-radius: 5px;
-    bottom: 26px;
+    bottom: -10px;
     color: #fff;
-    content: attr(data-title);
-    left: 20%;
+    left: -350px;
     padding: 5px 15px;
     position: absolute;
     z-index: 98;
-    width: auto;
-}*/
+    width: 300px;
+    font-style: normal;
+}
