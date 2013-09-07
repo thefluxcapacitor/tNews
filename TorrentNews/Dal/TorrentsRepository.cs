@@ -86,5 +86,16 @@
                 .Find(Query.NE("ImdbId", "NA"))
                 .SetSortOrder(sortOrder);
         }
+
+        public MongoCursor<Torrent> FindByImdbId(string imdbId, int maxTorrents)
+        {
+            var result = this.torrentsCollection.Find(Query.EQ("ImdbId", imdbId));
+            if (maxTorrents > 0)
+            {
+                result = result.SetLimit(maxTorrents);
+            }
+
+            return result;
+        }
     }
 }

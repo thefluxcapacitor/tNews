@@ -1,9 +1,15 @@
 ﻿namespace TorrentNews.Models
 {
     using System;
+    using System.Collections.Generic;
 
     public class TorrentModel
     {
+        public TorrentModel()
+        {
+            this.RelatedTorrents = new List<RelatedTorrentModel>();
+        }
+
         public int Id { get; set; }
 
         public string Title { get; set; }
@@ -61,6 +67,8 @@
         public int McCriticsCount { get; set; }
 
         public string Age { get; set; }
+
+        public IList<RelatedTorrentModel> RelatedTorrents { get; private set; }
 
         public bool HasImdbId()
         {

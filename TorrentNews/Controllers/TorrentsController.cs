@@ -45,6 +45,8 @@
             var tm = new TorrentModel();
             AutoMapper.Mapper.Map(torrent, tm);
 
+            this.AddRelatedTorrents(tm, torrentsRepo, -1);
+
             if (torrent.HasImdbId())
             {
                 var movie = moviesRepo.Find(torrent.ImdbId);
@@ -55,6 +57,22 @@
             }
 
             return this.View(tm);
+        }
+
+        private void AddRelatedTorrents(TorrentModel tm, TorrentsRepository torrentsRepo, int maxTorrents)
+        {
+            if (!tm.HasImdbId())
+            {
+                return;
+            }
+
+            var torrents = torrentsRepo.FindByImdbId(tm.ImdbId, maxTorrents);
+            foreach (var t in torrents)
+            {
+                var relatedTorrent = new RelatedTorrentModel();
+                AutoMapper.Mapper.Map(t, relatedTorrent);
+                tm.RelatedTorrents.Add(relatedTorrent);
+            }
         }
 
         public ActionResult Trailer(string title, string year)
@@ -193,6 +211,8 @@
                 {
                     AutoMapper.Mapper.Map(m, tm);
                 }
+
+                this.AddRelatedTorrents(tm, torrentsRepo, Constants.RelatedTorrentsCount);
 
                 model.Torrents.Add(tm);
             }

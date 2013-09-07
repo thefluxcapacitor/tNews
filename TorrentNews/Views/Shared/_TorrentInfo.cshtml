@@ -12,4 +12,11 @@
     <p><span class="label">Comments: </span>@t.CommentsCount</p>
     <p><span class="label">Age: </span>@t.Age</p>
     <p class="hidden"><span class="label">Added on: </span>@t.AddedOn</p>
+    
+    @foreach (var rt in t.RelatedTorrents)
+    {
+        var url = "http://kickass.to" + rt.DetailsUrl;
+        
+        <p><a href="@url">@rt.Title</a></p>
+    }
 </div>

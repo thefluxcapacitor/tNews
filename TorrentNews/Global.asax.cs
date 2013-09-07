@@ -64,6 +64,8 @@ namespace TorrentNews
                 .ForMember(
                     dest => dest.Genres,
                     opt => opt.MapFrom(src => src.Genres.Any() ? src.Genres.Aggregate((c, n) => c + ", " + n) : string.Empty));
+
+            AutoMapper.Mapper.CreateMap<Torrent, RelatedTorrentModel>();
         }
 
         private static void ConfigureWebApiFormatters()

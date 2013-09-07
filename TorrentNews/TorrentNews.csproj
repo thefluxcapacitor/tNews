@@ -185,6 +185,7 @@
     </Compile>
     <Compile Include="Models\MostRecentModel.cs" />
     <Compile Include="Models\PagedResultsModel.cs" />
+    <Compile Include="Models\RelatedTorrentModel.cs" />
     <Compile Include="Models\TorrentModel.cs" />
     <Compile Include="Models\TorrentRssModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
