@@ -28,6 +28,7 @@
     <meta name="twitter:image" content="@(siteUrl + "/images/share-logo.png")">
 
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/themes/base/css")
     @Scripts.Render("~/bundles/modernizr")
     
     @{
@@ -110,6 +111,7 @@
     </div>
     
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -205,6 +205,10 @@ td {
     height: 281px;
 }
 
+/*#moviesTable tr {
+    height: 325px;
+}*/
+
 .score {
     font-size: 30px;
     font-weight: bold;
@@ -317,6 +321,7 @@ td {
 .torrentInfoCellWrapper {
     position: relative;
     height: 260px;
+    margin-bottom: 22px;
 }
 
 .torrentInfoCellButtonsContainer {
@@ -353,3 +358,46 @@ td {
 .trailerButton.pushed:hover {
     opacity: 0.5;
 }
+
+.relatedTorrentsContainer p.relatedTorrent {
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.relatedTorrentsContainer p.relatedTorrentTitle {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.relatedTorrentsContainer p.relatedTorrentTitle span {
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.relatedTorrentsContainer {
+    width: 400px;
+    margin-top: 20px;
+}
+
+/*.tooltip{
+    display: inline;
+    position: relative;
+}*/
+
+/*.tooltip:hover:after{
+    background: #333;
+    background: rgba(0,0,0,.8);
+    border-radius: 5px;
+    bottom: 26px;
+    color: #fff;
+    content: attr(data-title);
+    left: 20%;
+    padding: 5px 15px;
+    position: absolute;
+    z-index: 98;
+    width: auto;
+}*/

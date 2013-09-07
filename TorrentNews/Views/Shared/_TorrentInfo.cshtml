@@ -13,10 +13,20 @@
     <p><span class="label">Age: </span>@t.Age</p>
     <p class="hidden"><span class="label">Added on: </span>@t.AddedOn</p>
     
-    @foreach (var rt in t.RelatedTorrents)
-    {
-        var url = "http://kickass.to" + rt.DetailsUrl;
+    <div class="relatedTorrentsContainer">
+        <p class="relatedTorrentTitle">Other versions 
+            @if (t.RelatedTorrents.Count == 5)
+            {
+                <span>(latest 5)</span>
+            }
+        </p>
+        @foreach (var rt in t.RelatedTorrents)
+        {
+            //var url = "http://kickass.to" + rt.DetailsUrl;
         
-        <p><a href="@url">@rt.Title</a></p>
-    }
+            <p class="relatedTorrent">
+            <a href="@Url.Action("Details", "Torrents", new { id = rt.Id })" data-title="@rt.Title" class="tooltip">@rt.Title</a>
+            </p>
+        }
+    </div>
 </div>

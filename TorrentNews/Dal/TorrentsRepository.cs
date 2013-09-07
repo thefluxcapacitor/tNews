@@ -89,7 +89,9 @@
 
         public MongoCursor<Torrent> FindByImdbId(string imdbId, int maxTorrents)
         {
-            var result = this.torrentsCollection.Find(Query.EQ("ImdbId", imdbId));
+            var result = this.torrentsCollection
+                .Find(Query.EQ("ImdbId", imdbId))
+                .SetSortOrder(SortBy.Descending("AddedOn"));
             if (maxTorrents > 0)
             {
                 result = result.SetLimit(maxTorrents);
