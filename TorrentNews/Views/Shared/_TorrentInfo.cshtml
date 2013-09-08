@@ -15,7 +15,8 @@
     
     <div class="relatedTorrentsContainer">
         <p class="relatedTorrentTitle">Other torrents
-            @if (t.RelatedTorrents.Count == 5)
+            @if (t.RelatedTorrents.Count == 5 && 
+                !ViewContext.RouteData.Values["action"].ToString().Equals("Details", StringComparison.OrdinalIgnoreCase))
             {
                 <span>(latest 5)</span>
             }
