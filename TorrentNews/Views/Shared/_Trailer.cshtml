@@ -1,12 +1,13 @@
-﻿@model Tuple<string, string>
+﻿@model TorrentNews.Models.TrailersModel
 
 <div class="trailerContainer">
-    <p class="title">@Model.Item1</p>
+    <p class="title">@Model.TrailerTitle</p>
     <iframe
         width="853" 
         height="480" 
-        src="//www.youtube.com/embed/@Model.Item2" 
+        src="@Model.TrailerUrl" 
         frameborder="0" 
         allowfullscreen>
     </iframe>
+    <p class="moreTrailers"><a href="@Model.MoreTrailersUrl" target="_blank">Click here for more trailers</a></p>
 </div>

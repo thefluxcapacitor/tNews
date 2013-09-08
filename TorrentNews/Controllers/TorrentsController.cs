@@ -79,9 +79,17 @@
         {
             var searchString = Server.UrlEncode(title + " " + year + " trailer");
             var scraper = new YoutubeScraper();
-            var trailersData = scraper.GetTrailersUrl(searchString);
+            var trailerData = scraper.GetTrailersUrl(searchString).First();
+            var searchUrl = scraper.GetTrailersSearchUrl(searchString);
 
-            return this.PartialView("_Trailer", trailersData.First());
+            return this.PartialView(
+                "_Trailer",
+                new TrailersModel
+                {
+                    TrailerTitle = trailerData.Item1,
+                    TrailerUrl = "//www.youtube.com/embed/" + trailerData.Item2,
+                    MoreTrailersUrl = searchUrl
+                });
         }
 
         public ActionResult MostRecentFeed()

@@ -188,6 +188,7 @@
     <Compile Include="Models\RelatedTorrentModel.cs" />
     <Compile Include="Models\TorrentModel.cs" />
     <Compile Include="Models\TorrentRssModel.cs" />
+    <Compile Include="Models\TrailersModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scraping\ImdbScraper.cs" />
     <Compile Include="Scraping\KassScraper.cs" />

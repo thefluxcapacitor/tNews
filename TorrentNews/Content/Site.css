@@ -336,6 +336,11 @@ td {
     margin-bottom: 20px;
 }
 
+.trailerContainer .moreTrailers a {
+    color: tomato;
+    font-weight: bold;
+}
+
 .trailerButton {
     background-image: url('/Images/youtube.gif');
     width: 32px;

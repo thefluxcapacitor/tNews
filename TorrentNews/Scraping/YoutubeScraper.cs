@@ -8,15 +8,18 @@
 
     public class YoutubeScraper
     {
+        public string GetTrailersSearchUrl(string searchString)
+        {
+            return string.Format("http://www.youtube.com/results?search_query={0}", searchString);
+        }
+
         public IEnumerable<Tuple<string, string>> GetTrailersUrl(string searchString)
         {
             var client = new HttpClient();
-            var response = client.GetAsync(string.Format(
-                "http://www.youtube.com/results?search_query={0}",
-                searchString)).Result;
+            var response = client.GetAsync(this.GetTrailersSearchUrl(searchString)).Result;
             
             CQ d = response.Content.ReadAsStringAsync().Result;
-            var result = d[".context-data-item"].Map(
+            var result = d[".context-data-item"].First().Map( // remove .First if more than one trailer is needed
                 item =>
                     {
                         var itemCq = item.Cq();
