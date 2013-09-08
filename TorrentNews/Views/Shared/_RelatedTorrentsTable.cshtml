@@ -1,0 +1,27 @@
+﻿@model TorrentNews.Models.TorrentModel
+
+@{
+    var t = Model;
+}
+
+<div class="relatedTorrentsContainer">
+    @*<p class="relatedTorrentTitle">Other torrents</p>*@
+    
+    <table>
+        <tr>
+            <th>Other torrents</th>
+            <th>Age</th>
+            <th>Size</th>
+            <th>Seeds</th>
+        </tr>
+        @foreach (var rt in t.RelatedTorrents)
+        {
+            <tr>
+                <td><a href="@Url.Action("Details", "Torrents", new { id = rt.Id })">@rt.Title</a></td>
+                <td>@rt.Age</td>
+                <td>@rt.Size</td>
+                <td>@rt.Seed</td>
+            </tr>
+        }
+    </table>
+</div>

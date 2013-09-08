@@ -83,8 +83,8 @@
                 throw new HttpException(404, "Torrent not found");
             }
 
-            var tm = new TorrentModel();
-            AutoMapper.Mapper.Map(torrent, tm);
+            var tm = new TorrentDetailsModel();
+            AutoMapper.Mapper.Map<Torrent, TorrentModel>(torrent, tm);
 
             this.AddRelatedTorrents(tm, torrentsRepo, -1);
 
@@ -93,9 +93,11 @@
                 var movie = moviesRepo.Find(torrent.ImdbId);
                 if (movie != null)
                 {
-                    AutoMapper.Mapper.Map(movie, tm);
+                    AutoMapper.Mapper.Map<Movie, TorrentModel>(movie, tm);
                 }
             }
+
+            tm.TrailersInfo = this.GetTrailersModel(tm.MovieTitle, tm.Year);
 
             return this.View(tm);
         }
@@ -123,19 +125,19 @@
 
         public ActionResult Trailer(string title, string year)
         {
-            var searchString = Server.UrlEncode(title + " " + year + " trailer");
+            var model = this.GetTrailersModel(title, year);
+
+            return this.PartialView("_Trailer", model);
+        }
+
+        private TrailersModel GetTrailersModel(string title, string year)
+        {
+            var searchString = this.Server.UrlEncode(title + " " + year + " trailer");
             var scraper = new YoutubeScraper();
             var trailerData = scraper.GetTrailersUrl(searchString).First();
             var searchUrl = scraper.GetTrailersSearchUrl(searchString);
-
-            return this.PartialView(
-                "_Trailer",
-                new TrailersModel
-                {
-                    TrailerTitle = trailerData.Item1,
-                    TrailerUrl = "//www.youtube.com/embed/" + trailerData.Item2,
-                    MoreTrailersUrl = searchUrl
-                });
+            var model = new TrailersModel { TrailerTitle = trailerData.Item1, TrailerUrl = "//www.youtube.com/embed/" + trailerData.Item2, MoreTrailersUrl = searchUrl };
+            return model;
         }
 
         public ActionResult MostRecentFeed()

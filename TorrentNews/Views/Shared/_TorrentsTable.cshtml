@@ -16,11 +16,11 @@
             <a href="@Url.Action("Details", new { id = t.Id })" target="_blank">
                 @if (!string.IsNullOrEmpty(t.Poster))
                 {
-                    <img src="@t.Poster"/>
+                    <img class="poster" src="@t.Poster"/>
                 }
                 else
                 {
-                    <img src="/Images/noimage-poster.png"/>
+                    <img class="poster" src="/Images/noimage-poster.png"/>
                 }
             </a>
         </td>
@@ -31,9 +31,22 @@
         <td class="torrentInfoCell">
             <div class="torrentInfoCellWrapper">
                 @Html.Partial("_TorrentInfo", t)
+
+                @if (t.RelatedTorrents.Any())
+                {
+                    @Html.Partial("_RelatedTorrentsList", t)
+                }
             </div>
+
             <div class="torrentInfoCellButtonsContainer">
-                <button class="trailerButton normal" data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)"></button>
+                
+                <a href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank">
+                    <img class="detailsButton" src="/Images/tnews_32.png"/>
+                </a>
+                
+                <button class="trailerButton normal" 
+                    data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)">
+                </button>
             </div>
         </td>
     </tr>

@@ -1,0 +1,27 @@
+﻿@model TorrentNews.Models.TorrentModel
+
+@{
+    var t = Model;
+}
+
+<div class="relatedTorrentsContainer">
+    <p class="relatedTorrentTitle">Other torrents
+        @if (t.RelatedTorrents.Count == 5)
+        {
+            <span>(latest 5)</span>
+        }
+    </p>
+
+    @foreach (var rt in t.RelatedTorrents)
+    {
+        <p class="relatedTorrent hasTooltip">
+            <a href="@Url.Action("Details", "Torrents", new { id = rt.Id })">@rt.Title</a>
+        </p>
+        <div class="hidden tooltip">
+            <p><span class="label">@rt.Title</span></p>
+            <p><span class="label">Size: </span>@rt.Size</p>
+            <p><span class="label">Seeds: </span>@rt.Seed</p>
+            <p><span class="label">Age: </span>@rt.Age</p>
+        </div>
+    }
+</div>

@@ -186,6 +186,7 @@
     <Compile Include="Models\MostRecentModel.cs" />
     <Compile Include="Models\PagedResultsModel.cs" />
     <Compile Include="Models\RelatedTorrentModel.cs" />
+    <Compile Include="Models\TorrentDetailsModel.cs" />
     <Compile Include="Models\TorrentModel.cs" />
     <Compile Include="Models\TorrentRssModel.cs" />
     <Compile Include="Models\TrailersModel.cs" />
@@ -266,6 +267,7 @@
     <Content Include="Images\noimage-poster.png" />
     <Content Include="Images\rss_32.png" />
     <Content Include="Images\share-logo.png" />
+    <Content Include="Images\tnews_32.png" />
     <Content Include="Images\twitter.png" />
     <Content Include="Images\twitter_32.png" />
     <Content Include="Images\youtube.gif" />
@@ -309,6 +311,8 @@
     <Content Include="Views\Shared\_MovieInfo.cshtml" />
     <Content Include="Views\Shared\_TorrentInfo.cshtml" />
     <Content Include="Views\Shared\_Trailer.cshtml" />
+    <Content Include="Views\Shared\_RelatedTorrentsList.cshtml" />
+    <Content Include="Views\Shared\_RelatedTorrentsTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -200,7 +200,7 @@ td {
     min-width: 220px;
 }
 
-#moviesTable img {
+#moviesTable img.poster {
     padding: 10px;
     width: 200px;
     height: 281px;
@@ -292,6 +292,11 @@ td {
     min-width: 800px;
 }
 
+.detailsWrapper .rightColumn {
+    float: right;
+    text-align: center;
+}
+
 .detailsContainer p {
     margin-top: 0;
     margin-bottom: 4px;
@@ -307,14 +312,14 @@ td {
 }
 
 .detailsPoster {
-    margin-left: 20px;
-    margin-top: 20px;
     float: right;
+    margin-top: 0px;
+    margin-bottom: 20px;
 }
 
 .detailsPoster img {
-    width: 200px;
-    height: 281px;
+    width: 150px;
+    height: 210px;
 }
 
 .hidden {
@@ -337,9 +342,13 @@ td {
     margin-bottom: 20px;
 }
 
-.trailerContainer .moreTrailers a {
+#moviesTable p.moreTrailers a {
     color: tomato;
     font-weight: bold;
+}
+
+.detailsWrapper p.moreTrailers {
+    margin: 0;
 }
 
 .trailerButton {
@@ -367,15 +376,25 @@ td {
     opacity: 0.5;
 }
 
+.detailsButton {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.detailsButton:hover {
+    opacity: 1;
+}
+
 #moviesTable .relatedTorrentsContainer p.relatedTorrent {
     overflow: hidden;
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.relatedTorrentsContainer p.relatedTorrent {
     font-size: 13px;
 }
 
@@ -387,6 +406,30 @@ td {
 .relatedTorrentsContainer p.relatedTorrentTitle span {
     font-weight: normal;
     font-size: 10px;
+}
+
+.relatedTorrentsContainer table {
+    width: 800px;
+}
+
+.relatedTorrentsContainer table th, .relatedTorrentsContainer table td {
+    font-size: 13px;
+}
+
+.relatedTorrentsContainer table td:nth-child(1) {
+    width: 55%;
+}
+
+.relatedTorrentsContainer table td:nth-child(2) {
+    width: 15%;
+}
+
+.relatedTorrentsContainer table td:nth-child(3) {
+    width: 15%;
+}
+
+.relatedTorrentsContainer table td:nth-child(4) {
+    width: 15%;
 }
 
 .relatedTorrentsContainer {
