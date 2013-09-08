@@ -367,12 +367,15 @@ td {
     opacity: 0.5;
 }
 
-.relatedTorrentsContainer p.relatedTorrent {
+#moviesTable .relatedTorrentsContainer p.relatedTorrent {
     overflow: hidden;
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.relatedTorrentsContainer p.relatedTorrent {
     font-size: 13px;
 }
 
@@ -392,13 +395,13 @@ td {
     font-style: italic;
 }
 
-.tooltip {
+#moviesTable .tooltip {
+    bottom: -10px;
+    left: -350px;
     background: #333;
     background: rgba(0,0,0,.8);
     border-radius: 5px;
-    bottom: -10px;
     color: #fff;
-    left: -350px;
     padding: 5px 15px;
     position: absolute;
     z-index: 98;

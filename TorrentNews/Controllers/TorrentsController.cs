@@ -110,6 +110,11 @@
             var torrents = torrentsRepo.FindByImdbId(tm.ImdbId, maxTorrents);
             foreach (var t in torrents)
             {
+                if (t.Id == tm.Id)
+                {
+                    continue;
+                }
+
                 var relatedTorrent = new RelatedTorrentModel();
                 AutoMapper.Mapper.Map(t, relatedTorrent);
                 tm.RelatedTorrents.Add(relatedTorrent);

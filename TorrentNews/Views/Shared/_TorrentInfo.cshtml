@@ -13,28 +13,31 @@
     <p><span class="label">Age: </span>@t.Age</p>
     <p class="hidden"><span class="label">Added on: </span>@t.AddedOn</p>
     
-    <div class="relatedTorrentsContainer">
-        <p class="relatedTorrentTitle">Other torrents
-            @if (t.RelatedTorrents.Count == 5 && 
-                !ViewContext.RouteData.Values["action"].ToString().Equals("Details", StringComparison.OrdinalIgnoreCase))
-            {
-                <span>(latest 5)</span>
-            }
-        </p>
-
-        @foreach (var rt in t.RelatedTorrents)
-        {
-            <p class="relatedTorrent hasTooltip">
-                <a href="@Url.Action("Details", "Torrents", new { id = rt.Id })">
-                    @rt.Title
-                </a>
+    @if (t.RelatedTorrents.Any())
+    {
+        <div class="relatedTorrentsContainer">
+            <p class="relatedTorrentTitle">Other torrents
+                @if (t.RelatedTorrents.Count == 5 && 
+                    !ViewContext.RouteData.Values["action"].ToString().Equals("Details", StringComparison.OrdinalIgnoreCase))
+                {
+                    <span>(latest 5)</span>
+                }
             </p>
-            <div class="hidden tooltip">
-                <p><span class="label">@rt.Title</span></p>
-                <p><span class="label">Size: </span>@rt.Size</p>
-                <p><span class="label">Seeds: </span>@rt.Seed</p>
-                <p><span class="label">Age: </span>@rt.Age</p>
-            </div>
-        }
-    </div>
+
+            @foreach (var rt in t.RelatedTorrents)
+            {
+                <p class="relatedTorrent hasTooltip">
+                    <a href="@Url.Action("Details", "Torrents", new { id = rt.Id })">
+                        @rt.Title
+                    </a>
+                </p>
+                <div class="hidden tooltip">
+                    <p><span class="label">@rt.Title</span></p>
+                    <p><span class="label">Size: </span>@rt.Size</p>
+                    <p><span class="label">Seeds: </span>@rt.Seed</p>
+                    <p><span class="label">Age: </span>@rt.Age</p>
+                </div>
+            }
+        </div>
+    }
 </div>
