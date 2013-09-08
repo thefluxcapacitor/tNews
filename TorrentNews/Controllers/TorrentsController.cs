@@ -21,14 +21,55 @@
             return this.RedirectToAction("MostRecent");
         }
 
-        public ActionResult HighestScores(int page = 1)
+        public ActionResult MostRecent(int page = 1, int minScore = 0)
         {
-            return this.GetTorrentsActionResult(page, new string[] { "-Score", "ImdbId", "-AddedOn" }, "HighestScores");
-        }
+            var model = new TorrentsListModel();
 
-        public ActionResult MostRecent(int page = 1)
-        {
-            return this.GetTorrentsActionResult(page, new string[] { "-AddedOn", "Score" }, "MostRecent");
+            var torrentsRepo = new TorrentsRepository();
+            var moviesRepo = new MoviesRepository();
+
+            var moviesCache = new Dictionary<string, Movie>();
+
+            var sortBy = new string[] { "-AddedOn", "Score" };
+            var torrents = torrentsRepo.GetPage(page, sortBy, minScore);
+            foreach (var t in torrents)
+            {
+                Movie m = null;
+                if (t.HasImdbId())
+                {
+                    if (!moviesCache.TryGetValue(t.ImdbId, out m))
+                    {
+                        m = moviesRepo.Find(t.ImdbId);
+                        moviesCache.Add(t.ImdbId, m);
+                    }
+                }
+
+                var tm = new TorrentModel();
+                AutoMapper.Mapper.Map(t, tm);
+                if (m != null)
+                {
+                    AutoMapper.Mapper.Map(m, tm);
+                }
+
+                this.AddRelatedTorrents(tm, torrentsRepo, Constants.RelatedTorrentsCount);
+
+                model.Torrents.Add(tm);
+            }
+
+            var helper = new UrlHelper(this.ControllerContext.RequestContext);
+            if (model.Torrents.Count >= Constants.PageSize)
+            {
+                var url = helper.Action("MostRecent", "Torrents", new { page = page + 1, minScore });
+                model.NextPageUrl = url;
+            }
+
+            if (page > 1)
+            {
+                var url = helper.Action("MostRecent", "Torrents", new { page = page - 1, minScore });
+                model.PreviousPageUrl = url;
+            }
+
+            return this.View(model);
         }
 
         public ActionResult Details(int id)
@@ -189,56 +230,6 @@
             html.Append("<div><b>Age: </b>" + model.Age + "</div>");
 
             return html.ToString();
-        }
-
-        private ActionResult GetTorrentsActionResult(int page, string[] sortBy, string action)
-        {
-            var model = new TorrentsListModel();
-
-            var torrentsRepo = new TorrentsRepository();
-            var moviesRepo = new MoviesRepository();
-
-            var moviesCache = new Dictionary<string, Movie>();
-
-            var torrents = torrentsRepo.GetPage(page, sortBy);
-            foreach (var t in torrents)
-            {
-                Movie m = null;
-                if (t.HasImdbId())
-                {
-                    if (!moviesCache.TryGetValue(t.ImdbId, out m))
-                    {
-                        m = moviesRepo.Find(t.ImdbId);
-                        moviesCache.Add(t.ImdbId, m);
-                    }
-                }
-
-                var tm = new TorrentModel();
-                AutoMapper.Mapper.Map(t, tm);
-                if (m != null)
-                {
-                    AutoMapper.Mapper.Map(m, tm);
-                }
-
-                this.AddRelatedTorrents(tm, torrentsRepo, Constants.RelatedTorrentsCount);
-
-                model.Torrents.Add(tm);
-            }
-
-            var helper = new UrlHelper(this.ControllerContext.RequestContext);
-            if (model.Torrents.Count >= Constants.PageSize)
-            {
-                var url = helper.Action(action, "Torrents", new { page = page + 1 });
-                model.NextPageUrl = url;
-            }
-
-            if (page > 1)
-            {
-                var url = helper.Action(action, "Torrents", new { page = page - 1 });
-                model.PreviousPageUrl = url;
-            }
-
-            return this.View(model);
         }
     }
 }

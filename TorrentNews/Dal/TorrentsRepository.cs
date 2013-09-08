@@ -37,12 +37,18 @@
             return this.torrentsCollection.FindOneById(id);
         }
 
-        public MongoCursor<Torrent> GetPage(int page, string[] sortBy)
+        public MongoCursor<Torrent> GetPage(int page, string[] sortBy, int minScore)
         {
             var sortOrder = GetSortOrder(sortBy);
 
+            var filter = Query.NE("ImdbId", "NA");
+            if (minScore > 0)
+            {
+                filter = Query.And(filter, Query.GTE("Score", minScore));
+            }
+
             return this.torrentsCollection
-                .Find(Query.NE("ImdbId", "NA"))
+                .Find(filter)
                 .SetSortOrder(sortOrder)
                 .SetSkip(Constants.PageSize * (page - 1))
                 .SetLimit(Constants.PageSize);
