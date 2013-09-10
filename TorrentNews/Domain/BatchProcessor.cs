@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using TorrentNews.Dal;
@@ -45,42 +46,101 @@
             op.StatusInfo = "Updating awards";
 
             var moviesCache = new Dictionary<string, Movie>();
-            var torrents = torrentsRepo.GetAll();
-            foreach (var t in torrents)
+            var torrents = torrentsRepo.GetAllSortedByImdbIdAndAddedOn();
+
+            var cnt = torrents.Count();
+            var i = 0;
+
+            while (i < cnt)
             {
                 var isDirty = false;
 
-                Movie movie = null;
-                if (t.HasImdbId())
+                var current = torrents.ElementAt(i);
+                Torrent next = null;
+
+                if (i + 1 < cnt)
                 {
-                    if (!moviesCache.TryGetValue(t.ImdbId, out movie))
+                    next = torrents.ElementAt(i + 1);
+                }
+
+                if (next == null || !current.HasImdbId() || next.ImdbId != current.ImdbId)
+                {
+                    current.Latest = GetValue(current.Latest, true, ref isDirty);
+                }
+                else
+                {
+                    current.Latest = GetValue(current.Latest, false, ref isDirty);
+                }
+
+                Movie movie = null;
+                if (current.HasImdbId())
+                {
+                    if (!moviesCache.TryGetValue(current.ImdbId, out movie))
                     {
-                        movie = moviesRepo.Find(t.ImdbId);
-                        moviesCache.Add(t.ImdbId, movie);
+                        movie = moviesRepo.Find(current.ImdbId);
+                        moviesCache.Add(current.ImdbId, movie);
                     }
                 }
 
                 if (movie != null)
                 {
-                    t.ImdbAward = GetValue(t.ImdbAward, movie.ImdbVotes >= 1000 && movie.ImdbRating >= 70, ref isDirty);
-                    t.MetacriticAward = GetValue(t.MetacriticAward, movie.McMetascore >= 70, ref isDirty);
+                    current.ImdbAward = GetValue(current.ImdbAward, movie.ImdbVotes >= 1000 && movie.ImdbRating >= 70, ref isDirty);
+                    current.MetacriticAward = GetValue(current.MetacriticAward, movie.McMetascore >= 70, ref isDirty);
                 }
                 else
                 {
-                    t.ImdbAward = GetValue(t.ImdbAward, false, ref isDirty);
-                    t.MetacriticAward = GetValue(t.MetacriticAward, false, ref isDirty);
+                    current.ImdbAward = GetValue(current.ImdbAward, false, ref isDirty);
+                    current.MetacriticAward = GetValue(current.MetacriticAward, false, ref isDirty);
                 }
 
-                t.SuperPopularityAward = GetValue(t.SuperPopularityAward, t.Seed >= 3000 || t.CommentsCount >= 100, ref isDirty);
-                t.PopularityAward = GetValue(t.PopularityAward, !t.SuperPopularityAward && (t.Seed >= 1000 || t.CommentsCount >= 20), ref isDirty);
+                current.SuperPopularityAward = GetValue(current.SuperPopularityAward, current.Seed >= 3000 || current.CommentsCount >= 100, ref isDirty);
+                current.PopularityAward = GetValue(current.PopularityAward, !current.SuperPopularityAward && (current.Seed >= 1000 || current.CommentsCount >= 20), ref isDirty);
 
-                t.Score = GetValue(t.Score, CalcScore(t), ref isDirty);
+                current.Score = GetValue(current.Score, CalcScore(current), ref isDirty);
 
                 if (isDirty)
                 {
-                    torrentsRepo.Save(t);
+                    torrentsRepo.Save(current);
                 }
+
+                i++;
             }
+
+            //foreach (var t in torrents)
+            //{
+            //    var isDirty = false;
+
+            //    Movie movie = null;
+            //    if (t.HasImdbId())
+            //    {
+            //        if (!moviesCache.TryGetValue(t.ImdbId, out movie))
+            //        {
+            //            movie = moviesRepo.Find(t.ImdbId);
+            //            moviesCache.Add(t.ImdbId, movie);
+            //        }
+            //    }
+
+            //    if (movie != null)
+            //    {
+            //        t.ImdbAward = GetValue(t.ImdbAward, movie.ImdbVotes >= 1000 && movie.ImdbRating >= 70, ref isDirty);
+            //        t.MetacriticAward = GetValue(t.MetacriticAward, movie.McMetascore >= 70, ref isDirty);
+            //    }
+            //    else
+            //    {
+            //        t.ImdbAward = GetValue(t.ImdbAward, false, ref isDirty);
+            //        t.MetacriticAward = GetValue(t.MetacriticAward, false, ref isDirty);
+            //    }
+
+            //    t.SuperPopularityAward = GetValue(t.SuperPopularityAward, t.Seed >= 3000 || t.CommentsCount >= 100, ref isDirty);
+            //    t.PopularityAward = GetValue(t.PopularityAward, !t.SuperPopularityAward && (t.Seed >= 1000 || t.CommentsCount >= 20), ref isDirty);
+
+            //    t.Score = GetValue(t.Score, CalcScore(t), ref isDirty);
+
+            //    if (isDirty)
+            //    {
+            //        torrentsRepo.Save(t);
+            //    }
+            //}
         }
 
         private static int CalcScore(Torrent t)

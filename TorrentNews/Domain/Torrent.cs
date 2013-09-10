@@ -40,6 +40,8 @@
 
         public int Score { get; set; }
 
+        public bool Latest { get; set; }
+
         public string GetAge()
         {
             var ts = DateTime.UtcNow.Subtract(this.AddedOn);

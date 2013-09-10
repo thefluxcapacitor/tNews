@@ -37,11 +37,12 @@
             return this.torrentsCollection.FindOneById(id);
         }
 
-        public MongoCursor<Torrent> GetPage(int page, string[] sortBy, int minScore)
+        public MongoCursor<Torrent> GetPageMostRecentTorrents(int page, string[] sortBy, int minScore)
         {
             var sortOrder = GetSortOrder(sortBy);
 
-            var filter = Query.NE("ImdbId", "NA");
+            var filter = Query.And(Query.NE("ImdbId", "NA"), Query.EQ("Latest", true));
+
             if (minScore > 0)
             {
                 filter = Query.And(filter, Query.GTE("Score", minScore));
@@ -80,9 +81,11 @@
             return result.DocumentsAffected;
         }
 
-        public MongoCursor<Torrent> GetAll()
+        public MongoCursor<Torrent> GetAllSortedByImdbIdAndAddedOn()
         {
-            return this.torrentsCollection.FindAll();
+            return this.torrentsCollection
+                .FindAll()
+                .SetSortOrder(SortBy.Ascending("ImdbId").Ascending("AddedOn"));
         }
 
         public MongoCursor<Torrent> GetRssItems(string[] sortBy)

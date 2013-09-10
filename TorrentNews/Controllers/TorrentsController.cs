@@ -31,7 +31,7 @@
             var moviesCache = new Dictionary<string, Movie>();
 
             var sortBy = new string[] { "-AddedOn", "Score" };
-            var torrents = torrentsRepo.GetPage(page, sortBy, minScore);
+            var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
             foreach (var t in torrents)
             {
                 Movie m = null;

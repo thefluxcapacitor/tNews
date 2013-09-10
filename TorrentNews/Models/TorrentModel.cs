@@ -68,6 +68,8 @@
 
         public string Age { get; set; }
 
+        public bool Latest { get; set; }
+
         public IList<RelatedTorrentModel> RelatedTorrents { get; private set; }
 
         public bool HasImdbId()
