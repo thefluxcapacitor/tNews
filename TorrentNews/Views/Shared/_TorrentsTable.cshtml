@@ -24,7 +24,26 @@
                 }
             </a>
         </td>
-        <td class="scoreCell"><span class="score">@t.Score</span></td>
+        <td class="scoreCell">
+            <div style="position: relative;">
+                <div class="score">@t.Score</div>
+                @if (t.ImdbAward)
+                {
+                    <span class="hasTooltip"><img src="/Images/imdb_logo_24.png"/></span>
+                    <div class="hidden tooltip tooltipAwards">IMDB award: movies with more than 1000 votes and an IMDB rating higher than 7 are awarded with the IMDB logo and 400 points.</div>
+                }
+
+                @if (t.MetacriticAward)
+                {
+                    <span><img src="/Images/metacritic_logo_24.png"/></span>
+                }
+
+                @if (t.PopularityAward || t.SuperPopularityAward)
+                {
+                    <span><img src="/Images/kickass_logo_24.png"/></span>
+                }
+            </div>
+        </td>
         <td class="movieInfoCell">
             @Html.Partial("_MovieInfo", t)
         </td>

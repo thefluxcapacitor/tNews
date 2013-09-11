@@ -33,7 +33,7 @@
 }
 
 function configureTooltips() {
-    $('#moviesTable .hasTooltip').hover(function () {
+    $('.hasTooltip').hover(function () {
         var $that = $(this);
         $that.next('.tooltip').show(200);
     }, function () {

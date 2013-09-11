@@ -265,6 +265,9 @@
     <Content Include="Images\delicious_32.png" />
     <Content Include="Images\facebook_32.png" />
     <Content Include="Images\googleplus_32.png" />
+    <Content Include="Images\imdb_logo_24.png" />
+    <Content Include="Images\kickass_logo_24.png" />
+    <Content Include="Images\metacritic_logo_24.png" />
     <Content Include="Images\noimage-poster.png" />
     <Content Include="Images\rss_32.png" />
     <Content Include="Images\share-logo.png" />
