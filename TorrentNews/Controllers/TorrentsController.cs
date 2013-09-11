@@ -6,6 +6,7 @@
     using System.Linq;
     using System.ServiceModel.Syndication;
     using System.Text;
+    using System.Text.RegularExpressions;
     using System.Web;
     using System.Web.Mvc;
 

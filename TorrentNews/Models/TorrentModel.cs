@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using TorrentNews.Domain;
+
     public class TorrentModel
     {
         public TorrentModel()
@@ -69,6 +71,8 @@
         public string Age { get; set; }
 
         public bool Latest { get; set; }
+
+        public ReleaseSource ReleaseSource { get; set; }
 
         public IList<RelatedTorrentModel> RelatedTorrents { get; private set; }
 

@@ -186,6 +186,7 @@
     <Compile Include="Models\MostRecentModel.cs" />
     <Compile Include="Models\PagedResultsModel.cs" />
     <Compile Include="Models\RelatedTorrentModel.cs" />
+    <Compile Include="Domain\ReleaseFormat.cs" />
     <Compile Include="Models\TorrentDetailsModel.cs" />
     <Compile Include="Models\TorrentModel.cs" />
     <Compile Include="Models\TorrentRssModel.cs" />

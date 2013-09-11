@@ -2,8 +2,11 @@
 {
     using System;
     using System.Globalization;
+    using System.Text.RegularExpressions;
 
     using MongoDB.Bson.Serialization.Attributes;
+
+    using TorrentNews.Models;
 
     public class Torrent
     {
@@ -41,6 +44,86 @@
         public int Score { get; set; }
 
         public bool Latest { get; set; }
+
+        public ReleaseSource GetReleaseSource()
+        {
+            // don't change order, always put first worst quality and last best quality
+
+            if (this.ReleaseFormatIs("cam|camrip"))
+            {
+                return new ReleaseSource { DisplayValue = "Cam", Quality = 1 };
+            }
+
+            if (this.ReleaseFormatIs("ts|telesync|pdvd"))
+            {
+                return new ReleaseSource { DisplayValue = "Telesync", Quality = 1 };
+            }
+
+            if (this.ReleaseFormatIs("wp|workprint"))
+            {
+                return new ReleaseSource { DisplayValue = "Workprint", Quality = 1 };
+            }
+
+            if (this.ReleaseFormatIs("tc|telecine"))
+            {
+                return new ReleaseSource { DisplayValue = "Telecine", Quality = 1 };
+            }
+
+            if (this.ReleaseFormatIs("ppv|ppvrip"))
+            {
+                return new ReleaseSource { DisplayValue = "Pay-per-view", Quality = 2 };
+            }
+
+            if (this.ReleaseFormatIs("scr|screener|dvdscr|dvdscreener|bdscr|ddc"))
+            {
+                return new ReleaseSource { DisplayValue = "Screener", Quality = 2 };
+            }
+
+            if (this.ReleaseFormatIs(@"r5\.ac3\.5\.1\.hq|r5\.line|r5"))
+            {
+                return new ReleaseSource { DisplayValue = "R5", Quality = 2 };
+            }
+
+            if (this.ReleaseFormatIs(@"web\-rip|webrip|web rip"))
+            {
+                return new ReleaseSource { DisplayValue = "WEB Rip", Quality = 2 };
+            }
+
+            if (this.ReleaseFormatIs("dvdrip"))
+            {
+                return new ReleaseSource { DisplayValue = "DVDRip", Quality = 3 };
+            }
+
+            if (this.ReleaseFormatIs("dsr|dsrip|dthrip|dvbrip|hdtv|pdtv|tvrip|hdtvrip"))
+            {
+                return new ReleaseSource { DisplayValue = "HDTV", Quality = 3 };
+            }
+
+            if (this.ReleaseFormatIs("vodrip|vodr"))
+            {
+                return new ReleaseSource { DisplayValue = "VODRip", Quality = 3 };
+            }
+
+            if (this.ReleaseFormatIs(@"hdrip|bdrip|brrip|blu\-ray|bluray|bdr|bd5|bd9"))
+            {
+                return new ReleaseSource { DisplayValue = "BD/BRRip", Quality = 3 };
+            }
+
+            if (this.ReleaseFormatIs(@"webdl|web dl|web\-dl"))
+            {
+                return new ReleaseSource { DisplayValue = "WEB-DL", Quality = 3 };
+            }
+
+            return new ReleaseSource { DisplayValue = "Unknown", Quality = 0 };
+        }
+
+        private bool ReleaseFormatIs(string formats)
+        {
+            var title = this.Title.ToLowerInvariant();
+            var regex = new Regex(@"[\.,\-,\s](" + formats + @")($|[\.,\-,\s])");
+            var match = regex.Match(title);
+            return match.Success;
+        }
 
         public string GetAge()
         {

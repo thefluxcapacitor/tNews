@@ -6,7 +6,13 @@
 }
 
 <div>
-    <div class="title"><a href="@torrentDetailsUrl" target="_blank">@t.Title</a></div>
+    <div class="title">
+        <span>
+            <a class="tag tag@(t.ReleaseSource.Quality)" 
+                href="http://en.wikipedia.org/wiki/Pirated_movie_release_types" target="_blank">@t.ReleaseSource.DisplayValue</a>
+        </span>
+        <a href="@torrentDetailsUrl" target="_blank">@t.Title</a>
+    </div>
     <p><span class="label">Size: </span>@t.Size (@t.Files files)</p>
     <p><span class="label">Seed/Leech: </span>@t.Seed / @t.Leech</p>
     <p><span class="label">Comments: </span>@t.CommentsCount</p>

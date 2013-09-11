@@ -417,19 +417,23 @@ td {
 }
 
 .relatedTorrentsContainer table td:nth-child(1) {
-    width: 55%;
+    width: 10%;
 }
 
 .relatedTorrentsContainer table td:nth-child(2) {
-    width: 15%;
+    width: 58%;
 }
 
 .relatedTorrentsContainer table td:nth-child(3) {
-    width: 15%;
+    width: 10%;
 }
 
 .relatedTorrentsContainer table td:nth-child(4) {
-    width: 15%;
+    width: 12%;
+}
+
+.relatedTorrentsContainer table td:nth-child(5) {
+    width: 10%;
 }
 
 .relatedTorrentsContainer {
@@ -450,4 +454,53 @@ td {
     z-index: 98;
     width: 300px;
     font-style: normal;
+}
+
+a.tag, a.tag:hover {
+    text-decoration: none;
+    font-size: 13px;
+    padding-left: 2px;
+    padding-right: 2px;
+    border-radius: 2px;
+    font-weight: normal;
+}
+
+a.tag0, a.tag0:hover {
+    color: white;
+    background-color: black;
+}
+
+a.tag1, a.tag1:hover {
+    color: white;
+    background-color: tomato;
+}
+
+a.tag2, a.tag2:hover {
+    color: rgb(145, 94, 0);
+    background-color: rgb(255, 255, 110);
+}
+
+a.tag3, a.tag3:hover {
+    color: white;
+    background-color: green;
+}
+
+a.tagLight0, a.tagLight0:hover {
+    color: black;
+    background-color: rgb(226, 226, 226);
+}
+
+a.tagLight1, a.tagLight1:hover {
+    color: tomato;
+    background-color: rgb(255, 237, 237);
+}
+
+a.tagLight2, a.tagLight2:hover {
+    color: rgb(233, 151, 0);
+    background-color: rgb(255, 255, 218);
+}
+
+a.tagLight3, a.tagLight3:hover {
+    color: green;
+    background-color: rgb(233, 252, 226);
 }

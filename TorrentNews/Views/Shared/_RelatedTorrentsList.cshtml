@@ -15,6 +15,10 @@
     @foreach (var rt in t.RelatedTorrents)
     {
         <p class="relatedTorrent hasTooltip">
+            <span>
+                <a class="tag tagLight@(t.ReleaseSource.Quality)" 
+                    href="http://en.wikipedia.org/wiki/Pirated_movie_release_types" target="_blank">@t.ReleaseSource.DisplayValue</a>
+            </span>
             <a href="@Url.Action("Details", "Torrents", new { id = rt.Id })">@rt.Title</a>
         </p>
         <div class="hidden tooltip">

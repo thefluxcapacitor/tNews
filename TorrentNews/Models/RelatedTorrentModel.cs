@@ -1,5 +1,7 @@
 ﻿namespace TorrentNews.Models
 {
+    using TorrentNews.Domain;
+
     public class RelatedTorrentModel
     {
         public int Id { get; set; }
@@ -13,5 +15,7 @@
         public int Seed { get; set; }
 
         public string Size { get; set; }
+
+        public ReleaseSource ReleaseSource { get; set; }
     }
 }
