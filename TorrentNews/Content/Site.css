@@ -181,8 +181,8 @@ td {
 
 #moviesTable td.scoreCell {
     text-align: center;
-    width: 65px;
-    min-width: 65px;
+    width: 85px;
+    min-width: 85px;
 }
 
 #moviesTable td.movieInfoCell {
@@ -196,8 +196,9 @@ td {
 }
 
 #moviesTable td.posterCell {
-    width: 220px;
-    min-width: 220px;
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
 }
 
 #moviesTable img.poster {
@@ -465,6 +466,16 @@ div.relatedTorrent {
 .tooltipAwards {
     top: 100px;
     left: 0px;
+}
+
+.tooltipAwards img {
+    float: left; 
+    margin-left: -11px;    
+}
+
+.tooltipAwards p.awardsTitle {
+    font-size: 16px; 
+    font-weight: bold;
 }
 
 a.tag, a.tag:hover {

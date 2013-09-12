@@ -30,17 +30,31 @@
                 @if (t.ImdbAward)
                 {
                     <span class="hasTooltip"><img src="/Images/imdb_logo_24.png"/></span>
-                    <div class="hidden tooltip tooltipAwards">IMDB award: movies with more than 1000 votes and an IMDB rating higher than 7 are awarded with the IMDB logo and 400 points.</div>
+                    <div class="hidden tooltip tooltipAwards">
+                        <img src="/Images/imdb_logo_24.png" />
+                        <p class="awardsTitle">IMDB award</p>
+                        <p>Movies with more than 1000 votes and a rating of 7 or higher are awarded with the IMDB logo and 400 points.</p>
+                    </div>
                 }
 
                 @if (t.MetacriticAward)
                 {
-                    <span><img src="/Images/metacritic_logo_24.png"/></span>
+                    <span class="hasTooltip"><img src="/Images/metacritic_logo_24.png"/></span>
+                    <div class="hidden tooltip tooltipAwards">
+                        <img src="/Images/metacritic_logo_24.png" />
+                        <p class="awardsTitle">Metacritic award</p>
+                        <p>Movies with a metascore of 70 or higher are awarded with the Metacritic logo and 500 points.</p>
+                    </div>
                 }
 
                 @if (t.PopularityAward || t.SuperPopularityAward)
                 {
-                    <span><img src="/Images/kickass_logo_24.png"/></span>
+                    <span class="hasTooltip"><img src="/Images/fire_24.png"/></span>
+                    <div class="hidden tooltip tooltipAwards">
+                        <img src="/Images/fire_24.png" />
+                        <p class="awardsTitle">Popularity award</p>
+                        <p>Torrents with more than 1000 seeds or more than 20 comments are awarded with the Popularity logo and 100 points. If seeds are higher than 3000 or comments higher than 100, the score is increased by 100 extra points.</p>
+                    </div>
                 }
             </div>
         </td>
