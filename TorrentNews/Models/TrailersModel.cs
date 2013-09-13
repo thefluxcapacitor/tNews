@@ -7,5 +7,7 @@
         public string TrailerUrl { get; set; }
 
         public string MoreTrailersUrl { get; set; }
+
+        public int TorrentId { get; set; }
     }
 }

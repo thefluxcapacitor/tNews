@@ -24,6 +24,16 @@
                 var $tr = $($button.closest('tr'));
                 $tr.after('<tr class="trailerContainerRow"><td colspan="4">' + data + '</td></tr>');
 
+                $('.closeTrailer').click(function () {
+                    $('.trailerButton.pushed').removeClass('pushed');
+
+                    var $trailerRows = $('.trailerContainerRow');
+                    $trailerRows.remove();
+
+                    var torrentId = $(this).attr('data-torrent-id');
+                    $.scrollTo($('tr[data-torrent-id=' + torrentId + ']'), 700);
+                });
+
                 $.scrollTo($('.trailerContainerRow'), 1700);
 
                 $button.addClass('pushed');

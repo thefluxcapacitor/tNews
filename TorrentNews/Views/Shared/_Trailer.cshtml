@@ -2,12 +2,15 @@
 
 <div class="trailerContainer">
     <p class="title">@Model.TrailerTitle</p>
-    <iframe
-        width="853" 
-        height="480" 
-        src="@Model.TrailerUrl" 
-        frameborder="0" 
-        allowfullscreen>
-    </iframe>
+    <div class="trailerFrameContainer">
+        <iframe class="trailerFrame"
+            width="853" 
+            height="480" 
+            src="@Model.TrailerUrl" 
+            frameborder="0" 
+            allowfullscreen>
+        </iframe>
+        <span class="icon-remove closeTrailer" title="Close trailer" data-torrent-id="ID@(Model.TorrentId)"></span>
+    </div>
     <p class="moreTrailers"><a href="@Model.MoreTrailersUrl" target="_blank">Click here for more trailers</a></p>
 </div>

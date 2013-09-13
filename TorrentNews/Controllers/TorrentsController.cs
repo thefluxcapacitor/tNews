@@ -98,7 +98,7 @@
                 }
             }
 
-            tm.TrailersInfo = this.GetTrailersModel(tm.MovieTitle, tm.Year);
+            tm.TrailersInfo = this.GetTrailersModel(tm.MovieTitle, tm.Year, tm.Id);
 
             return this.View(tm);
         }
@@ -129,20 +129,26 @@
             }
         }
 
-        public ActionResult Trailer(string title, string year)
+        public ActionResult Trailer(string title, string year, int torrentId)
         {
-            var model = this.GetTrailersModel(title, year);
+            var model = this.GetTrailersModel(title, year, torrentId);
 
             return this.PartialView("_Trailer", model);
         }
 
-        private TrailersModel GetTrailersModel(string title, string year)
+        private TrailersModel GetTrailersModel(string title, string year, int torrentId)
         {
             var searchString = this.Server.UrlEncode(title + " " + year + " trailer");
             var scraper = new YoutubeScraper();
             var trailerData = scraper.GetTrailersUrl(searchString).First();
             var searchUrl = scraper.GetTrailersSearchUrl(searchString);
-            var model = new TrailersModel { TrailerTitle = trailerData.Item1, TrailerUrl = "//www.youtube.com/embed/" + trailerData.Item2, MoreTrailersUrl = searchUrl };
+            var model = new TrailersModel
+                            {
+                                TrailerTitle = trailerData.Item1, 
+                                TrailerUrl = "//www.youtube.com/embed/" + trailerData.Item2, 
+                                MoreTrailersUrl = searchUrl,
+                                TorrentId = torrentId
+                            };
             return model;
         }
 

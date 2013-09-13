@@ -11,7 +11,7 @@
 *@
 @foreach (var t in Model)
 {
-    <tr>
+    <tr data-torrent-id="ID@(t.Id)">
         <td class="posterCell">
             <a href="@Url.Action("Details", new { id = t.Id })" target="_blank">
                 @if (!string.IsNullOrEmpty(t.Poster))
@@ -78,7 +78,7 @@
                 </a>
                 
                 <button class="trailerButton normal" 
-                    data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)">
+                    data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id">
                 </button>
             </div>
         </td>

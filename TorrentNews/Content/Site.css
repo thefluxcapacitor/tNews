@@ -352,10 +352,33 @@ td {
     font-weight: bold;
 }
 
-.detailsWrapper p.moreTrailers {
+#moviesTable p.moreTrailers, p.moreTrailers {
     margin: 0;
+    margin-top: 8px;
 }
 
+#moviesTable span.closeTrailer {
+    position: relative;
+    display: table-cell;
+    vertical-align: top;
+    left: -135px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#moviesTable span.closeTrailer:hover {
+    color: tomato;
+}
+
+#moviesTable iframe.trailerFrame {
+    display: table-cell;
+    margin: auto;
+}
+
+#moviesTable div.trailerFrameContainer {
+    display: table;
+    width: 100%;
+}
 .trailerButton {
     background-image: url('/Images/youtube.gif');
     width: 32px;
