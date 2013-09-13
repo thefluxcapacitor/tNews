@@ -10,6 +10,7 @@
     <table>
         <tr>
             <th>Source</th>
+            <th>Score</th>
             <th>Other torrents</th>
             <th>Age</th>
             <th>Size</th>
@@ -22,6 +23,7 @@
                     <a class="tag tagLight@(t.ReleaseSource.Quality)" 
                         href="http://en.wikipedia.org/wiki/Pirated_movie_release_types" target="_blank">@t.ReleaseSource.DisplayValue</a>
                 </td>
+                <td>@rt.Score</td>
                 <td><a href="@Url.Action("Details", "Torrents", new { id = rt.Id })">@rt.Title</a></td>
                 <td>@rt.Age</td>
                 <td>@rt.Size</td>

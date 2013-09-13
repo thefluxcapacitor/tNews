@@ -296,7 +296,7 @@ td {
 
 .detailsWrapper .rightColumn {
     float: right;
-    text-align: center;
+    text-align: right;
 }
 
 .detailsContainer p {
@@ -314,7 +314,6 @@ td {
 }
 
 .detailsPoster {
-    float: right;
     margin-top: 0px;
     margin-bottom: 20px;
 }
@@ -322,6 +321,10 @@ td {
 .detailsPoster img {
     width: 150px;
     height: 210px;
+}
+
+.detailsTrailer {
+    text-align: center;    
 }
 
 .hidden {
@@ -415,8 +418,20 @@ div.relatedTorrent {
     width: 780px;
 }
 
+.relatedTorrentsContainer table td {
+    padding: 0;
+    padding-top: 2px;
+}
+
 .relatedTorrentsContainer table th, .relatedTorrentsContainer table td {
     font-size: 13px;
+}
+
+.relatedTorrentsContainer table th:nth-child(2), 
+.relatedTorrentsContainer table th:nth-child(4), 
+.relatedTorrentsContainer table th:nth-child(5), 
+.relatedTorrentsContainer table th:nth-child(6) {
+    text-align: center;
 }
 
 .relatedTorrentsContainer table td:nth-child(1) {
@@ -424,19 +439,27 @@ div.relatedTorrent {
 }
 
 .relatedTorrentsContainer table td:nth-child(2) {
-    width: 55%;
+    width: 10%;
+    text-align: center;
 }
 
 .relatedTorrentsContainer table td:nth-child(3) {
-    width: 10%;
+    width: 45%;
 }
 
 .relatedTorrentsContainer table td:nth-child(4) {
-    width: 15%;
+    width: 10%;
+    text-align: center;
 }
 
 .relatedTorrentsContainer table td:nth-child(5) {
+    width: 15%;
+    text-align: center;
+}
+
+.relatedTorrentsContainer table td:nth-child(6) {
     width: 10%;
+    text-align: center;
 }
 
 .relatedTorrentsContainer {

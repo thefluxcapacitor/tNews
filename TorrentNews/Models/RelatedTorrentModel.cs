@@ -16,6 +16,8 @@
 
         public string Size { get; set; }
 
+        public int Score { get; set; }
+
         public ReleaseSource ReleaseSource { get; set; }
     }
 }

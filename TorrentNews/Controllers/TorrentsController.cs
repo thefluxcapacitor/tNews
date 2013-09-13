@@ -110,9 +110,14 @@
                 return;
             }
 
-            var torrents = torrentsRepo.FindByImdbId(tm.ImdbId, maxTorrents);
+            var torrents = torrentsRepo.FindByImdbId(tm.ImdbId, maxTorrents + 1); // maxTorrents + 1 just in case we get the current torrent and we have to dismiss it
             foreach (var t in torrents)
             {
+                if (tm.RelatedTorrents.Count == maxTorrents)
+                {
+                    break;
+                }
+
                 if (t.Id == tm.Id)
                 {
                     continue;
