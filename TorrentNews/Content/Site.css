@@ -357,17 +357,20 @@ td {
     margin-top: 8px;
 }
 
-#moviesTable span.closeTrailer {
+#moviesTable div.closeTrailer {
     position: relative;
     display: table-cell;
     vertical-align: top;
     left: -135px;
     font-size: 20px;
-    cursor: pointer;
 }
 
-#moviesTable span.closeTrailer:hover {
+#moviesTable div.closeTrailer span:hover {
     color: tomato;
+}
+
+#moviesTable div.closeTrailer span {
+    cursor: pointer;
 }
 
 #moviesTable iframe.trailerFrame {

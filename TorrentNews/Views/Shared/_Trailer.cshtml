@@ -10,7 +10,9 @@
             frameborder="0" 
             allowfullscreen>
         </iframe>
-        <span class="icon-remove closeTrailer" title="Close trailer" data-torrent-id="ID@(Model.TorrentId)"></span>
+        <div class="closeTrailer" data-torrent-id="ID@(Model.TorrentId)">
+            <span class="icon-remove" title="Close trailer"></span>
+        </div>
     </div>
     <p class="moreTrailers"><a href="@Model.MoreTrailersUrl" target="_blank">Click here for more trailers</a></p>
 </div>

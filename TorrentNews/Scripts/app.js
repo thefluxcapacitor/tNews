@@ -15,13 +15,15 @@
             var $trailerRows = $('.trailerContainerRow');
             $trailerRows.remove();
 
+            $button.addClass('pushed');
+
             $.ajax({
                 url: $(that).attr('data-trailer-url'),
                 context: that
-            }).done(function(data) {
-                var $button = $(this);
-
-                var $tr = $($button.closest('tr'));
+            }).done(function (data) {
+                var $btn = $(this);
+                
+                var $tr = $($btn.closest('tr'));
                 $tr.after('<tr class="trailerContainerRow"><td colspan="4">' + data + '</td></tr>');
 
                 $('.closeTrailer').click(function () {
@@ -35,8 +37,6 @@
                 });
 
                 $.scrollTo($('.trailerContainerRow'), 1700);
-
-                $button.addClass('pushed');
             });
         }
     });
