@@ -41,11 +41,11 @@
         {
             var sortOrder = GetSortOrder(sortBy);
 
-            var filter = Query.And(Query.NE("ImdbId", "NA"), Query.EQ("Latest", true));
+            var filter = Query.And(Query<Torrent>.NE(t => t.ImdbId, "NA"), Query<Torrent>.EQ(t => t.Latest, true));
 
             if (minScore > 0)
             {
-                filter = Query.And(filter, Query.GTE("Score", minScore));
+                filter = Query.And(filter, Query<Torrent>.GTE(t => t.Score, minScore));
             }
 
             return this.torrentsCollection
@@ -85,22 +85,22 @@
         {
             return this.torrentsCollection
                 .FindAll()
-                .SetSortOrder(SortBy.Ascending("ImdbId").Ascending("AddedOn"));
+                .SetSortOrder(SortBy<Torrent>.Ascending(t => t.ImdbId).Ascending(t => t.AddedOn));
         }
 
         public MongoCursor<Torrent> GetRssItems(string[] sortBy)
         {
             var sortOrder = GetSortOrder(sortBy);
             return this.torrentsCollection
-                .Find(Query.NE("ImdbId", "NA"))
+                .Find(Query<Torrent>.NE(t => t.ImdbId, "NA"))
                 .SetSortOrder(sortOrder);
         }
 
         public MongoCursor<Torrent> FindByImdbId(string imdbId, int maxTorrents)
         {
             var result = this.torrentsCollection
-                .Find(Query.EQ("ImdbId", imdbId))
-                .SetSortOrder(SortBy.Descending("AddedOn"));
+                .Find(Query<Torrent>.EQ(t => t.ImdbId, imdbId))
+                .SetSortOrder(SortBy<Torrent>.Descending(t => t.AddedOn));
             if (maxTorrents > 0)
             {
                 result = result.SetLimit(maxTorrents);
