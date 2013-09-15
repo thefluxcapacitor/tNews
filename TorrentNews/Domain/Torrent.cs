@@ -6,8 +6,6 @@
 
     using MongoDB.Bson.Serialization.Attributes;
 
-    using TorrentNews.Models;
-
     public class Torrent
     {
         [BsonId]

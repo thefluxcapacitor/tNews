@@ -58,6 +58,9 @@
                     <a href="~/">Torrent news</a></p>
             </div>
             <div class="float-right">
+                <section id="login">
+                    @Html.Partial("_LoginPartial")
+                </section>
                 <nav>
                     <ul id="menu">
                         <li>@Html.ActionLink("All", "MostRecent", "Torrents", new { area = "" }, null)</li>
