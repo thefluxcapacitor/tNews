@@ -12,6 +12,7 @@
 
     using TorrentNews.Dal;
     using TorrentNews.Domain;
+    using TorrentNews.Filters;
     using TorrentNews.Models;
     using TorrentNews.Scraping;
 
@@ -101,6 +102,20 @@
             tm.TrailersInfo = this.GetTrailersModel(tm.MovieTitle, tm.Year, tm.Id);
 
             return this.View(tm);
+        }
+
+        [AjaxAuthorize, HttpPost]
+        public ActionResult WatchlistAdd(int id)
+        {
+            return null;
+            //return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize, HttpPost]
+        public ActionResult WatchlistRemove(int id)
+        {
+            return null;
+            //return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
         }
 
         private void AddRelatedTorrents(TorrentModel tm, TorrentsRepository torrentsRepo, int maxTorrents)

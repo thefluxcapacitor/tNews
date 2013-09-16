@@ -1,6 +1,4 @@
-﻿@model TorrentNews.Models.LoginModel
-
-@{
+﻿@{
     ViewBag.Title = "Log in";
 }
 
@@ -13,6 +11,3 @@
     @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
 </section>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

@@ -51,3 +51,56 @@ function configureTooltips() {
         $that.next('.tooltip').hide(0);
     });
 }
+
+function configureWatchlistButtons() {
+    $('.watchlist').click(function () {
+        var $this = $(this);
+        var id = $this.attr('data-torrent-id');
+        
+        if ($this.hasClass('add-watchlist')) {
+            var url = '/Torrents/WatchlistAdd/' + id;
+        } else {
+            var url = '/Torrents/WatchlistRemove/' + id;
+        }
+
+        ajaxWatchlistAddRemove(url, $this);
+    });
+}
+
+function ajaxWatchlistAddRemove(url, button) {
+    button.addClass('animation-watchlist');
+    
+    $.ajax({
+        type: "POST",
+        url: url,
+        context: button,
+        dataType: "json",
+        beforeSend: function (xhr, settings) {
+            xhr.returnUrl = settings.url;
+        }
+    }).done(function (data) {
+        var $btn = this;
+        $btn.toggleClass('remove-watchlist');
+        $btn.toggleClass('add-watchlist');
+        $btn.removeClass('animation-watchlist');
+    }).fail(function (xhr) {
+        if (xhr.status == 403) {
+            var $btn = this;
+            var response = $.parseJSON(xhr.responseText);
+            var $popup = $('#loginPopup');
+
+            $popup.find('form').attr('action', '/Account/ExternalLogin?ReturnUrl=' + xhr.returnUrl);
+            $popup.find('#loginPopupClose').click(function () {
+                $popup.close();
+                $btn.removeClass('animation-watchlist');
+            });
+            
+            $popup.dialog({
+                dialogClass: "no-title",
+                draggable: false,
+                modal: true,
+                resizable: false
+            });
+        }
+    });
+}

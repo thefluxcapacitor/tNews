@@ -98,6 +98,10 @@ h5, h6 {
     text-decoration: none;
 }
 
+.socialLoginList button {
+    display: inline;
+}
+
 /* login
 ----------------------------------------------------------*/
 #login {
@@ -610,4 +614,8 @@ a.tagLight2, a.tagLight2:hover {
 a.tagLight3, a.tagLight3:hover {
     color: green;
     background-color: rgb(233, 252, 226);
+}
+
+.no-title .ui-dialog-titlebar {
+    display: none;
 }
