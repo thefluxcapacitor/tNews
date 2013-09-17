@@ -7,7 +7,6 @@
     using System.Net;
     using System.ServiceModel.Syndication;
     using System.Text;
-    using System.Text.RegularExpressions;
     using System.Web;
     using System.Web.Mvc;
 
@@ -24,7 +23,7 @@
             return this.RedirectToAction("MostRecent");
         }
 
-        public ActionResult MostRecent(int page = 1, int minScore = 0)
+        public ActionResult MostRecent(int page = 1, int minScore = 0, bool wlist = false)
         {
             var model = new TorrentsListModel();
 
@@ -39,6 +38,17 @@
             var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
             foreach (var t in torrents)
             {
+                var inWatchlist = false;
+                if (watchlist != null)
+                {
+                    inWatchlist = watchlist.Any(item => item.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (wlist && !inWatchlist)
+                {
+                    continue;
+                }
+
                 Movie m = null;
                 if (t.HasImdbId())
                 {
@@ -58,10 +68,7 @@
 
                 this.AddRelatedTorrents(tm, torrentsRepo, Constants.RelatedTorrentsCount);
 
-                if (watchlist != null)
-                {
-                    tm.InWatchlist = watchlist.Any(item => item.Equals(tm.ImdbId, StringComparison.OrdinalIgnoreCase));
-                }
+                tm.InWatchlist = inWatchlist;
 
                 model.Torrents.Add(tm);
             }
