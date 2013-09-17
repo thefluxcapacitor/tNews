@@ -283,6 +283,8 @@ td {
 
 #moviesTable p.plot {
     margin-bottom: 10px;
+    max-height: 105px;
+    overflow: hidden;
 }
 
 .sharing-bar {
@@ -371,14 +373,15 @@ td {
     display: none;
 }
 
-.torrentInfoCellWrapper {
+.infoCellWrapper {
     position: relative;
     height: 260px;
     margin-bottom: 22px;
 }
 
-.torrentInfoCellButtonsContainer {
-    float: right; 
+.cellButtonsContainer {
+    float: right;
+    display: table;
 }
 
 .trailerContainer {
@@ -422,7 +425,22 @@ td {
     display: table;
     width: 100%;
 }
+
+.actionButton {
+    font-size: 19px;
+    vertical-align: middle;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.actionButton:hover {
+    color: tomato;
+}
+
 .trailerButton {
+}
+
+/*.trailerButton {
     background-image: url('/Images/youtube.gif');
     width: 32px;
     height: 32px;
@@ -445,20 +463,24 @@ td {
 
 .trailerButton.pushed:hover {
     opacity: 0.5;
-}
+}*/
 
 .detailsButton {
+}
+
+/*.detailsButton {
     width: 32px;
     height: 32px;
     padding: 0;
     border: none;
     cursor: pointer;
     opacity: 0.5;
+    background-image: url('/Images/tnews_32.png');
 }
 
 .detailsButton:hover {
     opacity: 1;
-}
+}*/
 
 div.relatedTorrent {
     overflow: hidden;
@@ -619,3 +641,36 @@ a.tagLight3, a.tagLight3:hover {
 .no-title .ui-dialog-titlebar {
     display: none;
 }
+
+.watchlist {
+}
+
+.animation-watchlist {
+    background-image: url('/Images/spinner.gif');
+    background-repeat: no-repeat;
+    -moz-background-size: 22px;
+    -o-background-size: 22px;
+    -webkit-background-size: 22px;
+    background-size: 22px;
+}
+
+/*button.watchlist {
+    font-size: 14px;
+    opacity: .50;
+    background-color: rgb(255, 106, 0);
+    color: black;
+    height: 32px;
+    border-color: tomato;
+    border-width: 1px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+button.watchlist:hover {
+    opacity: 1;
+}
+
+button.watchlist span.icon-plus {
+    font-size: 10px;
+    margin-right: 5px;
+}*/

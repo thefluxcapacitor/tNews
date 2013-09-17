@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Net;
     using System.ServiceModel.Syndication;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -30,6 +31,8 @@
             var torrentsRepo = new TorrentsRepository();
             var moviesRepo = new MoviesRepository();
 
+            var watchlist = this.GetCurrentUserWatchlist();
+
             var moviesCache = new Dictionary<string, Movie>();
 
             var sortBy = new string[] { "-AddedOn", "Score" };
@@ -55,6 +58,11 @@
 
                 this.AddRelatedTorrents(tm, torrentsRepo, Constants.RelatedTorrentsCount);
 
+                if (watchlist != null)
+                {
+                    tm.InWatchlist = watchlist.Any(item => item.Equals(tm.ImdbId, StringComparison.OrdinalIgnoreCase));
+                }
+
                 model.Torrents.Add(tm);
             }
 
@@ -72,6 +80,19 @@
             }
 
             return this.View(model);
+        }
+
+        private IList<string> GetCurrentUserWatchlist()
+        {
+            IList<string> watchList = null;
+            if (this.User.Identity.IsAuthenticated)
+            {
+                var usersRepo = new UsersRepository();
+                var user = usersRepo.FindByUsername(this.User.Identity.Name);
+                watchList = user.Watchlist;
+            }
+
+            return watchList;
         }
 
         public ActionResult Details(int id)
@@ -105,17 +126,53 @@
         }
 
         [AjaxAuthorize, HttpPost]
-        public ActionResult WatchlistAdd(int id)
+        public ActionResult WatchlistAdd(string imdbId)
         {
-            return null;
-            //return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
+            return this.WatchlistAction(
+                imdbId,
+                (user, id) =>
+                    {
+                        var wl = user.Watchlist.FirstOrDefault(item => item.Equals(imdbId, StringComparison.OrdinalIgnoreCase));
+                        if (wl == null)
+                        {
+                            user.Watchlist.Add(imdbId);
+                        }
+                    });
         }
 
         [AjaxAuthorize, HttpPost]
-        public ActionResult WatchlistRemove(int id)
+        public ActionResult WatchlistRemove(string imdbId)
         {
-            return null;
-            //return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
+            return this.WatchlistAction(imdbId, (user, id) => user.Watchlist.Remove(id));
+        }
+
+        private ActionResult WatchlistAction(string imdbId, Action<User, string> action)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(imdbId))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "IMDB Id cannot be empty.");
+                }
+
+                var repo = new UsersRepository();
+                var user = repo.FindByUsername(this.User.Identity.Name);
+
+                if (user == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "User not found.");
+                }
+
+                action(user, imdbId);
+
+                repo.Save(user);
+
+                return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "An unexpected error has occurred. " + ex.Message);
+            }
         }
 
         private void AddRelatedTorrents(TorrentModel tm, TorrentsRepository torrentsRepo, int maxTorrents)

@@ -313,6 +313,7 @@
     <Content Include="Images\noimage-poster.png" />
     <Content Include="Images\rss_32.png" />
     <Content Include="Images\share-logo.png" />
+    <Content Include="Images\spinner.gif" />
     <Content Include="Images\tnews_32.png" />
     <Content Include="Images\twitter.png" />
     <Content Include="Images\twitter_32.png" />
@@ -357,7 +358,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_TorrentsTable.cshtml" />
     <Content Include="Views\Shared\_Pager.cshtml" />
-    <Content Include="Views\Torrents\HighestScores.cshtml" />
     <Content Include="Views\Torrents\Details.cshtml" />
     <Content Include="Views\Shared\_MovieInfo.cshtml" />
     <Content Include="Views\Shared\_TorrentInfo.cshtml" />

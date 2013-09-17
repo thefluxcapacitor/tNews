@@ -59,10 +59,32 @@
             </div>
         </td>
         <td class="movieInfoCell">
-            @Html.Partial("_MovieInfo", t)
+            <div class="infoCellWrapper">
+                @Html.Partial("_MovieInfo", t)
+            </div>
+            <div class="cellButtonsContainer">
+                @{
+                    var watchlistClasses = t.InWatchlist ? 
+                        "remove-watchlist icon-star" : 
+                        "add-watchlist icon-star-empty";
+                }
+
+                <span class="watchlist actionButton @watchlistClasses" 
+                    data-torrent-id="@t.ImdbId"
+                    title="Add to watchlist"></span>
+                
+                <span class="trailerButton actionButton normal icon-facetime-video" 
+                    data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id"
+                    title="View trailer"></span>
+
+@*                <button class="trailerButton normal" 
+                    data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id">
+                    &nbsp;
+                </button>*@
+            </div>
         </td>
         <td class="torrentInfoCell">
-            <div class="torrentInfoCellWrapper">
+            <div class="infoCellWrapper">
                 @Html.Partial("_TorrentInfo", t)
 
                 @if (t.RelatedTorrents.Any())
@@ -71,17 +93,8 @@
                 }
             </div>
 
-            <div class="torrentInfoCellButtonsContainer">
-                
-                <a href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank">
-                    <img class="detailsButton" src="/Images/tnews_32.png"/>
-                </a>
-                
-                <button class="watchlist add-watchlist" data-torrent-id="@t.Id">Add</button>
-
-                <button class="trailerButton normal" 
-                    data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id">
-                </button>
+            <div class="cellButtonsContainer">
+                <span class="detailsButton actionButton"><a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a></span>
             </div>
         </td>
     </tr>

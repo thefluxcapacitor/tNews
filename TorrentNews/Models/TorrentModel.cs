@@ -76,6 +76,8 @@
 
         public IList<RelatedTorrentModel> RelatedTorrents { get; private set; }
 
+        public bool InWatchlist { get; set; }
+
         public bool HasImdbId()
         {
             return !string.IsNullOrEmpty(this.ImdbId) && this.ImdbId != "NA";

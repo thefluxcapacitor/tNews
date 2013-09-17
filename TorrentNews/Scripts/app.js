@@ -1,4 +1,27 @@
-﻿function configureTrailerButton() {
+﻿//function configureDetailsButton() {
+//    $('.detailsButton').click(function() {
+//        var url = $(this).attr('data-details-url');
+//        window.open(url, '_blank');
+//    });
+//}
+
+function showErrorPopup(message) {
+    var $popup = $('#errorPopup');
+
+    $popup.find('span.errorMessage').text(message);
+    $popup.find('button.closeButton').click(function () {
+        $('#errorPopup').dialog('close');
+    });
+
+    $popup.dialog({
+        dialogClass: "no-title",
+        draggable: false,
+        modal: true,
+        resizable: false
+    });
+}
+
+function configureTrailerButton() {
     $('.trailerButton').click(function () {
         var that = this;
 
@@ -58,9 +81,9 @@ function configureWatchlistButtons() {
         var id = $this.attr('data-torrent-id');
         
         if ($this.hasClass('add-watchlist')) {
-            var url = '/Torrents/WatchlistAdd/' + id;
+            var url = '/Torrents/WatchlistAdd?imdbId=' + id;
         } else {
-            var url = '/Torrents/WatchlistRemove/' + id;
+            var url = '/Torrents/WatchlistRemove?imdbId=' + id;
         }
 
         ajaxWatchlistAddRemove(url, $this);
@@ -68,6 +91,11 @@ function configureWatchlistButtons() {
 }
 
 function ajaxWatchlistAddRemove(url, button) {
+    
+    if (button.hasClass('animation-watchlist')) {
+        return;
+    }
+    
     button.addClass('animation-watchlist');
     
     $.ajax({
@@ -79,28 +107,24 @@ function ajaxWatchlistAddRemove(url, button) {
             xhr.returnUrl = settings.url;
         }
     }).done(function (data) {
+        
         var $btn = this;
-        $btn.toggleClass('remove-watchlist');
-        $btn.toggleClass('add-watchlist');
+        $btn.toggleClass('remove-watchlist icon-star');
+        $btn.toggleClass('add-watchlist icon-star-empty');
         $btn.removeClass('animation-watchlist');
+        
     }).fail(function (xhr) {
+        
         if (xhr.status == 403) {
             var $btn = this;
-            var response = $.parseJSON(xhr.responseText);
-            var $popup = $('#loginPopup');
-
-            $popup.find('form').attr('action', '/Account/ExternalLogin?ReturnUrl=' + xhr.returnUrl);
-            $popup.find('#loginPopupClose').click(function () {
-                $popup.close();
-                $btn.removeClass('animation-watchlist');
-            });
-            
-            $popup.dialog({
-                dialogClass: "no-title",
-                draggable: false,
-                modal: true,
-                resizable: false
-            });
+            $btn.removeClass('animation-watchlist');
+            showErrorPopup('You are not logged in.');
+        } else {
+            if (xhr.statusText) {
+                showErrorPopup(xhr.statusText);
+            } else {
+                showErrorPopup('An unexpected error has occurred. Error code: ' + xhr.status);
+            }
         }
     });
 }
