@@ -47,7 +47,7 @@
         {
             // don't change order, always put first worst quality and last best quality
 
-            if (this.ReleaseFormatIs("cam|camrip"))
+            if (this.ReleaseFormatIs("cam|hdcam|camrip"))
             {
                 return new ReleaseSource { DisplayValue = "Cam", Quality = 1 };
             }
