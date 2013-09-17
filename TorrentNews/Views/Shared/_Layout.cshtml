@@ -56,26 +56,35 @@
 
     <div id="body">
         <img id="beta-ribbon" src="/Images/beta-ribbon.gif" alt="beta ribbon"/>
+
         <header>
         <div class="content-wrapper">
             <div class="float-left">
                 <p class="site-title">
                     <a href="~/">Torrent news</a></p>
             </div>
+            
             <div class="float-right">
-                <section id="login">
-                    @Html.Partial("_LoginPartial")
-                </section>
-                <nav>
-                    <ul id="menu">
-                        <li>@Html.ActionLink("All", "MostRecent", "Torrents", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("100+", "MostRecent", "Torrents", new { area = "", minScore = 100 }, null)</li>
-                        <li>@Html.ActionLink("400+", "MostRecent", "Torrents", new { area = "", minScore = 400 }, null)</li>
-                        <li>@Html.ActionLink("900+", "MostRecent", "Torrents", new { area = "", minScore = 900 }, null)</li>
-                        <li>@Html.ActionLink("1100", "MostRecent", "Torrents", new { area = "", minScore = 1100 }, null)</li>
-                        <li>@Html.ActionLink("Watchlist", "MostRecent", "Torrents", new { area = "", wlist = true }, null)</li>
-                    </ul>
-                </nav>
+                @if (!Convert.ToBoolean(ViewBag.HideLoginSection))
+                {
+                    <section id="login">
+                        @Html.Partial("_LoginPartial")
+                    </section>
+                }
+
+                @if (!Convert.ToBoolean(ViewBag.HideNavigationLinks))
+                {
+                    <nav>
+                        <ul id="menu">
+                            <li>@Html.ActionLink("All", "MostRecent", "Torrents", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("100+", "MostRecent", "Torrents", new { area = "", minScore = 100 }, null)</li>
+                            <li>@Html.ActionLink("400+", "MostRecent", "Torrents", new { area = "", minScore = 400 }, null)</li>
+                            <li>@Html.ActionLink("900+", "MostRecent", "Torrents", new { area = "", minScore = 900 }, null)</li>
+                            <li>@Html.ActionLink("1100", "MostRecent", "Torrents", new { area = "", minScore = 1100 }, null)</li>
+                            <li>@Html.ActionLink("Watchlist", "MostRecent", "Torrents", new { area = "", wlist = true }, null)</li>
+                        </ul>
+                    </nav>
+                }
             </div>
         </div>
         

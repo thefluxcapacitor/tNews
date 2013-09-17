@@ -4,11 +4,11 @@
 {
     @Html.AntiForgeryToken()
     <div id="socialLoginList">
-        <p>Choose a provider to sign in</p>
+        <h3>Choose a provider to sign in</h3>
         <div>
             @foreach (AuthenticationClientData p in Model)
             {
-                <button type="submit" name="provider" value="@p.AuthenticationClient.ProviderName" title="Log in using your @p.DisplayName account">@p.DisplayName</button>
+                <button class="prov-@p.AuthenticationClient.ProviderName" type="submit" name="provider" value="@p.AuthenticationClient.ProviderName" title="Sign in using your @p.DisplayName account"></button>
             }
         </div>
     </div>

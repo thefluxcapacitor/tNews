@@ -309,6 +309,10 @@
     <Content Include="Images\fire_24.png" />
     <Content Include="Images\googleplus_32.png" />
     <Content Include="Images\imdb_logo_24.png" />
+    <Content Include="Images\login-facebook.png" />
+    <Content Include="Images\login-google.png" />
+    <Content Include="Images\login-microsoft.png" />
+    <Content Include="Images\login-twitter.png" />
     <Content Include="Images\metacritic_logo_24.png" />
     <Content Include="Images\noimage-poster.png" />
     <Content Include="Images\rss_32.png" />
@@ -367,7 +371,6 @@
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\_RemoveExternalLoginsPartial.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
   </ItemGroup>

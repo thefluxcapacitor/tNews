@@ -3,11 +3,12 @@
         Hello, @User.Identity.Name
         @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
             @Html.AntiForgeryToken()
-            <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+            <a href="javascript:document.getElementById('logoutForm').submit()"><span class="icon-off"></span> Sign out</a>
         }
     </text>
 } else {
     <ul>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li><a id="loginLink" href="@Url.Action("Login", "Account")"><span class="icon-signin"></span> Sign in</a> 
+        </li>
     </ul>
 }

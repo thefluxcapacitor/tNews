@@ -98,10 +98,6 @@ h5, h6 {
     text-decoration: none;
 }
 
-.socialLoginList button {
-    display: inline;
-}
-
 /* login
 ----------------------------------------------------------*/
 #login {
@@ -112,10 +108,10 @@ h5, h6 {
 }
 
     #login a {
-        background-color: #d3dce0;
+        font-size: 14px;
         margin-left: 10px;
-        margin-right: 3px;
-        padding: 2px 3px;
+        margin-right: 0px;
+        padding: 2px 0px;
         text-decoration: none;
     }
 
@@ -674,3 +670,58 @@ button.watchlist span.icon-plus {
     font-size: 10px;
     margin-right: 5px;
 }*/
+
+#socialLoginList {
+    margin-top: 150px;
+    width: 100%;
+    text-align: center;
+}
+
+#socialLoginList div {
+    margin-top: 20px;
+}
+
+    #socialLoginList button {
+        background-repeat: no-repeat;
+        width: 150px;
+        height: 50px;
+        border: none;
+        background-color: transparent;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+        #socialLoginList button.prov-google {
+            background-image: url('/Images/login-google.png');
+        }
+
+        #socialLoginList button.prov-microsoft {
+            background-image: url('/Images/login-microsoft.png');
+        }
+
+        #socialLoginList button.prov-facebook {
+            background-image: url('/Images/login-facebook.png');
+        }
+
+        #socialLoginList button.prov-twitter {
+            background-image: url('/Images/login-twitter.png');
+        }
+
+input.registerUserName {
+    width: 250px;
+    height: 26px;
+    padding-left: 5px;
+    font-family: Verdana, Helvetica, Sans-Serif;
+}
+
+input.registerButton {
+    width: 94px;
+    height: 33px;
+    font-family: Verdana, Helvetica, Sans-Serif;
+    border-radius: 4px;
+    border: 1px solid lightgray;
+    font-size: 15px;
+    cursor: pointer;
+}

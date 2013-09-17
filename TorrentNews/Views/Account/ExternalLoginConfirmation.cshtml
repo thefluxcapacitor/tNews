@@ -1,34 +1,25 @@
 ﻿@model TorrentNews.Models.RegisterExternalLoginModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Register - Torrent news";
 }
 
-<hgroup class="title">
-    <h1>@ViewBag.Title.</h1>
-    <h2>Associate your @ViewBag.ProviderDisplayName account.</h2>
-</hgroup>
+<h3 style="margin-top: 50px;">Associate your @ViewBag.ProviderDisplayName account</h3>
 
 @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl })) {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
-    <fieldset>
-        <legend>Association Form</legend>
-        <p>
-            You've successfully authenticated with <strong>@ViewBag.ProviderDisplayName</strong>.
-            Please enter a user name for this site below and click the Confirm button to finish
-            logging in.
-        </p>
-        <ol>
-            <li class="name">
-                @Html.LabelFor(m => m.UserName)
-                @Html.TextBoxFor(m => m.UserName)
-                @Html.ValidationMessageFor(m => m.UserName)
-            </li>
-        </ol>
-        @Html.HiddenFor(m => m.ExternalLoginData)
-        <input type="submit" value="Register" />
-    </fieldset>
+    <p style="margin-bottom: 20px;">
+        You've successfully authenticated with <strong>@ViewBag.ProviderDisplayName</strong>.
+        Please enter a user name for this site below and click the Register button to finish
+        logging in.
+    </p>
+    @Html.TextBoxFor(m => m.UserName, new { @class = "registerUserName" })
+    @Html.HiddenFor(m => m.ExternalLoginData)
+    <input class="registerButton" type="submit" value="Register" />
+    <div>
+        @Html.ValidationMessageFor(m => m.UserName)
+    </div>
 }
 
 @section Scripts {
