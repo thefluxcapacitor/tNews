@@ -1,5 +1,6 @@
 ﻿namespace TorrentNews.Models
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class RegisterExternalLoginModel
@@ -9,6 +10,12 @@
         public string UserName { get; set; }
 
         public string ExternalLoginData { get; set; }
+
+        public string FB_name { get; set; }
+
+        public string FB_link { get; set; }
+
+        public string GL_email { get; set; }
     }
 
     public class ExternalLogin

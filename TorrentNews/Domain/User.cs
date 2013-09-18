@@ -8,7 +8,7 @@
     {
         public User()
         {
-            this.Watchlist = new List<string>();
+            this.Starred = new List<string>();
         }
 
         [BsonId]
@@ -28,13 +28,17 @@
             }
         }
 
-        public string AuthProvider { get; set; }
-
         public string Provider { get; set; }
         
         public string ProviderUserId { get; set; }
 
-        public IList<string> Watchlist { get; set; }
+        public IList<string> Starred { get; set; }
+
+        public string FB_name { get; set; }
+
+        public string FB_link { get; set; }
+
+        public string GL_email { get; set; }
 
         public static int GetFabricatedId(string provider, string providerUserId)
         {

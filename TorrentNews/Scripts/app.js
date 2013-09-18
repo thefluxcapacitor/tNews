@@ -90,28 +90,28 @@ function configureTooltips() {
     });
 }
 
-function configureWatchlistButtons() {
-    $('.watchlist').click(function () {
+function configureStarButtons() {
+    $('.starred').click(function () {
         var $this = $(this);
         var id = $this.attr('data-torrent-id');
         
-        if ($this.hasClass('add-watchlist')) {
-            var url = '/Torrents/WatchlistAdd?imdbId=' + id;
+        if ($this.hasClass('add-star')) {
+            var url = '/Torrents/StarAdd?imdbId=' + id;
         } else {
-            var url = '/Torrents/WatchlistRemove?imdbId=' + id;
+            var url = '/Torrents/StarRemove?imdbId=' + id;
         }
 
-        ajaxWatchlistAddRemove(url, $this);
+        ajaxStarAddRemove(url, $this);
     });
 }
 
-function ajaxWatchlistAddRemove(url, button) {
+function ajaxStarAddRemove(url, button) {
     
-    if (button.hasClass('animation-watchlist')) {
+    if (button.hasClass('animation-star')) {
         return;
     }
     
-    button.addClass('animation-watchlist');
+    button.addClass('animation-star');
     
     $.ajax({
         type: "POST",
@@ -124,8 +124,8 @@ function ajaxWatchlistAddRemove(url, button) {
     }).done(function (data) {
         
         var $btn = this;
-        $btn.toggleClass('remove-watchlist icon-star');
-        $btn.toggleClass('add-watchlist icon-star-empty');
+        $btn.toggleClass('remove-star icon-star');
+        $btn.toggleClass('add-star icon-star-empty');
         
     }).fail(function (xhr) {
         
@@ -141,6 +141,6 @@ function ajaxWatchlistAddRemove(url, button) {
         }
     }).always(function () {
         var $btn = this;
-        $btn.removeClass('animation-watchlist');
+        $btn.removeClass('animation-star');
     });
 }

@@ -1,102 +1,87 @@
-﻿@using TorrentNews.Extensions
-@model IEnumerable<TorrentNews.Models.TorrentModel>
+﻿@model IEnumerable<TorrentNews.Models.TorrentModel>
 
 <table id="moviesTable">
-@*    <tr>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-*@
-@foreach (var t in Model)
-{
-    <tr data-torrent-id="ID@(t.Id)">
-        <td class="posterCell">
-            <a href="@Url.Action("Details", new { id = t.Id })" target="_blank">
-                @if (!string.IsNullOrEmpty(t.Poster))
-                {
-                    <img class="poster" src="@t.Poster"/>
-                }
-                else
-                {
-                    <img class="poster" src="/Images/noimage-poster.png"/>
-                }
-            </a>
-        </td>
-        <td class="scoreCell">
-            <div style="position: relative;">
-                <div class="score">@t.Score</div>
-                @if (t.ImdbAward)
-                {
-                    <span class="hasTooltip"><img src="/Images/imdb_logo_24.png"/></span>
-                    <div class="hidden tooltip tooltipAwards">
-                        <img src="/Images/imdb_logo_24.png" />
-                        <p class="awardsTitle">IMDB award</p>
-                        <p>Movies with more than 1000 votes and a rating of 7 or higher are awarded with the IMDB logo and 400 points.</p>
-                    </div>
-                }
+    @foreach (var t in Model)
+    {
+        <tr data-torrent-id="ID@(t.Id)">
+            <td class="posterCell">
+                <a href="@Url.Action("Details", new { id = t.Id })" target="_blank">
+                    @if (!string.IsNullOrEmpty(t.Poster))
+                    {
+                        <img class="poster" src="@t.Poster"/>
+                    }
+                    else
+                    {
+                        <img class="poster" src="/Images/noimage-poster.png"/>
+                    }
+                </a>
+            </td>
+            <td class="scoreCell">
+                <div style="position: relative;">
+                    <div class="score">@t.Score</div>
+                    @if (t.ImdbAward)
+                    {
+                        <span class="hasTooltip"><img src="/Images/imdb_logo_24.png"/></span>
+                        <div class="hidden tooltip tooltipAwards">
+                            <img src="/Images/imdb_logo_24.png" />
+                            <p class="awardsTitle">IMDB award</p>
+                            <p>Movies with more than 1000 votes and a rating of 7 or higher are awarded with the IMDB logo and 400 points.</p>
+                        </div>
+                    }
 
-                @if (t.MetacriticAward)
-                {
-                    <span class="hasTooltip"><img src="/Images/metacritic_logo_24.png"/></span>
-                    <div class="hidden tooltip tooltipAwards">
-                        <img src="/Images/metacritic_logo_24.png" />
-                        <p class="awardsTitle">Metacritic award</p>
-                        <p>Movies with a metascore of 70 or higher are awarded with the Metacritic logo and 500 points.</p>
-                    </div>
-                }
+                    @if (t.MetacriticAward)
+                    {
+                        <span class="hasTooltip"><img src="/Images/metacritic_logo_24.png"/></span>
+                        <div class="hidden tooltip tooltipAwards">
+                            <img src="/Images/metacritic_logo_24.png" />
+                            <p class="awardsTitle">Metacritic award</p>
+                            <p>Movies with a metascore of 70 or higher are awarded with the Metacritic logo and 500 points.</p>
+                        </div>
+                    }
 
-                @if (t.PopularityAward || t.SuperPopularityAward)
-                {
-                    <span class="hasTooltip"><img src="/Images/fire_24.png"/></span>
-                    <div class="hidden tooltip tooltipAwards">
-                        <img src="/Images/fire_24.png" />
-                        <p class="awardsTitle">Popularity award</p>
-                        <p>Torrents with more than 1000 seeds or more than 20 comments are awarded with the Popularity logo and 100 points. If seeds are higher than 3000 or comments higher than 100, the score is increased by 100 extra points.</p>
-                    </div>
-                }
-            </div>
-        </td>
-        <td class="movieInfoCell">
-            <div class="infoCellWrapper">
-                @Html.Partial("_MovieInfo", t)
-            </div>
-            <div class="cellButtonsContainer">
-                @{
-                    var watchlistClasses = t.InWatchlist ? 
-                        "remove-watchlist icon-star" : 
-                        "add-watchlist icon-star-empty";
-                }
+                    @if (t.PopularityAward || t.SuperPopularityAward)
+                    {
+                        <span class="hasTooltip"><img src="/Images/fire_24.png"/></span>
+                        <div class="hidden tooltip tooltipAwards">
+                            <img src="/Images/fire_24.png" />
+                            <p class="awardsTitle">Popularity award</p>
+                            <p>Torrents with more than 1000 seeds or more than 20 comments are awarded with the Popularity logo and 100 points. If seeds are higher than 3000 or comments higher than 100, the score is increased by 100 extra points.</p>
+                        </div>
+                    }
+                </div>
+            </td>
+            <td class="movieInfoCell">
+                <div class="infoCellWrapper">
+                    @Html.Partial("_MovieInfo", t)
+                </div>
+                <div class="cellButtonsContainer">
+                    @{
+                        var starredClasses = t.IsStarred ? "remove-star icon-star" : "add-star icon-star-empty";
+                    }
 
-                <span class="watchlist actionButton @watchlistClasses" 
-                    data-torrent-id="@t.ImdbId"
-                    title="Add to watchlist"></span>
+                    <span class="starred actionButton @starredClasses" 
+                            data-torrent-id="@t.ImdbId"
+                            title="Star this movie"></span>
                 
-                <span class="trailerButton actionButton normal icon-facetime-video" 
-                    data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id"
-                    title="View trailer"></span>
+                    <span class="trailerButton actionButton normal icon-facetime-video" 
+                            data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id"
+                            title="View trailer"></span>
+                </div>
+            </td>
+            <td class="torrentInfoCell">
+                <div class="infoCellWrapper">
+                    @Html.Partial("_TorrentInfo", t)
 
-@*                <button class="trailerButton normal" 
-                    data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id">
-                    &nbsp;
-                </button>*@
-            </div>
-        </td>
-        <td class="torrentInfoCell">
-            <div class="infoCellWrapper">
-                @Html.Partial("_TorrentInfo", t)
+                    @if (t.RelatedTorrents.Any())
+                    {
+                        @Html.Partial("_RelatedTorrentsList", t)
+                    }
+                </div>
 
-                @if (t.RelatedTorrents.Any())
-                {
-                    @Html.Partial("_RelatedTorrentsList", t)
-                }
-            </div>
-
-            <div class="cellButtonsContainer">
-                <span class="detailsButton actionButton"><a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a></span>
-            </div>
-        </td>
-    </tr>
-}
+                <div class="cellButtonsContainer">
+                    <span class="detailsButton actionButton"><a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a></span>
+                </div>
+            </td>
+        </tr>
+    }
 </table>

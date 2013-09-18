@@ -87,7 +87,7 @@
                             <li>@Html.ActionLink("400+", "MostRecent", "Torrents", new { area = "", minScore = 400 }, null)</li>
                             <li>@Html.ActionLink("900+", "MostRecent", "Torrents", new { area = "", minScore = 900 }, null)</li>
                             <li>@Html.ActionLink("1100", "MostRecent", "Torrents", new { area = "", minScore = 1100 }, null)</li>
-                            <li>@Html.ActionLink("Watchlist", "MostRecent", "Torrents", new { area = "", wlist = true }, null)</li>
+                            <li>@Html.ActionLink("Starred", "Starred", "Torrents", new { area = "" }, null)</li>
                         </ul>
                     </nav>
                 }
@@ -123,7 +123,7 @@
                 <img src="/images/googleplus_32.png"/>
             </a>
         </div>
-        <div>
+        @*<div>
             @{
                 var rssUrl = Request.IsLocal ? 
                     siteUrl + "/Torrents/MostRecentFeed" : 
@@ -133,7 +133,7 @@
                 href="@rssUrl" target="_blank">
                 <img src="/images/rss_32.png"/>
             </a>
-        </div>
+        </div>*@
 
     </div>
     

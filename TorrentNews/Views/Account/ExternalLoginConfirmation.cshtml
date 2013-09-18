@@ -15,7 +15,12 @@
         logging in.
     </p>
     @Html.TextBoxFor(m => m.UserName, new { @class = "registerUserName" })
+
     @Html.HiddenFor(m => m.ExternalLoginData)
+    @Html.HiddenFor(m => m.FB_link)
+    @Html.HiddenFor(m => m.FB_name)
+    @Html.HiddenFor(m => m.GL_email)
+
     <input class="registerButton" type="submit" value="Register" />
     <div>
         @Html.ValidationMessageFor(m => m.UserName)

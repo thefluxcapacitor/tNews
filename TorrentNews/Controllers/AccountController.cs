@@ -12,6 +12,7 @@
     using TorrentNews.Models;
 
     using WebMatrix.WebData;
+    using TorrentNews.Domain;
 
     [Authorize]
     public class AccountController : Controller
@@ -84,7 +85,15 @@
                 string loginData = OAuthWebSecurity.SerializeProviderUserId(result.Provider, result.ProviderUserId);
                 this.ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(result.Provider).DisplayName;
                 this.ViewBag.ReturnUrl = returnUrl;
-                return View("ExternalLoginConfirmation", new RegisterExternalLoginModel { UserName = result.UserName, ExternalLoginData = loginData });
+                var model = new RegisterExternalLoginModel
+                                {
+                                    UserName = result.UserName,
+                                    ExternalLoginData = loginData,
+                                    FB_name = result.ExtraData.ContainsKey("name") ? result.ExtraData["name"] : string.Empty,
+                                    FB_link = result.ExtraData.ContainsKey("link") ? result.ExtraData["link"] : string.Empty,
+                                    GL_email = result.ExtraData.ContainsKey("email") ? result.ExtraData["email"] : string.Empty
+                                };
+                return View("ExternalLoginConfirmation", model);
             }
         }
 
@@ -112,6 +121,16 @@
                 // Check if user already exists
                 if (user == null)
                 {
+                    user = new User();
+                    user.Username = model.UserName;
+                    user.Provider = provider;
+                    user.ProviderUserId = providerUserId;
+                    user.Id = Domain.User.GetFabricatedId(provider, providerUserId);
+                    user.FB_link = model.FB_link;
+                    user.FB_name = model.FB_name;
+                    user.GL_email = model.GL_email;
+                    repo.Save(user);
+
                     OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.UserName);
                     OAuthWebSecurity.Login(provider, providerUserId, createPersistentCookie: false);
                     return this.RedirectToLocal(returnUrl);

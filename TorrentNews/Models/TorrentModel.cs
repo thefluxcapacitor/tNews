@@ -76,7 +76,7 @@
 
         public IList<RelatedTorrentModel> RelatedTorrents { get; private set; }
 
-        public bool InWatchlist { get; set; }
+        public bool IsStarred { get; set; }
 
         public bool HasImdbId()
         {

@@ -23,14 +23,41 @@
             return this.RedirectToAction("MostRecent");
         }
 
-        public ActionResult MostRecent(int page = 1, int minScore = 0, bool wlist = false)
+        [Authorize]
+        public ActionResult Starred(int page = 1)
+        {
+            var helper = new UrlHelper(this.ControllerContext.RequestContext);
+            var model = this.GetMostRecentModel(
+                page,
+                0,
+                true,
+                () => helper.Action("Starred", "Torrents", new { page = page + 1 }),
+                () => helper.Action("Starred", "Torrents", new { page = page - 1 }));
+
+            return this.View(model);
+        }
+
+        public ActionResult MostRecent(int page = 1, int minScore = 0)
+        {
+            var helper = new UrlHelper(this.ControllerContext.RequestContext);
+            var model = this.GetMostRecentModel(
+                page, 
+                minScore, 
+                false,
+                () => helper.Action("MostRecent", "Torrents", new { page = page + 1, minScore }),
+                () => helper.Action("MostRecent", "Torrents", new { page = page - 1, minScore }));
+
+            return this.View(model);
+        }
+
+        private TorrentsListModel GetMostRecentModel(int page, int minScore, bool st, Func<string> getNextPageUrl, Func<string> getPreviousPageUrl)
         {
             var model = new TorrentsListModel();
 
             var torrentsRepo = new TorrentsRepository();
             var moviesRepo = new MoviesRepository();
 
-            var watchlist = this.GetCurrentUserWatchlist();
+            var starred = this.GetCurrentUserStarred();
 
             var moviesCache = new Dictionary<string, Movie>();
 
@@ -38,13 +65,13 @@
             var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
             foreach (var t in torrents)
             {
-                var inWatchlist = false;
-                if (watchlist != null)
+                var isStarred = false;
+                if (starred != null)
                 {
-                    inWatchlist = watchlist.Any(item => item.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
+                    isStarred = starred.Any(item => item.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
                 }
 
-                if (wlist && !inWatchlist)
+                if (st && !isStarred)
                 {
                     continue;
                 }
@@ -68,38 +95,39 @@
 
                 this.AddRelatedTorrents(tm, torrentsRepo, Constants.RelatedTorrentsCount);
 
-                tm.InWatchlist = inWatchlist;
+                tm.IsStarred = isStarred;
 
                 model.Torrents.Add(tm);
             }
 
-            var helper = new UrlHelper(this.ControllerContext.RequestContext);
             if (model.Torrents.Count >= Constants.PageSize)
             {
-                var url = helper.Action("MostRecent", "Torrents", new { page = page + 1, minScore });
+                var url = getNextPageUrl();
                 model.NextPageUrl = url;
             }
 
             if (page > 1)
             {
-                var url = helper.Action("MostRecent", "Torrents", new { page = page - 1, minScore });
+                var url = getPreviousPageUrl();
                 model.PreviousPageUrl = url;
             }
-
-            return this.View(model);
+            return model;
         }
 
-        private IList<string> GetCurrentUserWatchlist()
+        private IList<string> GetCurrentUserStarred()
         {
-            IList<string> watchList = null;
+            IList<string> starred = null;
             if (this.User.Identity.IsAuthenticated)
             {
                 var usersRepo = new UsersRepository();
                 var user = usersRepo.FindByUsername(this.User.Identity.Name);
-                watchList = user.Watchlist;
+                if (user != null)
+                {
+                    starred = user.Starred;
+                }
             }
 
-            return watchList;
+            return starred;
         }
 
         public ActionResult Details(int id)
@@ -133,27 +161,27 @@
         }
 
         [AjaxAuthorize, HttpPost]
-        public ActionResult WatchlistAdd(string imdbId)
+        public ActionResult StarAdd(string imdbId)
         {
-            return this.WatchlistAction(
+            return this.StarAction(
                 imdbId,
                 (user, id) =>
                     {
-                        var wl = user.Watchlist.FirstOrDefault(item => item.Equals(imdbId, StringComparison.OrdinalIgnoreCase));
+                        var wl = user.Starred.FirstOrDefault(item => item.Equals(imdbId, StringComparison.OrdinalIgnoreCase));
                         if (wl == null)
                         {
-                            user.Watchlist.Add(imdbId);
+                            user.Starred.Add(imdbId);
                         }
                     });
         }
 
         [AjaxAuthorize, HttpPost]
-        public ActionResult WatchlistRemove(string imdbId)
+        public ActionResult StarRemove(string imdbId)
         {
-            return this.WatchlistAction(imdbId, (user, id) => user.Watchlist.Remove(id));
+            return this.StarAction(imdbId, (user, id) => user.Starred.Remove(id));
         }
 
-        private ActionResult WatchlistAction(string imdbId, Action<User, string> action)
+        private ActionResult StarAction(string imdbId, Action<User, string> action)
         {
             try
             {

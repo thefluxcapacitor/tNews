@@ -16,8 +16,8 @@
     {
         <div class="hasTooltip relatedTorrent">
             <span>
-                <a class="tag tagLight@(t.ReleaseSource.Quality)" 
-                    href="http://en.wikipedia.org/wiki/Pirated_movie_release_types" target="_blank">@t.ReleaseSource.DisplayValue</a>
+                <a class="tag tagLight@(rt.ReleaseSource.Quality)" 
+                    href="http://en.wikipedia.org/wiki/Pirated_movie_release_types" target="_blank">@rt.ReleaseSource.DisplayValue</a>
             </span>
             <a target="_blank" href="@Url.Action("Details", "Torrents", new { id = rt.Id })">@rt.Title</a>
         </div>

@@ -30,13 +30,27 @@
                 throw new MembershipCreateUserException(MembershipCreateStatus.InvalidProviderUserKey);
             }
 
-            this.repo.Save(new User
+            var userId = User.GetFabricatedId(provider, providerUserId);
+
+            var user = this.repo.Find(userId);
+            if (user == null)
             {
-                Username = userName,
-                Id = User.GetFabricatedId(provider, providerUserId),
-                Provider = provider,
-                ProviderUserId = providerUserId
-            });
+                user = new User
+                {
+                    Id = userId,
+                    Username = userName,
+                    Provider = provider,
+                    ProviderUserId = providerUserId
+                };
+            }
+            else
+            {
+                user.Username = userName;
+                user.Provider = provider;
+                user.ProviderUserId = providerUserId;
+            }
+
+            this.repo.Save(user);
         }
 
         public override int GetUserIdFromOAuth(string provider, string providerUserId)

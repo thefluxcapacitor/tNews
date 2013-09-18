@@ -3,14 +3,12 @@
 @using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }))
 {
     @Html.AntiForgeryToken()
-    <div id="socialLoginList">
-        <h3>Choose a provider to sign in</h3>
-        <div>
-            @foreach (AuthenticationClientData p in Model)
-            {
-                <button class="prov-@p.AuthenticationClient.ProviderName" type="submit" name="provider" value="@p.AuthenticationClient.ProviderName" title="Sign in using your @p.DisplayName account"></button>
-            }
-        </div>
+    <h3>Choose a provider to sign in</h3>
+    <div>
+        @foreach (AuthenticationClientData p in Model)
+        {
+            <button class="prov-@p.AuthenticationClient.ProviderName" type="submit" name="provider" value="@p.AuthenticationClient.ProviderName" title="Sign in using your @p.DisplayName account"></button>
+        }
     </div>
 }
 
