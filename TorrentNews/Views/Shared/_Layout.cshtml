@@ -51,7 +51,13 @@
 <body>
     <div id="errorPopup" class="hidden">
         <button class="closeButton"><span class="icon-remove" /></button>
-        <span class="errorMessage"></span>
+        <div class="popupMessage"></div>
+    </div>
+
+    <div id="signUpPopup" class="hidden">
+        <button class="closeButton"><span class="icon-remove" /></button>
+        <div class="popupMessage">Please sign in first</div>
+        <button class="signUpButton"><a href="@Url.Action("Login", "Account")"><span class="icon-signin"></span> Sign in</a></button>
     </div>
 
     <div id="body">

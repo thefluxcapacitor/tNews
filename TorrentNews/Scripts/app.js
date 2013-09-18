@@ -8,9 +8,24 @@
 function showErrorPopup(message) {
     var $popup = $('#errorPopup');
 
-    $popup.find('span.errorMessage').text(message);
+    $popup.find('div.popupMessage').text(message);
     $popup.find('button.closeButton').click(function () {
         $('#errorPopup').dialog('close');
+    });
+
+    $popup.dialog({
+        dialogClass: "no-title",
+        draggable: false,
+        modal: true,
+        resizable: false
+    });
+}
+
+function showSignUpPopup() {
+    var $popup = $('#signUpPopup');
+
+    $popup.find('button.closeButton').click(function () {
+        $('#signUpPopup').dialog('close');
     });
 
     $popup.dialog({
@@ -111,14 +126,12 @@ function ajaxWatchlistAddRemove(url, button) {
         var $btn = this;
         $btn.toggleClass('remove-watchlist icon-star');
         $btn.toggleClass('add-watchlist icon-star-empty');
-        $btn.removeClass('animation-watchlist');
         
     }).fail(function (xhr) {
         
         if (xhr.status == 403) {
-            var $btn = this;
-            $btn.removeClass('animation-watchlist');
-            showErrorPopup('You are not logged in.');
+            showSignUpPopup();
+
         } else {
             if (xhr.statusText) {
                 showErrorPopup(xhr.statusText);
@@ -126,5 +139,8 @@ function ajaxWatchlistAddRemove(url, button) {
                 showErrorPopup('An unexpected error has occurred. Error code: ' + xhr.status);
             }
         }
+    }).always(function () {
+        var $btn = this;
+        $btn.removeClass('animation-watchlist');
     });
 }
