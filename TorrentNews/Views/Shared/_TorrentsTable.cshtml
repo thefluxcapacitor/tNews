@@ -59,9 +59,9 @@
                         var starredClasses = t.IsStarred ? "remove-star icon-star" : "add-star icon-star-empty";
                     }
 
-                    <span class="starred actionButton @starredClasses" 
+                    <span class="star actionButton @starredClasses" 
                             data-torrent-id="@t.ImdbId"
-                            title="Star this movie"></span>
+                            title="Add or remove star from this movie"></span>
                 
                     <span class="trailerButton actionButton normal icon-facetime-video" 
                             data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id"

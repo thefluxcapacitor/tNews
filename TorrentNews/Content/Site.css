@@ -638,9 +638,6 @@ a.tagLight3, a.tagLight3:hover {
     display: none;
 }
 
-.starred {
-}
-
 .animation-star {
     background-image: url('/Images/spinner.gif');
     background-repeat: no-repeat;

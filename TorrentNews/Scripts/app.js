@@ -91,7 +91,7 @@ function configureTooltips() {
 }
 
 function configureStarButtons() {
-    $('.starred').click(function () {
+    $('.star').click(function () {
         var $this = $(this);
         var id = $this.attr('data-torrent-id');
         
