@@ -47,7 +47,11 @@ function configureTrailerButton() {
             $trailerRows.remove();
 
             $button.removeClass('pushed');
+
+            $button.parent().removeClass('animate-spinner');
         } else {
+            $button.parent().addClass('animate-spinner');
+
             $('.trailerButton.pushed').removeClass('pushed');
 
             var $trailerRows = $('.trailerContainerRow');
@@ -75,6 +79,9 @@ function configureTrailerButton() {
                 });
 
                 $.scrollTo($('.trailerContainerRow'), 1700);
+            }).always(function () {
+                var $btn = $(this);
+                $btn.parent().removeClass('animate-spinner');
             });
         }
     });
@@ -107,12 +114,11 @@ function configureStarButtons() {
 
 function ajaxStarAddRemove(url, button) {
     
-    if (!button.parent().find('.animation-star').hasClass('hidden')) {
+    if (button.parent().hasClass('animate-spinner')) {
         return;
     }
-    
-    button.parent().find('.animation-star').removeClass('hidden');
-    button.addClass('hidden');
+
+    button.parent().addClass('animate-spinner');
     
     $.ajax({
         type: "POST",
@@ -142,7 +148,6 @@ function ajaxStarAddRemove(url, button) {
         }
     }).always(function () {
         var $btn = this;
-        $btn.parent().find('.animation-star').addClass('hidden');
-        button.removeClass('hidden');
+        $btn.parent().removeClass('animate-spinner');
     });
 }

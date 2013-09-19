@@ -638,17 +638,28 @@ a.tagLight3, a.tagLight3:hover {
     display: none;
 }
 
-.starContainer {
+.starContainer, .trailerButtonContainer {
     position: relative;
-    right: 22px; 
+}
+
+.starContainer {
     top: -2px;
+    right: 22px; 
+}
+
+.animate-spinner span.animation-spinner {
+    display: inline;
+}
+
+.animate-spinner span.actionButton {
+    opacity: 0;
 }
 
 .star {
     position: absolute; 
 }
 
-.animation-star {
+.animation-spinner {
     background-image: url('/Images/spinner.gif');
     background-repeat: no-repeat;
     -moz-background-size: 16px;
@@ -660,6 +671,16 @@ a.tagLight3, a.tagLight3:hover {
     position: absolute; 
     width: 20px; 
     height: 20px; 
+}
+
+.animation-star {
+    top: 4px;
+    left: 4px;
+}
+
+.animation-trailer {
+    top: 2px;
+    left: 4px;
 }
 
 #socialLoginList {
