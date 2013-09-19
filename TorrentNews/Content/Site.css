@@ -638,13 +638,28 @@ a.tagLight3, a.tagLight3:hover {
     display: none;
 }
 
+.starContainer {
+    position: relative;
+    right: 22px; 
+    top: -2px;
+}
+
+.star {
+    position: absolute; 
+}
+
 .animation-star {
     background-image: url('/Images/spinner.gif');
     background-repeat: no-repeat;
-    -moz-background-size: 22px;
-    -o-background-size: 22px;
-    -webkit-background-size: 22px;
-    background-size: 22px;
+    -moz-background-size: 16px;
+    -o-background-size: 16px;
+    -webkit-background-size: 16px;
+    background-size: 16px;
+    top: 4px;
+    left: 4px;
+    position: absolute; 
+    width: 20px; 
+    height: 20px; 
 }
 
 #socialLoginList {
@@ -714,21 +729,21 @@ input.registerButton {
     border: none;
     background: none;
     outline-style: none;
+    cursor: pointer;
 }
 
 #signUpPopup div.popupMessage, #errorPopup div.popupMessage {
     margin-top: 40px;
 }
 
-#signUpPopup button.signUpButton {
-    margin-top: 20px;
-    width: 94px;
-    height: 33px;
+#signUpPopup a.signUpButton {
+    padding: 5px;
     font-family: Verdana, Helvetica, Sans-Serif;
     border-radius: 4px;
     border: 1px solid lightgray;
     font-size: 15px;
     cursor: pointer;
+    background-color: #F0F0F0;
 }
 
 #nothingFoundMessage {

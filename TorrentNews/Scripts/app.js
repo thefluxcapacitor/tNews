@@ -107,11 +107,12 @@ function configureStarButtons() {
 
 function ajaxStarAddRemove(url, button) {
     
-    if (button.hasClass('animation-star')) {
+    if (!button.parent().find('.animation-star').hasClass('hidden')) {
         return;
     }
     
-    button.addClass('animation-star');
+    button.parent().find('.animation-star').removeClass('hidden');
+    button.addClass('hidden');
     
     $.ajax({
         type: "POST",
@@ -141,6 +142,7 @@ function ajaxStarAddRemove(url, button) {
         }
     }).always(function () {
         var $btn = this;
-        $btn.removeClass('animation-star');
+        $btn.parent().find('.animation-star').addClass('hidden');
+        button.removeClass('hidden');
     });
 }
