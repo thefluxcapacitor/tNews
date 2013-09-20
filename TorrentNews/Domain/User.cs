@@ -8,7 +8,7 @@
     {
         public User()
         {
-            this.Starred = new List<string>();
+            this.Starred = new List<StarredMovie>();
         }
 
         [BsonId]
@@ -32,7 +32,7 @@
         
         public string ProviderUserId { get; set; }
 
-        public IList<string> Starred { get; set; }
+        public IList<StarredMovie> Starred { get; set; }
 
         public string FB_name { get; set; }
 

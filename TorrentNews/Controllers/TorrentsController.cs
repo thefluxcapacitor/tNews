@@ -10,6 +10,8 @@
     using System.Web;
     using System.Web.Mvc;
 
+    using MongoDB.Driver;
+
     using TorrentNews.Dal;
     using TorrentNews.Domain;
     using TorrentNews.Filters;
@@ -61,21 +63,20 @@
 
             var moviesCache = new Dictionary<string, Movie>();
 
-            var sortBy = new string[] { "-AddedOn", "Score" };
-            var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
+            IEnumerable<Torrent> torrents;
+
+            if (!st)
+            {
+                var sortBy = new string[] { "-AddedOn", "Score" };
+                torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
+            }
+            else
+            {
+                torrents = torrentsRepo.GetPageStarredTorrents(page, starred);
+            }
+
             foreach (var t in torrents)
             {
-                var isStarred = false;
-                if (starred != null)
-                {
-                    isStarred = starred.Any(item => item.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (st && !isStarred)
-                {
-                    continue;
-                }
-
                 Movie m = null;
                 if (t.HasImdbId())
                 {
@@ -95,7 +96,10 @@
 
                 this.AddRelatedTorrents(tm, torrentsRepo, Constants.RelatedTorrentsCount);
 
-                tm.IsStarred = isStarred;
+                if (starred != null)
+                {
+                    tm.IsStarred = starred.Any(item => item.ImdbId.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
+                }
 
                 model.Torrents.Add(tm);
             }
@@ -111,12 +115,13 @@
                 var url = getPreviousPageUrl();
                 model.PreviousPageUrl = url;
             }
+
             return model;
         }
 
-        private IList<string> GetCurrentUserStarred()
+        private IList<StarredMovie> GetCurrentUserStarred()
         {
-            IList<string> starred = null;
+            IList<StarredMovie> starred = null;
             if (this.User.Identity.IsAuthenticated)
             {
                 var usersRepo = new UsersRepository();
@@ -167,10 +172,10 @@
                 imdbId,
                 (user, id) =>
                     {
-                        var wl = user.Starred.FirstOrDefault(item => item.Equals(imdbId, StringComparison.OrdinalIgnoreCase));
+                        var wl = user.Starred.FirstOrDefault(item => item.ImdbId.Equals(imdbId, StringComparison.OrdinalIgnoreCase));
                         if (wl == null)
                         {
-                            user.Starred.Add(imdbId);
+                            user.Starred.Add(new StarredMovie { ImdbId = imdbId, StarredOn = DateTime.UtcNow });
                         }
                     });
         }
@@ -178,7 +183,12 @@
         [AjaxAuthorize, HttpPost]
         public ActionResult StarRemove(string imdbId)
         {
-            return this.StarAction(imdbId, (user, id) => user.Starred.Remove(id));
+            return this.StarAction(imdbId, (user, id) =>
+                {
+                    var aux = user.Starred.Single(
+                        s => s.ImdbId.Equals(imdbId, StringComparison.OrdinalIgnoreCase));
+                    user.Starred.Remove(aux);
+                });
         }
 
         private ActionResult StarAction(string imdbId, Action<User, string> action)

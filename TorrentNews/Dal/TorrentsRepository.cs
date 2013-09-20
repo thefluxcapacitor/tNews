@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using MongoDB.Bson;
     using MongoDB.Driver;
@@ -35,6 +36,24 @@
         public Torrent Find(BsonValue id)
         {
             return this.torrentsCollection.FindOneById(id);
+        }
+
+        public IEnumerable<Torrent> GetPageStarredTorrents(int page, IList<StarredMovie> starred)
+        {
+            var starredPage = starred
+                .OrderByDescending(s => s.StarredOn)
+                .Skip(Constants.PageSize * (page - 1))
+                .Take(Constants.PageSize)
+                .Select(s => s.ImdbId)
+                .ToList();
+
+            var filter = Query.And(
+                Query<Torrent>.In(t => t.ImdbId, starredPage), 
+                Query<Torrent>.EQ(t => t.Latest, true));
+
+            var result = this.torrentsCollection.Find(filter);
+
+            return result.OrderBy(t => t.ImdbId, new StarredOrderComparer(starredPage));
         }
 
         public MongoCursor<Torrent> GetPageMostRecentTorrents(int page, string[] sortBy, int minScore)
@@ -107,6 +126,31 @@
             }
 
             return result;
+        }
+
+        private class StarredOrderComparer : IComparer<string>
+        {
+            private readonly IList<string> starred;
+
+            public StarredOrderComparer(IList<string> starred)
+            {
+                this.starred = starred;
+            }
+
+            public int Compare(string x, string y)
+            {
+                if (this.starred.IndexOf(x) > this.starred.IndexOf(y))
+                {
+                    return 1;
+                }
+                
+                if (this.starred.IndexOf(x) < this.starred.IndexOf(y))
+                {
+                    return -1;
+                }
+                
+                return 0;
+            }
         }
     }
 }

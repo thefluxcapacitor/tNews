@@ -1,0 +1,28 @@
+{
+	"_id" : 86384332,
+	"Username" : "jorge",
+	"UsernameLower" : "jorge",
+	"Provider" : "google",
+	"ProviderUserId" : "https://www.google.com/accounts/o8/id?id=AItOawlBMJ5NTOn_iaeS6eedhkwB1CQSRoh-L_Q",
+	"Starred" : [
+		{
+			"ImdbId" : "tt0206314",
+			"StarredOn" : ISODate("2013-09-20T12:50:25.463Z")
+		},
+		{
+			"ImdbId" : "tt0770828",
+			"StarredOn" : ISODate("2013-09-20T12:50:45.915Z")
+		},
+		{
+			"ImdbId" : "tt0109444",
+			"StarredOn" : ISODate("2013-09-20T12:50:47.871Z")
+		},
+		{
+			"ImdbId" : "tt1462901",
+			"StarredOn" : ISODate("2013-09-20T12:50:49.744Z")
+		}
+	],
+	"FB_name" : null,
+	"FB_link" : null,
+	"GL_email" : "jorge.rowies@gmail.com"
+}
