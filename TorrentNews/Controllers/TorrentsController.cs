@@ -102,8 +102,6 @@
                     tm.IsStarred = starred.Any(item => item.ImdbId.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
                 }
 
-                tm.IsNew
-
                 model.Torrents.Add(tm);
             }
 

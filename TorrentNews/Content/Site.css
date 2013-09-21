@@ -779,13 +779,3 @@ input.registerButton {
     color: red;
 }
 
-.tag-new {
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-bottom: 1px;
-    background-color: #0E9BBE;
-    color: white;
-    border-radius: 2px;
-    font-size: 10px;
-    vertical-align: top;
-}

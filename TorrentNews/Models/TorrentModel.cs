@@ -78,8 +78,6 @@
 
         public bool IsStarred { get; set; }
 
-        public bool IsNew { get; set; }
-
         public bool HasImdbId()
         {
             return !string.IsNullOrEmpty(this.ImdbId) && this.ImdbId != "NA";

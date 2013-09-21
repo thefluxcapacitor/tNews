@@ -41,8 +41,6 @@
 
         public string GL_email { get; set; }
 
-        public DateTime? LastMovieSeenAddedOn { get; set; }
-
         public static int GetFabricatedId(string provider, string providerUserId)
         {
             return (provider + "@" + providerUserId).GetHashCode();
