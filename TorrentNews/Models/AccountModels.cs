@@ -7,6 +7,7 @@
     {
         [Required]
         [Display(Name = "User name")]
+        [RegularExpression(@"[a-z0-9A-Z\.@_]*", ErrorMessage = "Only letters, numbers and special characters such as _ . @ are allowed")]
         public string UserName { get; set; }
 
         public string ExternalLoginData { get; set; }

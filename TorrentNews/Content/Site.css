@@ -726,6 +726,7 @@ input.registerUserName {
     height: 26px;
     padding-left: 5px;
     font-family: Verdana, Helvetica, Sans-Serif;
+    margin-bottom: 3px;
 }
 
 input.registerButton {
@@ -771,4 +772,20 @@ input.registerButton {
     text-align: center;
     margin-top: 150px;
     margin-bottom: 150px;
+}
+
+.field-validation-error {
+    font-size: 12px;
+    color: red;
+}
+
+.tag-new {
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    background-color: #0E9BBE;
+    color: white;
+    border-radius: 2px;
+    font-size: 10px;
+    vertical-align: top;
 }

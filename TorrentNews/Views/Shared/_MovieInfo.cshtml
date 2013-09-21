@@ -8,7 +8,12 @@
 <div>
     @if (t.HasImdbId())
     {
-        <div class="title"><a href="http://www.imdb.com/title/@t.ImdbId" target="_blank">@t.MovieTitle</a> (@t.Year)</div>
+        <div class="title"><a href="http://www.imdb.com/title/@t.ImdbId" target="_blank">@t.MovieTitle</a> (@t.Year) 
+            @if (t.IsNew)
+            {
+                <span class="tag-new">new</span>
+            }
+        </div>
         <p class="plot">@t.Plot</p>
         <p><span class="label">Genres: </span>@t.Genres</p>
                     
@@ -35,7 +40,7 @@
         </p>
                     
         <p>
-            <span class="label">Metacritic Rating: </span>
+            <span class="label">Metacritic Score: </span>
             <a target="_blank" href="http://www.imdb.com/title/@t.ImdbId/criticreviews">@t.McMetascore (@t.McCriticsCount critics)</a>
         </p>
     }

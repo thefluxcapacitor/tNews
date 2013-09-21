@@ -59,7 +59,8 @@
             var torrentsRepo = new TorrentsRepository();
             var moviesRepo = new MoviesRepository();
 
-            var starred = this.GetCurrentUserStarred();
+            var currentUser = this.GetCurrentUser();
+            var starred = this.GetUserStarred(currentUser);
 
             var moviesCache = new Dictionary<string, Movie>();
 
@@ -101,6 +102,8 @@
                     tm.IsStarred = starred.Any(item => item.ImdbId.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
                 }
 
+                tm.IsNew
+
                 model.Torrents.Add(tm);
             }
 
@@ -119,17 +122,23 @@
             return model;
         }
 
-        private IList<StarredMovie> GetCurrentUserStarred()
+        private User GetCurrentUser()
         {
-            IList<StarredMovie> starred = null;
             if (this.User.Identity.IsAuthenticated)
             {
                 var usersRepo = new UsersRepository();
-                var user = usersRepo.FindByUsername(this.User.Identity.Name);
-                if (user != null)
-                {
-                    starred = user.Starred;
-                }
+                return usersRepo.FindByUsername(this.User.Identity.Name);
+            }
+
+            return null;
+        }
+
+        private IList<StarredMovie> GetUserStarred(User user)
+        {
+            IList<StarredMovie> starred = null;
+            if (user != null)
+            {
+                starred = user.Starred;
             }
 
             return starred;

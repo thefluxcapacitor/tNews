@@ -1,5 +1,6 @@
 ﻿namespace TorrentNews.Domain
 {
+    using System;
     using System.Collections.Generic;
 
     using MongoDB.Bson.Serialization.Attributes;
@@ -39,6 +40,8 @@
         public string FB_link { get; set; }
 
         public string GL_email { get; set; }
+
+        public DateTime? LastMovieSeenAddedOn { get; set; }
 
         public static int GetFabricatedId(string provider, string providerUserId)
         {
