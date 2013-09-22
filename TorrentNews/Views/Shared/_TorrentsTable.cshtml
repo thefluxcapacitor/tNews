@@ -64,7 +64,7 @@
                     
                     <div class="starContainer">
                         <span class="animation-spinner animation-star hidden">&nbsp;</span>
-                        <span class="star actionButton @starredClasses" 
+                        <span class="star actionButton button-with-spinner @starredClasses" 
                                 data-torrent-id="@t.ImdbId"
                                 title="Add or remove star from this movie">
                         </span>
@@ -72,7 +72,7 @@
                 
                     <div class="trailerButtonContainer">
                         <span class="animation-spinner animation-trailer hidden">&nbsp;</span>
-                        <span class="trailerButton actionButton normal icon-facetime-video" 
+                        <span class="trailerButton actionButton button-with-spinner normal icon-facetime-video" 
                                 data-trailer-url="/Torrents/Trailer?title=@Url.Encode(t.MovieTitle)&year=@Url.Encode(t.Year)&torrentId=@t.Id"
                                 title="View trailer"></span>
                     </div>
@@ -105,7 +105,8 @@
                 <div id="bm@(t.Id)" class="bookmark @bmClass" 
                     data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")"
                     data-torrent-id="@t.Id">
-                    <span class="@bmIconClass"></span>
+                    <span class="animation-spinner animation-bookmark hidden">&nbsp;</span>
+                    <span class="@bmIconClass button-with-spinner"></span>
                 </div>
             </td>
         </tr>

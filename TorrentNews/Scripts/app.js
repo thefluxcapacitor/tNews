@@ -156,6 +156,13 @@ function configureBookmarks() {
     $('#moviesTable td.bookmarkCell div.bookmark').click(function() {
 
         var button = $(this);
+
+        if (button.hasClass('animate-spinner') || button.hasClass('bookmark-set')) {
+            return;
+        }
+
+        button.addClass('animate-spinner');
+
         var date = button.attr('data-torrent-addedon');
         var id = button.attr('data-torrent-id');
         
@@ -168,11 +175,11 @@ function configureBookmarks() {
 
             var bmSet = $('.bookmark-set');
             bmSet.toggleClass('bookmark-set bookmark-unset');
-            bmSet.find('span').toggleClass('icon-bookmark icon-bookmark-empty');
+            bmSet.find('span.button-with-spinner').toggleClass('icon-bookmark icon-bookmark-empty');
             
             var btn = this;
             btn.toggleClass('bookmark-set bookmark-unset');
-            btn.find('span').toggleClass('icon-bookmark icon-bookmark-empty');
+            btn.find('span.button-with-spinner').toggleClass('icon-bookmark icon-bookmark-empty');
 
         }).fail(function (xhr) {
 
@@ -187,8 +194,8 @@ function configureBookmarks() {
                 }
             }
         }).always(function () {
-            //var $btn = this;
-            //$btn.parent().removeClass('animate-spinner');
+            var btn = this;
+            btn.removeClass('animate-spinner');
         });
     });
 }

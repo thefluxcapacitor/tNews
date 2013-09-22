@@ -244,6 +244,7 @@ td {
     margin-left: 20px;
     cursor: pointer;
     font-size: 20px;
+    position: relative;
 }
 
 #moviesTable td.bookmarkCell div.bookmark:hover {
@@ -685,7 +686,7 @@ a.tagLight3, a.tagLight3:hover {
     display: inline;
 }
 
-.animate-spinner span.actionButton {
+.animate-spinner span.button-with-spinner {
     opacity: 0;
 }
 
@@ -715,6 +716,11 @@ a.tagLight3, a.tagLight3:hover {
 .animation-trailer {
     top: 2px;
     left: 4px;
+}
+
+.animation-bookmark {
+    top: 5px;
+    left: -1px;
 }
 
 #socialLoginList {
