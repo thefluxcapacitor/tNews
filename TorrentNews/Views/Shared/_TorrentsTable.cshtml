@@ -92,6 +92,11 @@
                     <span class="detailsButton actionButton"><a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a></span>
                 </div>
             </td>
+            <td class="bookmarkCell">
+                <div id="bm@(t.Id)" class="bookmark bookmark-unset" data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")">
+                    <span class="icon-bookmark-empty"></span>
+                </div>
+            </td>
         </tr>
     }
 </table>

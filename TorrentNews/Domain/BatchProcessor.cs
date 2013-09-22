@@ -176,6 +176,11 @@
             var torrents = scraper.GetLatestTorrents(op);
             foreach (var t in torrents)
             {
+                if (!t.ScrapedOn.HasValue)
+                {
+                    t.ScrapedOn = DateTime.UtcNow;
+                }
+
                 torrentsRepo.Save(t);
 
                 if (t.ImdbId != "NA")

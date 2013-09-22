@@ -14,7 +14,9 @@ namespace TorrentNews
     using Newtonsoft.Json.Converters;
 
     using TorrentNews.App_Start;
+    using TorrentNews.Dal;
     using TorrentNews.Domain;
+    using TorrentNews.Migrations;
     using TorrentNews.Models;
 
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
@@ -35,6 +37,27 @@ namespace TorrentNews
             ConfigureWebApiFormatters();
 
             ConfigureMappings();
+
+            ApplyPendingMigrations();
+        }
+
+        private static void ApplyPendingMigrations()
+        {
+            var repo = new MigrationsRepository();
+            var migrations = repo.GetAll();
+
+            CheckApplyMigration(migrations, new Migration20130921AddScrapedOn(), repo);
+        }
+
+        private static void CheckApplyMigration(IEnumerable<Migration> migrations, IMigration migration, MigrationsRepository repo)
+        {
+            if (migrations.Any(m => m.Id.Equals(migration.GetName(), StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+
+            migration.Apply();
+            repo.Save(new Migration { Id = migration.GetName(), AppliedOn = DateTime.UtcNow });
         }
 
         private static void ConfigureMappings()

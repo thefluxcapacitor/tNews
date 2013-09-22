@@ -231,6 +231,30 @@ td {
     min-width: 420px;
 }
 
+#moviesTable td.bookmarkCell {
+    width: 0px;
+    min-width: 0px;
+    max-width: 0px;
+    padding: 0;
+    margin: 0;
+}
+
+#moviesTable td.bookmarkCell div.bookmark {
+    padding-top: 0px;
+    margin-left: 20px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#moviesTable td.bookmarkCell div.bookmark:hover {
+    color: tomato;
+    opacity: 1;
+}
+
+#moviesTable td.bookmarkCell div.bookmark-unset {
+    opacity: 0.5;
+}
+
 #moviesTable td.posterCell {
     width: 200px;
     min-width: 200px;
@@ -266,7 +290,17 @@ td {
     text-align: center;
     font-size: 30px;
     font-weight: bold;
+    position: relative;
 }
+
+    .pager a.goToBookmark {
+        right: 0;
+        font-size: 13px;
+        margin-top: 16px;
+        position: absolute;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
 .pager a.disabled {
     color: lightgray;

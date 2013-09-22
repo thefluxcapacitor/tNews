@@ -68,8 +68,9 @@
 
             if (!st)
             {
-                var sortBy = new string[] { "-AddedOn", "Score" };
+                var sortBy = new string[] { "-ScrapedOn", "-Score", "Id" };
                 torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
+                model.ShowGoToBookmark = true;
             }
             else
             {
@@ -170,6 +171,62 @@
             tm.TrailersInfo = this.GetTrailersModel(tm.MovieTitle, tm.Year, tm.Id);
 
             return this.View(tm);
+        }
+
+        [Authorize]
+        public ActionResult GoToBookmark()
+        {
+            var user = this.GetCurrentUser();
+
+            if (!user.BookmarkPosition.HasValue)
+            {
+                return this.RedirectToAction("MostRecent");
+            }
+
+            var torrentsRepo = new TorrentsRepository();
+            var sortBy = new string[] { "-ScrapedOn", "-Score", "Id" };
+
+            var page = 1;
+            var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
+
+            while (torrents.Any())
+            {
+                var closestTorrent = torrents.FirstOrDefault(t => t.AddedOn <= user.BookmarkPosition.Value);
+                if (closestTorrent != null)
+                {
+                    var actionUrl = Url.RouteUrl(new { controller = "Torrents", action = "MostRecent", page });
+                    return this.Redirect(actionUrl + "#bm" + closestTorrent.Id.ToString(CultureInfo.InvariantCulture));
+                }
+
+                page++;
+                torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
+            }
+
+            return this.RedirectToAction("MostRecent");
+        }
+
+        [AjaxAuthorize, HttpPost]
+        public ActionResult SetBookmark(DateTime date)
+        {
+            try
+            {
+                var repo = new UsersRepository();
+                var user = repo.FindByUsername(this.User.Identity.Name);
+
+                if (user == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "User not found.");
+                }
+                
+                user.BookmarkPosition = date.ToUniversalTime();
+                repo.Save(user);
+
+                return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "An unexpected error has occurred. " + ex.Message);
+            }
         }
 
         [AjaxAuthorize, HttpPost]
@@ -276,103 +333,103 @@
             return model;
         }
 
-        public ActionResult MostRecentFeed()
-        {
-            var torrentsRepo = new TorrentsRepository();
-            var moviesRepo = new MoviesRepository();
+        ////public ActionResult MostRecentFeed()
+        ////{
+        ////    var torrentsRepo = new TorrentsRepository();
+        ////    var moviesRepo = new MoviesRepository();
 
-            var moviesCache = new Dictionary<string, Movie>();
+        ////    var moviesCache = new Dictionary<string, Movie>();
 
-            var rssItems = new List<SyndicationItem>();
+        ////    var rssItems = new List<SyndicationItem>();
 
-            var torrents = torrentsRepo.GetRssItems(new string[] { "-AddedOn", "Score" }).SetLimit(500);
-            foreach (var t in torrents)
-            {
-                Movie m = null;
-                if (t.HasImdbId())
-                {
-                    if (!moviesCache.TryGetValue(t.ImdbId, out m))
-                    {
-                        m = moviesRepo.Find(t.ImdbId);
-                        moviesCache.Add(t.ImdbId, m);
-                    }
-                }
+        ////    var torrents = torrentsRepo.GetRssItems(new string[] { "-AddedOn", "Score" }).SetLimit(500);
+        ////    foreach (var t in torrents)
+        ////    {
+        ////        Movie m = null;
+        ////        if (t.HasImdbId())
+        ////        {
+        ////            if (!moviesCache.TryGetValue(t.ImdbId, out m))
+        ////            {
+        ////                m = moviesRepo.Find(t.ImdbId);
+        ////                moviesCache.Add(t.ImdbId, m);
+        ////            }
+        ////        }
 
-                var model = new TorrentRssModel();
-                AutoMapper.Mapper.Map(t, model);
-                if (m != null)
-                {
-                    AutoMapper.Mapper.Map(m, model);
-                }
+        ////        var model = new TorrentRssModel();
+        ////        AutoMapper.Mapper.Map(t, model);
+        ////        if (m != null)
+        ////        {
+        ////            AutoMapper.Mapper.Map(m, model);
+        ////        }
 
-                string rssItemTitle;
-                if (m != null)
-                {
-                    var metacritic = 
-                        m.McMetascore == 0 ? 
-                        string.Empty : 
-                        string.Format("- MC {0}/{1} ", m.McMetascore, m.McCriticsCount);
+        ////        string rssItemTitle;
+        ////        if (m != null)
+        ////        {
+        ////            var metacritic = 
+        ////                m.McMetascore == 0 ? 
+        ////                string.Empty : 
+        ////                string.Format("- MC {0}/{1} ", m.McMetascore, m.McCriticsCount);
 
-                    rssItemTitle = string.Format(
-                        "{0} ({1}) - IMDB {2}/{3} {4}- Seeds {5}",
-                        m.Title, 
-                        m.Year, 
-                        Math.Round((decimal)m.ImdbRating / 10, 1), 
-                        m.ImdbVotes, 
-                        metacritic, 
-                        t.Seed);
-                }
-                else
-                {
-                    rssItemTitle = string.Format("{0} - Seeds {1}", t.Title, t.Seed);
-                }
+        ////            rssItemTitle = string.Format(
+        ////                "{0} ({1}) - IMDB {2}/{3} {4}- Seeds {5}",
+        ////                m.Title, 
+        ////                m.Year, 
+        ////                Math.Round((decimal)m.ImdbRating / 10, 1), 
+        ////                m.ImdbVotes, 
+        ////                metacritic, 
+        ////                t.Seed);
+        ////        }
+        ////        else
+        ////        {
+        ////            rssItemTitle = string.Format("{0} - Seeds {1}", t.Title, t.Seed);
+        ////        }
 
-                var rssItem = new SyndicationItem(
-                    rssItemTitle, 
-                    SyndicationContent.CreateHtmlContent(this.GetSyndicationItemHtml(model)),
-                    new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host + "/Torrents/Details/" + t.Id.ToString(CultureInfo.InvariantCulture)),
-                    t.Id.ToString(CultureInfo.InvariantCulture),
-                    t.AddedOn);
+        ////        var rssItem = new SyndicationItem(
+        ////            rssItemTitle, 
+        ////            SyndicationContent.CreateHtmlContent(this.GetSyndicationItemHtml(model)),
+        ////            new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host + "/Torrents/Details/" + t.Id.ToString(CultureInfo.InvariantCulture)),
+        ////            t.Id.ToString(CultureInfo.InvariantCulture),
+        ////            t.AddedOn);
                 
-                rssItems.Add(rssItem);
-            }
+        ////        rssItems.Add(rssItem);
+        ////    }
 
-            var feed = new SyndicationFeed(
-                "Torrent news",
-                "Latest torrents",
-                new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host),
-                this.Request.Url.Scheme + "://" + this.Request.Url.Host + "/Torrents/MostRecentFeed",
-                DateTime.UtcNow);
+        ////    var feed = new SyndicationFeed(
+        ////        "Torrent news",
+        ////        "Latest torrents",
+        ////        new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host),
+        ////        this.Request.Url.Scheme + "://" + this.Request.Url.Host + "/Torrents/MostRecentFeed",
+        ////        DateTime.UtcNow);
 
-            feed.Items = rssItems;
+        ////    feed.Items = rssItems;
 
-            return new RssResult(feed);
-        }
+        ////    return new RssResult(feed);
+        ////}
 
-        private string GetSyndicationItemHtml(TorrentRssModel model)
-        {
-            var html = new StringBuilder();
+        ////private string GetSyndicationItemHtml(TorrentRssModel model)
+        ////{
+        ////    var html = new StringBuilder();
             
-            if (model.HasImdbId())
-            {
-                html.Append("<div style=\"margin-bottom: 10px;\">" + model.Plot + "</div>");
+        ////    if (model.HasImdbId())
+        ////    {
+        ////        html.Append("<div style=\"margin-bottom: 10px;\">" + model.Plot + "</div>");
                 
-                html.Append("<div><b>Genres: </b>" + model.Genres + "</div>");
-                html.Append("<div><b>Director: </b>" + model.Directors + "</div>");
-                html.Append("<div><b>Cast: </b>" + model.Cast + "</div>");
-                html.Append("<div><b>Content rating: </b>" + (model.ContentRating ?? "N/A") + "</div>");
-                ////html.AppendFormat("<div><b>IMDB link: </b><a href=\"{0}\">{0}</a></div>", "http://www.imdb.com/title/" + model.ImdbId);
-            }
+        ////        html.Append("<div><b>Genres: </b>" + model.Genres + "</div>");
+        ////        html.Append("<div><b>Director: </b>" + model.Directors + "</div>");
+        ////        html.Append("<div><b>Cast: </b>" + model.Cast + "</div>");
+        ////        html.Append("<div><b>Content rating: </b>" + (model.ContentRating ?? "N/A") + "</div>");
+        ////        ////html.AppendFormat("<div><b>IMDB link: </b><a href=\"{0}\">{0}</a></div>", "http://www.imdb.com/title/" + model.ImdbId);
+        ////    }
 
-            if (model.Score > 0)
-            {
-                html.Append("<div><b>Score: </b>" + model.Score.ToString(CultureInfo.InvariantCulture) + "</div>");
-            }
+        ////    if (model.Score > 0)
+        ////    {
+        ////        html.Append("<div><b>Score: </b>" + model.Score.ToString(CultureInfo.InvariantCulture) + "</div>");
+        ////    }
 
-            html.Append("<div><b>Torrent: </b>" + model.Title + "</div>");
-            html.Append("<div><b>Age: </b>" + model.Age + "</div>");
+        ////    html.Append("<div><b>Torrent: </b>" + model.Title + "</div>");
+        ////    html.Append("<div><b>Age: </b>" + model.Age + "</div>");
 
-            return html.ToString();
-        }
+        ////    return html.ToString();
+        ////}
     }
 }

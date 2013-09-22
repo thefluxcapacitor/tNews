@@ -28,6 +28,11 @@
             this.torrentsCollection = mdb.GetCollection<Torrent>(CollectionName);
         }
 
+        public MongoCollection<Torrent> GetCollection()
+        {
+            return this.torrentsCollection;
+        }
+
         public void Save(Torrent entity)
         {
             this.torrentsCollection.Save(entity);

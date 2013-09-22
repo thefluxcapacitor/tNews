@@ -1,24 +1,29 @@
 ﻿@model TorrentNews.Models.PagedResultsModel
 
 <div class="pager">
-<span>
-@if (!string.IsNullOrEmpty(Model.PreviousPageUrl))
-{
-    <a href="@Model.PreviousPageUrl"><span class="icon-caret-left"></span></a>
-}
-else
-{
-    <a class="disabled"><span class="icon-caret-left"></span></a>
-}
+    @if (Model.ShowGoToBookmark)
+    {
+        <a class="goToBookmark" href="@Url.Action("GoToBookmark", "Torrents")">Go to bookmark <span class="icon-bookmark"></span></a>
+    }
 
-@if (!string.IsNullOrEmpty(Model.NextPageUrl))
-{
-    <a href="@Model.NextPageUrl"><span class="icon-caret-right"></span></a>
-}
-else
-{
-    <a class="disabled"><span class="icon-caret-right"></span></a>
-}
-</span>
+    <span>
+    @if (!string.IsNullOrEmpty(Model.PreviousPageUrl))
+    {
+        <a href="@Model.PreviousPageUrl"><span class="icon-caret-left"></span></a>
+    }
+    else
+    {
+        <a class="disabled"><span class="icon-caret-left"></span></a>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.NextPageUrl))
+    {
+        <a href="@Model.NextPageUrl"><span class="icon-caret-right"></span></a>
+    }
+    else
+    {
+        <a class="disabled"><span class="icon-caret-right"></span></a>
+    }
+    </span>
 
 </div>

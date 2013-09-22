@@ -151,3 +151,39 @@ function ajaxStarAddRemove(url, button) {
         $btn.parent().removeClass('animate-spinner');
     });
 }
+
+function configureBookmarks() {
+    $('#moviesTable td.bookmarkCell div.bookmark').click(function() {
+
+        var button = $(this);
+        var date = button.attr('data-torrent-addedon');
+        
+        $.ajax({
+            type: "POST",
+            url: '/Torrents/SetBookmark?date=' + date,
+            context: button,
+            dataType: "json"
+        }).done(function (data) {
+
+            //var $btn = this;
+            //$btn.toggleClass('remove-star icon-star');
+            //$btn.toggleClass('add-star icon-star-empty');
+
+        }).fail(function (xhr) {
+
+            if (xhr.status == 403) {
+                showSignUpPopup();
+
+            } else {
+                if (xhr.statusText) {
+                    showErrorPopup(xhr.statusText);
+                } else {
+                    showErrorPopup('An unexpected error has occurred. Error code: ' + xhr.status);
+                }
+            }
+        }).always(function () {
+            //var $btn = this;
+            //$btn.parent().removeClass('animate-spinner');
+        });
+    });
+}

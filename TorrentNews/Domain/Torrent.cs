@@ -43,6 +43,8 @@
 
         public bool Latest { get; set; }
 
+        public DateTime? ScrapedOn { get; set; }
+
         public ReleaseSource GetReleaseSource()
         {
             // don't change order, always put first worst quality and last best quality
