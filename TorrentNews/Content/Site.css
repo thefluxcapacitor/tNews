@@ -110,8 +110,8 @@ h5, h6 {
     #login a {
         font-size: 14px;
         margin-left: 10px;
-        margin-right: 0px;
-        padding: 2px 0px;
+        margin-right: 0;
+        padding: 2px 0;
         text-decoration: none;
     }
 
@@ -176,7 +176,8 @@ table {
 th {
     font-size: 1.2em;
     text-align: left;
-    border: none 0px;
+    border-style: none;
+    border-width: 0;
     padding-left: 0;
 }
 
@@ -232,15 +233,15 @@ td {
 }
 
 #moviesTable td.bookmarkCell {
-    width: 0px;
-    min-width: 0px;
-    max-width: 0px;
+    width: 0;
+    min-width: 0;
+    max-width: 0;
     padding: 0;
     margin: 0;
 }
 
 #moviesTable td.bookmarkCell div.bookmark {
-    padding-top: 0px;
+    padding-top: 0;
     margin-left: 20px;
     cursor: pointer;
     font-size: 20px;
@@ -386,7 +387,7 @@ td {
 }
 
 .detailsPoster {
-    margin-top: 0px;
+    margin-top: 0;
     margin-bottom: 20px;
 }
 
@@ -396,7 +397,7 @@ td {
 }
 
 .detailsTrailer {
-    text-align: center;    
+    text-align: center;
 }
 
 .hidden {
@@ -545,9 +546,9 @@ div.relatedTorrent {
     font-size: 13px;
 }
 
-.relatedTorrentsContainer table th:nth-child(2), 
-.relatedTorrentsContainer table th:nth-child(4), 
-.relatedTorrentsContainer table th:nth-child(5), 
+.relatedTorrentsContainer table th:nth-child(2),
+.relatedTorrentsContainer table th:nth-child(4),
+.relatedTorrentsContainer table th:nth-child(5),
 .relatedTorrentsContainer table th:nth-child(6) {
     text-align: center;
 }
@@ -600,22 +601,22 @@ div.relatedTorrent {
 }
 
 .tooltipRelatedTorrents {
-    top: 0px;
+    top: 0;
     left: -350px;
 }
 
 .tooltipAwards {
     top: 100px;
-    left: 0px;
+    left: 0;
 }
 
 .tooltipAwards img {
-    float: left; 
-    margin-left: -11px;    
+    float: left;
+    margin-left: -11px;
 }
 
 .tooltipAwards p.awardsTitle {
-    font-size: 16px; 
+    font-size: 16px;
     font-weight: bold;
 }
 
@@ -678,7 +679,7 @@ a.tagLight3, a.tagLight3:hover {
 
 .starContainer {
     top: -2px;
-    right: 22px; 
+    right: 22px;
 }
 
 .animate-spinner span.animation-spinner {
@@ -690,7 +691,7 @@ a.tagLight3, a.tagLight3:hover {
 }
 
 .star {
-    position: absolute; 
+    position: absolute;
 }
 
 .animation-spinner {
@@ -702,9 +703,9 @@ a.tagLight3, a.tagLight3:hover {
     background-size: 16px;
     top: 4px;
     left: 4px;
-    position: absolute; 
-    width: 20px; 
-    height: 20px; 
+    position: absolute;
+    width: 20px;
+    height: 20px;
 }
 
 .animation-star {
