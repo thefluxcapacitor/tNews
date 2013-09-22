@@ -200,12 +200,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Dal\MigrationsRepository.cs" />
-    <Compile Include="Domain\Migration.cs" />
     <Compile Include="Domain\StarredMovie.cs" />
     <Compile Include="Filters\AjaxAuthorizeAttribute.cs" />
-    <Compile Include="Migrations\IMigration.cs" />
-    <Compile Include="Migrations\Migration20130921AddScrapedOn.cs" />
     <Compile Include="Providers\MongoMembershipProvider.cs" />
     <Compile Include="Controllers\RssResult.cs" />
     <Compile Include="Dal\UsersRepository.cs" />

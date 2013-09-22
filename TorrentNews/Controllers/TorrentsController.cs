@@ -68,7 +68,7 @@
 
             if (!st)
             {
-                var sortBy = new string[] { "-ScrapedOn", "-Score", "Id" };
+                var sortBy = new string[] { "-AddedOn", "-Score", "Id" };
                 torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
                 model.ShowGoToBookmark = true;
             }
@@ -184,7 +184,7 @@
             }
 
             var torrentsRepo = new TorrentsRepository();
-            var sortBy = new string[] { "-ScrapedOn", "-Score", "Id" };
+            var sortBy = new string[] { "-AddedOn", "-Score", "Id" };
 
             var page = 1;
             var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
