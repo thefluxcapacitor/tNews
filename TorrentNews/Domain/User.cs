@@ -1,6 +1,5 @@
 ﻿namespace TorrentNews.Domain
 {
-    using System;
     using System.Collections.Generic;
 
     using MongoDB.Bson.Serialization.Attributes;
@@ -41,7 +40,7 @@
 
         public string GL_email { get; set; }
 
-        public DateTime? BookmarkPosition { get; set; }
+        public BookmarkPosition BookmarkPosition { get; set; }
 
         public static int GetFabricatedId(string provider, string providerUserId)
         {

@@ -157,10 +157,11 @@ function configureBookmarks() {
 
         var button = $(this);
         var date = button.attr('data-torrent-addedon');
+        var id = button.attr('data-torrent-id');
         
         $.ajax({
             type: "POST",
-            url: '/Torrents/SetBookmark?date=' + date,
+            url: '/Torrents/SetBookmark?date=' + date + '&id=' + id,
             context: button,
             dataType: "json"
         }).done(function (data) {

@@ -296,7 +296,7 @@ td {
     .pager a.goToBookmark {
         right: 0;
         font-size: 13px;
-        margin-top: 16px;
+        margin-top: 10px;
         position: absolute;
         font-weight: bold;
         cursor: pointer;

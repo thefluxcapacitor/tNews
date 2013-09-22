@@ -178,7 +178,7 @@
         {
             var user = this.GetCurrentUser();
 
-            if (!user.BookmarkPosition.HasValue)
+            if (user.BookmarkPosition == null)
             {
                 return this.RedirectToAction("MostRecent");
             }
@@ -189,24 +189,41 @@
             var page = 1;
             var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
 
+            var auxList = new List<Torrent>();
+
             while (torrents.Any())
             {
-                var closestTorrent = torrents.FirstOrDefault(t => t.AddedOn <= user.BookmarkPosition.Value);
-                if (closestTorrent != null)
+                var aux = torrents.FirstOrDefault(t => t.AddedOn < user.BookmarkPosition.BookmarkedTorrentAddedOn);
+                if (aux == null)
                 {
-                    var actionUrl = Url.RouteUrl(new { controller = "Torrents", action = "MostRecent", page });
-                    return this.Redirect(actionUrl + "#bm" + closestTorrent.Id.ToString(CultureInfo.InvariantCulture));
+                    auxList.AddRange(torrents);
+                }
+                else
+                {
+                    auxList.AddRange(torrents.Where(t => t.AddedOn >= user.BookmarkPosition.BookmarkedTorrentAddedOn));
+                    break;
                 }
 
                 page++;
                 torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
             }
 
+            var match = auxList.SingleOrDefault(t => t.Id == user.BookmarkPosition.BookmarkedTorrentId) ?? 
+                auxList.LastOrDefault();
+
+            if (match != null)
+            {
+                var p = Math.Truncate((double)auxList.IndexOf(match) / Constants.PageSize) + 1;
+
+                var actionUrl = Url.RouteUrl(new { controller = "Torrents", action = "MostRecent", page = p });
+                return this.Redirect(actionUrl + "#bm" + match.Id.ToString(CultureInfo.InvariantCulture));
+            }
+
             return this.RedirectToAction("MostRecent");
         }
 
         [AjaxAuthorize, HttpPost]
-        public ActionResult SetBookmark(DateTime date)
+        public ActionResult SetBookmark(DateTime date, int id)
         {
             try
             {
@@ -217,8 +234,13 @@
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "User not found.");
                 }
-                
-                user.BookmarkPosition = date.ToUniversalTime();
+
+                user.BookmarkPosition = new BookmarkPosition
+                {
+                    BookmarkedTorrentAddedOn = date.ToUniversalTime(),
+                    BookmarkedTorrentId = id
+                };
+
                 repo.Save(user);
 
                 return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
