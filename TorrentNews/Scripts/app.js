@@ -166,9 +166,13 @@ function configureBookmarks() {
             dataType: "json"
         }).done(function (data) {
 
-            //var $btn = this;
-            //$btn.toggleClass('remove-star icon-star');
-            //$btn.toggleClass('add-star icon-star-empty');
+            var bmSet = $('.bookmark-set');
+            bmSet.toggleClass('bookmark-set bookmark-unset');
+            bmSet.find('span').toggleClass('icon-bookmark icon-bookmark-empty');
+            
+            var btn = this;
+            btn.toggleClass('bookmark-set bookmark-unset');
+            btn.find('span').toggleClass('icon-bookmark icon-bookmark-empty');
 
         }).fail(function (xhr) {
 

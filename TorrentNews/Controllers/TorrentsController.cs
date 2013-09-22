@@ -20,6 +20,13 @@
 
     public class TorrentsController : Controller
     {
+        private readonly UsersRepository usersRepo;
+
+        public TorrentsController()
+        {
+            this.usersRepo = new UsersRepository();
+        }
+
         public ActionResult Index()
         {
             return this.RedirectToAction("MostRecent");
@@ -103,6 +110,11 @@
                     tm.IsStarred = starred.Any(item => item.ImdbId.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
                 }
 
+                if (currentUser != null && currentUser.BookmarkPosition != null)
+                {
+                    tm.IsBookmarked = currentUser.BookmarkPosition.BookmarkedTorrentId == t.Id;
+                }
+
                 model.Torrents.Add(tm);
             }
 
@@ -125,8 +137,7 @@
         {
             if (this.User.Identity.IsAuthenticated)
             {
-                var usersRepo = new UsersRepository();
-                return usersRepo.FindByUsername(this.User.Identity.Name);
+                return this.usersRepo.FindByUsername(this.User.Identity.Name);
             }
 
             return null;
@@ -178,16 +189,16 @@
         {
             var user = this.GetCurrentUser();
 
-            if (user.BookmarkPosition == null)
-            {
-                return this.RedirectToAction("MostRecent");
-            }
-
             var torrentsRepo = new TorrentsRepository();
             var sortBy = new string[] { "-AddedOn", "-Score", "Id" };
 
             var page = 1;
             var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
+
+            if (user.BookmarkPosition == null || !torrents.Any())
+            {
+                return this.RedirectToAction("MostRecent");
+            }
 
             var auxList = new List<Torrent>();
 
@@ -208,18 +219,23 @@
                 torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
             }
 
-            var match = auxList.SingleOrDefault(t => t.Id == user.BookmarkPosition.BookmarkedTorrentId) ?? 
-                auxList.LastOrDefault();
-
-            if (match != null)
+            var updatedFlag = string.Empty;
+            var match = auxList.SingleOrDefault(t => t.Id == user.BookmarkPosition.BookmarkedTorrentId);
+            if (match == null)
             {
-                var p = Math.Truncate((double)auxList.IndexOf(match) / Constants.PageSize) + 1;
+                match = auxList.LastOrDefault();
 
-                var actionUrl = Url.RouteUrl(new { controller = "Torrents", action = "MostRecent", page = p });
-                return this.Redirect(actionUrl + "#bm" + match.Id.ToString(CultureInfo.InvariantCulture));
+                user.BookmarkPosition.BookmarkedTorrentAddedOn = match.AddedOn;
+                user.BookmarkPosition.BookmarkedTorrentId = match.Id;
+                this.usersRepo.Save(user);
+
+                updatedFlag = "&bmupd";
             }
 
-            return this.RedirectToAction("MostRecent");
+            var p = Math.Truncate((double)auxList.IndexOf(match) / Constants.PageSize) + 1;
+
+            var actionUrl = Url.RouteUrl(new { controller = "Torrents", action = "MostRecent", page = p });
+            return this.Redirect(actionUrl + updatedFlag + "#bm" + match.Id.ToString(CultureInfo.InvariantCulture));
         }
 
         [AjaxAuthorize, HttpPost]
@@ -227,8 +243,7 @@
         {
             try
             {
-                var repo = new UsersRepository();
-                var user = repo.FindByUsername(this.User.Identity.Name);
+                var user = this.usersRepo.FindByUsername(this.User.Identity.Name);
 
                 if (user == null)
                 {
@@ -241,7 +256,7 @@
                     BookmarkedTorrentId = id
                 };
 
-                repo.Save(user);
+                this.usersRepo.Save(user);
 
                 return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
             }
@@ -286,8 +301,7 @@
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "IMDB Id cannot be empty.");
                 }
 
-                var repo = new UsersRepository();
-                var user = repo.FindByUsername(this.User.Identity.Name);
+                var user = this.usersRepo.FindByUsername(this.User.Identity.Name);
 
                 if (user == null)
                 {
@@ -296,7 +310,7 @@
 
                 action(user, imdbId);
 
-                repo.Save(user);
+                this.usersRepo.Save(user);
 
                 return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
             }

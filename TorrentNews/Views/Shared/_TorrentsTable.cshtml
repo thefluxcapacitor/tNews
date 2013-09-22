@@ -87,8 +87,8 @@
                         @Html.Partial("_RelatedTorrentsList", t)
                     }
 
-@*                <div>@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")</div>
-                <div>@t.Id</div>*@
+                <div>@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")</div>
+                <div>@t.Id</div>
 
                 </div>
                 
@@ -96,11 +96,16 @@
                     <span class="detailsButton actionButton"><a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a></span>
                 </div>
             </td>
+
             <td class="bookmarkCell">
-                <div id="bm@(t.Id)" class="bookmark bookmark-unset" 
+                @{
+                    var bmClass = t.IsBookmarked ? "bookmark-set" : "bookmark-unset";
+                    var bmIconClass = t.IsBookmarked ? "icon-bookmark" : "icon-bookmark-empty";
+                }
+                <div id="bm@(t.Id)" class="bookmark @bmClass" 
                     data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")"
                     data-torrent-id="@t.Id">
-                    <span class="icon-bookmark-empty"></span>
+                    <span class="@bmIconClass"></span>
                 </div>
             </td>
         </tr>
