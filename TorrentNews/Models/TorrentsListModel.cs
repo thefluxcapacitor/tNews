@@ -9,6 +9,8 @@
             this.Torrents = new List<TorrentModel>();
         }
 
+        public bool ShowBookmarks { get; set; }
+
         public IList<TorrentModel> Torrents { get; private set; }
     }
 }

@@ -78,6 +78,7 @@
                 var sortBy = new string[] { "-AddedOn", "-Score", "Id" };
                 torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
                 model.ShowGoToBookmark = true;
+                model.ShowBookmarks = true;
             }
             else
             {

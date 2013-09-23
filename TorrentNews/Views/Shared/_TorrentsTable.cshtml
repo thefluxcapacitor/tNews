@@ -1,7 +1,7 @@
-﻿@model IEnumerable<TorrentNews.Models.TorrentModel>
+﻿@model TorrentNews.Models.TorrentsListModel
 
 <table id="moviesTable">
-    @foreach (var t in Model)
+    @foreach (var t in Model.Torrents)
     {
         <tr data-torrent-id="ID@(t.Id)">
             <td class="posterCell">
@@ -87,8 +87,8 @@
                         @Html.Partial("_RelatedTorrentsList", t)
                     }
 
-                <div>@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")</div>
-                <div>@t.Id</div>
+                    <div class="debug">@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")</div>
+                    <div class="debug">@t.Id</div>
 
                 </div>
                 
@@ -96,19 +96,22 @@
                     <span class="detailsButton actionButton"><a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a></span>
                 </div>
             </td>
-
-            <td class="bookmarkCell">
-                @{
-                    var bmClass = t.IsBookmarked ? "bookmark-set" : "bookmark-unset";
-                    var bmIconClass = t.IsBookmarked ? "icon-bookmark" : "icon-bookmark-empty";
-                }
-                <div id="bm@(t.Id)" class="bookmark @bmClass" 
-                    data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")"
-                    data-torrent-id="@t.Id">
-                    <span class="animation-spinner animation-bookmark hidden">&nbsp;</span>
-                    <span class="@bmIconClass button-with-spinner"></span>
-                </div>
-            </td>
+            
+            @if (Model.ShowBookmarks)
+            {
+                <td class="bookmarkCell">
+                    @{
+                        var bmClass = t.IsBookmarked ? "bookmark-set" : "bookmark-unset";
+                        var bmIconClass = t.IsBookmarked ? "icon-bookmark" : "icon-bookmark-empty";
+                    }
+                    <div id="bm@(t.Id)" class="bookmark @bmClass" 
+                         data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")"
+                         data-torrent-id="@t.Id">
+                        <span class="animation-spinner animation-bookmark hidden">&nbsp;</span>
+                        <span class="@bmIconClass button-with-spinner"></span>
+                    </div>
+                </td>
+            }
         </tr>
     }
 </table>

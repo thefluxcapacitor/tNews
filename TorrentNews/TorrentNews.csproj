@@ -225,7 +225,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
-    <Compile Include="Models\MostRecentModel.cs" />
+    <Compile Include="Models\TorrentsListModel.cs" />
     <Compile Include="Models\PagedResultsModel.cs" />
     <Compile Include="Models\RelatedTorrentModel.cs" />
     <Compile Include="Domain\ReleaseFormat.cs" />

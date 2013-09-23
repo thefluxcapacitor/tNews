@@ -404,6 +404,10 @@ td {
     display: none;
 }
 
+.debug {
+    display: none;
+}
+
 .infoCellWrapper {
     position: relative;
     height: 260px;
