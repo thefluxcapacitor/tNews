@@ -14,6 +14,7 @@
 
     using TorrentNews.Dal;
     using TorrentNews.Domain;
+    using TorrentNews.Exceptions;
     using TorrentNews.Filters;
     using TorrentNews.Models;
     using TorrentNews.Scraping;
@@ -283,6 +284,12 @@
                         var wl = user.Starred.FirstOrDefault(item => item.ImdbId.Equals(imdbId, StringComparison.OrdinalIgnoreCase));
                         if (wl == null)
                         {
+                            const int Limit = 200;
+                            if (user.Starred.Count > Limit)
+                            {
+                                throw new LimitStarredMoviesExceededException(Limit);
+                            }
+
                             user.Starred.Add(new StarredMovie { ImdbId = imdbId, StarredOn = DateTime.UtcNow });
                         }
                     });
@@ -320,6 +327,10 @@
                 this.usersRepo.Save(user);
 
                 return this.Json("status: \"ok\"", JsonRequestBehavior.AllowGet);
+            }
+            catch (LimitStarredMoviesExceededException limitEx)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, limitEx.Message);
             }
             catch (Exception ex)
             {
