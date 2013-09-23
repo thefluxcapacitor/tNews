@@ -7,5 +7,7 @@
         public string PreviousPageUrl { get; set; }
 
         public bool ShowGoToBookmark { get; set; }
+
+        public bool BookmarkSet { get; set; }
     }
 }

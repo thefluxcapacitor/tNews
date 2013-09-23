@@ -3,7 +3,14 @@
 <div class="pager">
     @if (Model.ShowGoToBookmark)
     {
-        <a class="goToBookmark" href="@Url.Action("GoToBookmark", "Torrents")">Go to bookmark <span class="icon-bookmark"></span></a>
+        if (!Model.BookmarkSet)
+        {
+            <span class="goToBookmark">No bookmark set <span class="icon-bookmark"></span></span>
+        }
+        else
+        {
+            <a class="goToBookmark" href="@Url.Action("GoToBookmark", "Torrents")">Go to bookmark <span class="icon-bookmark"></span></a>
+        }
     }
 
     <span>

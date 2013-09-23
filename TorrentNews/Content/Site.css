@@ -294,7 +294,7 @@ td {
     position: relative;
 }
 
-    .pager a.goToBookmark {
+    .pager .goToBookmark {
         right: 0;
         font-size: 13px;
         margin-top: 10px;

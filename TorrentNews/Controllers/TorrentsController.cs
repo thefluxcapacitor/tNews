@@ -104,6 +104,7 @@
                 torrents = this.torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
                 model.ShowGoToBookmark = true;
                 model.ShowBookmarks = true;
+                model.BookmarkSet = currentUser == null || currentUser.BookmarkPosition != null;
             }
             else
             {

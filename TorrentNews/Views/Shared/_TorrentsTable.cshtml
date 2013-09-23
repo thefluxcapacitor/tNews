@@ -104,7 +104,8 @@
                         var bmClass = t.IsBookmarked ? "bookmark-set" : "bookmark-unset";
                         var bmIconClass = t.IsBookmarked ? "icon-bookmark" : "icon-bookmark-empty";
                     }
-                    <div id="bm@(t.Id)" class="bookmark @bmClass" 
+                    <div id="bm@(t.Id)" class="bookmark @bmClass"
+                         title="Set or remove bookmark" 
                          data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")"
                          data-torrent-id="@t.Id">
                         <span class="animation-spinner animation-bookmark hidden">&nbsp;</span>
