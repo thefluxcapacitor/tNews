@@ -22,9 +22,15 @@
     {
         private readonly UsersRepository usersRepo;
 
+        private readonly TorrentsRepository torrentsRepo;
+
+        private readonly MoviesRepository moviesRepo;
+
         public TorrentsController()
         {
             this.usersRepo = new UsersRepository();
+            this.torrentsRepo = new TorrentsRepository();
+            this.moviesRepo = new MoviesRepository();
         }
 
         public ActionResult Index()
@@ -48,6 +54,8 @@
 
         public ActionResult MostRecent(int page = 1, int minScore = 0)
         {
+            this.CheckAndUpdateBookmark();
+
             var helper = new UrlHelper(this.ControllerContext.RequestContext);
             var model = this.GetMostRecentModel(
                 page, 
@@ -59,12 +67,29 @@
             return this.View(model);
         }
 
+        private void CheckAndUpdateBookmark()
+        {
+            var user = this.GetCurrentUser();
+            if (user != null && user.BookmarkPosition != null)
+            {
+                var t = this.torrentsRepo.FindBookmarkedTorrent(user.BookmarkPosition.BookmarkedTorrentId);
+                if (t == null)
+                {
+                    var newestTorrents = this.torrentsRepo.GetTorrentsNewerThan(user.BookmarkPosition.BookmarkedTorrentAddedOn);
+                    var newBookmarkedTorrent = newestTorrents.LastOrDefault();
+                    if (newBookmarkedTorrent != null)
+                    {
+                        user.BookmarkPosition.BookmarkedTorrentAddedOn = newBookmarkedTorrent.AddedOn;
+                        user.BookmarkPosition.BookmarkedTorrentId = newBookmarkedTorrent.Id;
+                        this.usersRepo.Save(user);
+                    }
+                }
+            }
+        }
+
         private TorrentsListModel GetMostRecentModel(int page, int minScore, bool st, Func<string> getNextPageUrl, Func<string> getPreviousPageUrl)
         {
             var model = new TorrentsListModel();
-
-            var torrentsRepo = new TorrentsRepository();
-            var moviesRepo = new MoviesRepository();
 
             var currentUser = this.GetCurrentUser();
             var starred = this.GetUserStarred(currentUser);
@@ -76,13 +101,13 @@
             if (!st)
             {
                 var sortBy = new string[] { "-AddedOn", "-Score", "Id" };
-                torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
+                torrents = this.torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
                 model.ShowGoToBookmark = true;
                 model.ShowBookmarks = true;
             }
             else
             {
-                torrents = torrentsRepo.GetPageStarredTorrents(page, starred);
+                torrents = this.torrentsRepo.GetPageStarredTorrents(page, starred);
             }
 
             foreach (var t in torrents)
@@ -92,7 +117,7 @@
                 {
                     if (!moviesCache.TryGetValue(t.ImdbId, out m))
                     {
-                        m = moviesRepo.Find(t.ImdbId);
+                        m = this.moviesRepo.Find(t.ImdbId);
                         moviesCache.Add(t.ImdbId, m);
                     }
                 }
@@ -104,7 +129,7 @@
                     AutoMapper.Mapper.Map(m, tm);
                 }
 
-                this.AddRelatedTorrents(tm, torrentsRepo, Constants.RelatedTorrentsCount);
+                this.AddRelatedTorrents(tm, Constants.RelatedTorrentsCount);
 
                 if (starred != null)
                 {
@@ -157,10 +182,7 @@
 
         public ActionResult Details(int id)
         {
-            var torrentsRepo = new TorrentsRepository();
-            var moviesRepo = new MoviesRepository();
-
-            var torrent = torrentsRepo.Find(id);
+            var torrent = this.torrentsRepo.Find(id);
             if (torrent == null)
             {
                 throw new HttpException(404, "Torrent not found");
@@ -169,11 +191,11 @@
             var tm = new TorrentDetailsModel();
             AutoMapper.Mapper.Map<Torrent, TorrentModel>(torrent, tm);
 
-            this.AddRelatedTorrents(tm, torrentsRepo, -1);
+            this.AddRelatedTorrents(tm, -1);
 
             if (torrent.HasImdbId())
             {
-                var movie = moviesRepo.Find(torrent.ImdbId);
+                var movie = this.moviesRepo.Find(torrent.ImdbId);
                 if (movie != null)
                 {
                     AutoMapper.Mapper.Map<Movie, TorrentModel>(movie, tm);
@@ -190,53 +212,36 @@
         {
             var user = this.GetCurrentUser();
 
-            var torrentsRepo = new TorrentsRepository();
             var sortBy = new string[] { "-AddedOn", "-Score", "Id" };
 
             var page = 1;
-            var torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
+            var torrents = this.torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
+            Torrent bmTorrent = null;
 
             if (user.BookmarkPosition == null || !torrents.Any())
             {
                 return this.RedirectToAction("MostRecent");
             }
 
-            var auxList = new List<Torrent>();
-
             while (torrents.Any())
             {
-                var aux = torrents.FirstOrDefault(t => t.AddedOn < user.BookmarkPosition.BookmarkedTorrentAddedOn);
-                if (aux == null)
+                bmTorrent = torrents.SingleOrDefault(t => t.Id == user.BookmarkPosition.BookmarkedTorrentId);
+                if (bmTorrent != null)
                 {
-                    auxList.AddRange(torrents);
-                }
-                else
-                {
-                    auxList.AddRange(torrents.Where(t => t.AddedOn >= user.BookmarkPosition.BookmarkedTorrentAddedOn));
                     break;
                 }
 
                 page++;
-                torrents = torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
+                torrents = this.torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
             }
 
-            var updatedFlag = string.Empty;
-            var match = auxList.SingleOrDefault(t => t.Id == user.BookmarkPosition.BookmarkedTorrentId);
-            if (match == null)
+            if (bmTorrent != null)
             {
-                match = auxList.LastOrDefault();
-
-                user.BookmarkPosition.BookmarkedTorrentAddedOn = match.AddedOn;
-                user.BookmarkPosition.BookmarkedTorrentId = match.Id;
-                this.usersRepo.Save(user);
-
-                updatedFlag = "&bmupd";
+                var actionUrl = Url.RouteUrl(new { controller = "Torrents", action = "MostRecent", page });
+                return this.Redirect(actionUrl + "#bm" + bmTorrent.Id.ToString(CultureInfo.InvariantCulture));
             }
 
-            var p = Math.Truncate((double)auxList.IndexOf(match) / Constants.PageSize) + 1;
-
-            var actionUrl = Url.RouteUrl(new { controller = "Torrents", action = "MostRecent", page = p });
-            return this.Redirect(actionUrl + updatedFlag + "#bm" + match.Id.ToString(CultureInfo.InvariantCulture));
+            return this.RedirectToAction("MostRecent");
         }
 
         [AjaxAuthorize, HttpPost]
@@ -321,14 +326,14 @@
             }
         }
 
-        private void AddRelatedTorrents(TorrentModel tm, TorrentsRepository torrentsRepo, int maxTorrents)
+        private void AddRelatedTorrents(TorrentModel tm, int maxTorrents)
         {
             if (!tm.HasImdbId())
             {
                 return;
             }
 
-            var torrents = torrentsRepo.FindByImdbId(tm.ImdbId, maxTorrents + 1); // maxTorrents + 1 just in case we get the current torrent and we have to dismiss it
+            var torrents = this.torrentsRepo.FindByImdbId(tm.ImdbId, maxTorrents + 1); // maxTorrents + 1 just in case we get the current torrent and we have to dismiss it
             foreach (var t in torrents)
             {
                 if (tm.RelatedTorrents.Count == maxTorrents)
@@ -468,5 +473,6 @@
 
         ////    return html.ToString();
         ////}
+
     }
 }

@@ -79,6 +79,20 @@
                 .SetLimit(Constants.PageSize);
         }
 
+        public MongoCursor<Torrent> GetTorrentsNewerThan(DateTime date)
+        {
+            var sortOrder = SortBy<Torrent>.Descending(t => t.AddedOn).Descending(t => t.Score).Ascending(t => t.Id);
+            
+            var filter = Query.And(
+                Query<Torrent>.GTE(t => t.AddedOn, date),
+                Query<Torrent>.NE(t => t.ImdbId, "NA"), 
+                Query<Torrent>.EQ(t => t.Latest, true));
+
+            return this.torrentsCollection
+                .Find(filter)
+                .SetSortOrder(sortOrder);
+        }
+
         private static SortByBuilder GetSortOrder(IEnumerable<string> sortBy)
         {
             var builder = new SortByBuilder();
@@ -131,6 +145,16 @@
             }
 
             return result;
+        }
+
+        public Torrent FindBookmarkedTorrent(int id)
+        {
+            var filter = Query.And(
+                Query<Torrent>.EQ(t => t.Id, id),
+                Query<Torrent>.NE(t => t.ImdbId, "NA"), 
+                Query<Torrent>.EQ(t => t.Latest, true));
+
+            return this.torrentsCollection.FindOne(filter);
         }
 
         private class StarredOrderComparer : IComparer<string>
