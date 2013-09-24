@@ -102,10 +102,14 @@
                 
                 <div class="cellButtonsContainer">
                     <span class="detailsButton actionButton invertedButton">
-                        <a href="">ka</a>
+                        <a href="@string.Format("http://kickass.to/usearch/{0}%20category%3Amovies/?field=seeders&sorder=desc", Uri.EscapeDataString(t.MovieTitle + " " + t.Year))"
+                            target="_blank"
+                            title="Search movie in Kickass torrents">ka</a>
                     </span>
                     <span class="detailsButton actionButton invertedButton">
-                        <a href="">tpb</a>
+                        <a href="@string.Format("http://thepiratebay.sx/search/{0}/0/7/0", Uri.EscapeDataString(t.MovieTitle + " " + t.Year))"
+                            target="_blank"
+                            title="Search movie in The Pirate Bay">tpb</a>
                     </span>
                     <span class="detailsButton actionButton">
                         <a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a>
