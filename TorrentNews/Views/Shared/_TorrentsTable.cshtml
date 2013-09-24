@@ -18,7 +18,15 @@
             </td>
             <td class="scoreCell">
                 <div style="position: relative;">
-                    <div class="score hasTooltip">@t.Score</div>
+                    @{
+                        var scoreClass = string.Empty;
+                        if (t.Score <= 0)
+                        {
+                            scoreClass = "dimmedScore";
+                        }
+                    }
+                    
+                    <div class="score hasTooltip @scoreClass">@t.Score</div>
                     <div class="hidden tooltip">
                         Torrent news score is based on IMDB rating, Metacritic score and the torrent's number of seeds and comments.
                     </div>
@@ -93,7 +101,15 @@
                 </div>
                 
                 <div class="cellButtonsContainer">
-                    <span class="detailsButton actionButton"><a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a></span>
+                    <span class="detailsButton actionButton invertedButton">
+                        <a href="">ka</a>
+                    </span>
+                    <span class="detailsButton actionButton invertedButton">
+                        <a href="">tpb</a>
+                    </span>
+                    <span class="detailsButton actionButton">
+                        <a class="icon-list" href="@Url.Action("Details", "Torrents", new { id = t.Id })" target="_blank" title="View movie and torrent details"></a>
+                    </span>
                 </div>
             </td>
             

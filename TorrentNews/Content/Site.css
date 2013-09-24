@@ -98,6 +98,10 @@ h5, h6 {
     text-decoration: none;
 }
 
+.site-subtitle {
+    margin-top: 4px;
+}
+
 /* login
 ----------------------------------------------------------*/
 #login {
@@ -273,6 +277,10 @@ td {
     font-size: 30px;
     font-weight: bold;
     margin-bottom: 10px;
+}
+
+.dimmedScore {
+    color: lightgray;
 }
 
 .title {
@@ -468,9 +476,28 @@ td {
     cursor: pointer;
 }
 
-.actionButton:hover {
-    color: tomato;
-}
+    .actionButton:hover {
+        color: tomato;
+    }
+
+    .actionButton.invertedButton {
+        background-color: black;
+        font-size: 12px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-right: 0px;
+        padding-left: 4px;
+        border-radius: 2px;
+        margin-right: 5px;
+    }
+
+        .actionButton.invertedButton:hover {
+            background-color: tomato;
+        }
+
+        .actionButton.invertedButton a {
+            color: white;
+        }
 
 .trailerButton {
 }

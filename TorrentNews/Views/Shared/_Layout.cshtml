@@ -70,7 +70,9 @@
         <div class="content-wrapper">
             <div class="float-left">
                 <p class="site-title">
-                    <a href="~/">Torrent news</a></p>
+                    <a href="~/">Torrent news</a>
+                </p>
+                <p class="site-subtitle">Last month releases, all the information, one place.</p>
             </div>
             
             <div class="float-right">
@@ -89,6 +91,7 @@
                             <li>@Html.ActionLink("100+", "MostRecent", "Torrents", new { area = "", minScore = 100 }, null)</li>
                             <li>@Html.ActionLink("400+", "MostRecent", "Torrents", new { area = "", minScore = 400 }, null)</li>
                             <li>@Html.ActionLink("900+", "MostRecent", "Torrents", new { area = "", minScore = 900 }, null)</li>
+                            <li>@Html.ActionLink("1000+", "MostRecent", "Torrents", new { area = "", minScore = 1000 }, null)</li>
                             <li>@Html.ActionLink("1100", "MostRecent", "Torrents", new { area = "", minScore = 1100 }, null)</li>
                             <li>@Html.ActionLink("Starred", "Starred", "Torrents", new { area = "" }, null)</li>
                         </ul>
