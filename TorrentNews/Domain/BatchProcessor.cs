@@ -183,7 +183,21 @@
                     var movie = moviesRepo.Find(t.ImdbId);
                     if (movie == null)
                     {
-                        moviesRepo.Save(new Movie { Id = t.ImdbId });
+                        var newMovie = new Movie { Id = t.ImdbId };
+                        if (!string.IsNullOrEmpty(t.Poster))
+                        {
+                            newMovie.Poster = t.Poster;
+                        }
+
+                        moviesRepo.Save(newMovie);
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(t.Poster) && !t.Poster.Equals(movie.Poster))
+                        {
+                            movie.Poster = t.Poster;
+                            moviesRepo.Save(movie);
+                        }
                     }
                 }
 

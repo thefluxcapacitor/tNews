@@ -36,7 +36,10 @@
         private static void ConfigureMappings()
         {
             AutoMapper.Mapper.CreateMap<Torrent, TorrentModel>();
+
             AutoMapper.Mapper.CreateMap<Movie, TorrentModel>()
+                .ForMember(
+                    dest => dest.Poster, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.Id, opt => opt.Ignore())
                 .ForMember(

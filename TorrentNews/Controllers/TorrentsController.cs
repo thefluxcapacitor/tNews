@@ -129,6 +129,11 @@
                 if (m != null)
                 {
                     AutoMapper.Mapper.Map(m, tm);
+
+                    if (string.IsNullOrEmpty(tm.Poster))
+                    {
+                        tm.Poster = m.Poster;
+                    }
                 }
 
                 this.AddRelatedTorrents(tm, Constants.RelatedTorrentsCount);
@@ -201,6 +206,11 @@
                 if (movie != null)
                 {
                     AutoMapper.Mapper.Map<Movie, TorrentModel>(movie, tm);
+
+                    if (string.IsNullOrEmpty(tm.Poster))
+                    {
+                        tm.Poster = movie.Poster;
+                    }
                 }
             }
 
