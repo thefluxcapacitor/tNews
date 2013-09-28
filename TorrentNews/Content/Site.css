@@ -422,6 +422,11 @@ td {
     margin-bottom: 22px;
 }
 
+    .infoCellWrapper .title {
+        max-height: 68px;
+        overflow: hidden;
+    }
+
 .cellButtonsContainer {
     float: right;
     display: table;
@@ -614,7 +619,7 @@ div.relatedTorrent {
 
 .relatedTorrentsContainer {
     width: 400px;
-    margin-top: 20px;
+    margin-top: 15px;
     font-style: italic;
     position: relative;
 }
