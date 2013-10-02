@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading;
@@ -56,6 +57,13 @@
             };
 
             return this.Request.CreateResponse(HttpStatusCode.Accepted, res);
+        }
+
+        [HttpGet]
+        [SecretRequired]
+        public HttpResponseMessage GetAllOperations(string secret)
+        {
+            return this.Request.CreateResponse(HttpStatusCode.Accepted, Operations.Select(op => op.Value));
         }
 
         [HttpGet, SecretRequired]
