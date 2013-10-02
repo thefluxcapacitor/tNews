@@ -16,16 +16,19 @@
     {
         private const int MaxDaysToKeepTorrents = 7 * 4;
 
-        private const int MinSeeds = 20;
+        private const int MinSeeds = 0;
 
         private readonly TorrentsRepository repo;
 
         private readonly int maxPages;
 
-        public KassScraper(TorrentsRepository repo, int maxPages)
+        private readonly string age;
+
+        public KassScraper(TorrentsRepository repo, int maxPages, string age)
         {
             this.repo = repo;
             this.maxPages = maxPages;
+            this.age = age;
         }
 
         public IEnumerable<Torrent> GetLatestTorrents(OperationInfo operationInfo)
@@ -42,9 +45,11 @@
 
             while (nextPage > 0 && (this.maxPages < 0 || nextPage < this.maxPages))
             {
+                var ageFilter = string.IsNullOrEmpty(this.age) ? string.Empty : "age%3A" + this.age;
                 var response = client.GetAsync(string.Format(
-                    "http://kickass.to/usearch/category%3Amovies%20seeds%3A{0}/{1}/?field=time_add&sorder=desc",
+                    "http://kickass.to/usearch/category%3Amovies%20seeds%3A{0}{1}/{2}/?field=time_add&sorder=desc",
                     MinSeeds,
+                    ageFilter,
                     nextPage)).Result;
 
                 operationInfo.StatusInfo = string.Format("Scraping torrents page #{0}", nextPage);

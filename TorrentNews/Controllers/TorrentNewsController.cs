@@ -2,17 +2,13 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Globalization;
     using System.Net;
     using System.Net.Http;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Web.Http;
 
-    using TorrentNews.Dal;
     using TorrentNews.Domain;
     using TorrentNews.Filters;
-    using TorrentNews.Scraping;
 
     public class TorrentNewsController : ApiController
     {
@@ -22,16 +18,16 @@
         [SecretRequired]
         public HttpResponseMessage UpdateNews(string secret)
         {
-            return this.PrvUpdateNews(-1);
+            return this.PrvUpdateNews(-1, "week");
         }
 
         [HttpGet, SecretRequired]
-        public HttpResponseMessage UpdateNews(string secret, int maxPages)
+        public HttpResponseMessage UpdateNews(string secret, int maxPages, string age)
         {
-            return this.PrvUpdateNews(maxPages);
+            return this.PrvUpdateNews(maxPages, age);
         }
 
-        private HttpResponseMessage PrvUpdateNews(int maxPages)
+        private HttpResponseMessage PrvUpdateNews(int maxPages, string age)
         {
             var operationId = Guid.NewGuid().ToString();
 
@@ -47,7 +43,7 @@
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Cannot start operation");
             }
 
-            BatchProcessor.ProcessTorrentNews(maxPages, operation);
+            BatchProcessor.ProcessTorrentNews(maxPages, age, operation);
 
             var cancellationUrl = Url.Link("DefaultApi", new { controller = "TorrentNews", action = "CancelOperation", id = operationId, secret = "secret_here" });
             var statusUrl = Url.Link("DefaultApi", new { controller = "TorrentNews", action = "RetrieveOperationStatus", id = operationId, secret = "secret_here" });

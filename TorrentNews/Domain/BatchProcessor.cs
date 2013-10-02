@@ -11,7 +11,7 @@
 
     public static class BatchProcessor
     {
-        public static void ProcessTorrentNews(int maxPages, OperationInfo operation)
+        public static void ProcessTorrentNews(int maxPages, string age, OperationInfo operation)
         {
             Task.Factory.StartNew(
                     (op) =>
@@ -30,7 +30,7 @@
                         var moviesRepo = new MoviesRepository();
 
                         BatchProcessor.RemoveOldTorrents(op2, torrentsRepo);
-                        BatchProcessor.UpdateTorrents(maxPages, torrentsRepo, op2, moviesRepo);
+                        BatchProcessor.UpdateTorrents(maxPages, age, torrentsRepo, op2, moviesRepo);
                         BatchProcessor.UpdateMovies(moviesRepo, op2);
                         BatchProcessor.UpdateAwards(moviesRepo, torrentsRepo, op2);
                     },
@@ -169,10 +169,10 @@
             }
         }
 
-        private static void UpdateTorrents(int maxPages, TorrentsRepository torrentsRepo, OperationInfo op, MoviesRepository moviesRepo)
+        private static void UpdateTorrents(int maxPages, string age, TorrentsRepository torrentsRepo, OperationInfo op, MoviesRepository moviesRepo)
         {
             var counter = 0;
-            var scraper = new KassScraper(torrentsRepo, maxPages);
+            var scraper = new KassScraper(torrentsRepo, maxPages, age);
             var torrents = scraper.GetLatestTorrents(op);
             foreach (var t in torrents)
             {
