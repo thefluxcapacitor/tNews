@@ -8,6 +8,7 @@
     using System.Threading;
     using System.Web.Http;
 
+    using TorrentNews.Dal;
     using TorrentNews.Domain;
     using TorrentNews.Filters;
 
@@ -19,16 +20,16 @@
         [SecretRequired]
         public HttpResponseMessage UpdateNews(string secret)
         {
-            return this.PrvUpdateNews(-1, "week");
+            return this.PrvUpdateNews(-1, "week", 1);
         }
 
         [HttpGet, SecretRequired]
-        public HttpResponseMessage UpdateNews(string secret, int maxPages, string age)
+        public HttpResponseMessage UpdateNews(string secret, int maxPages, string age, int updateProgressInDatabase)
         {
-            return this.PrvUpdateNews(maxPages, age);
+            return this.PrvUpdateNews(maxPages, age, updateProgressInDatabase);
         }
 
-        private HttpResponseMessage PrvUpdateNews(int maxPages, string age)
+        private HttpResponseMessage PrvUpdateNews(int maxPages, string age, int updateProgressInDatabase)
         {
             var operationId = Guid.NewGuid().ToString();
 
@@ -44,7 +45,8 @@
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Cannot start operation");
             }
 
-            BatchProcessor.ProcessTorrentNews(maxPages, age, operation);
+            var processor = new BatchProcessor(updateProgressInDatabase == 1);
+            processor.ProcessTorrentNews(maxPages, age, operation);
 
             var cancellationUrl = Url.Link("DefaultApi", new { controller = "TorrentNews", action = "CancelOperation", id = operationId, secret = "secret_here" });
             var statusUrl = Url.Link("DefaultApi", new { controller = "TorrentNews", action = "RetrieveOperationStatus", id = operationId, secret = "secret_here" });
@@ -64,6 +66,14 @@
         public HttpResponseMessage GetAllOperations(string secret)
         {
             return this.Request.CreateResponse(HttpStatusCode.Accepted, Operations.Select(op => op.Value));
+        }
+
+        [HttpGet]
+        [SecretRequired]
+        public HttpResponseMessage GetOperationsLog(string secret)
+        {
+            var opsRepo = new OperationsRepository();
+            return this.Request.CreateResponse(HttpStatusCode.Accepted, opsRepo.FindAll());
         }
 
         [HttpGet, SecretRequired]

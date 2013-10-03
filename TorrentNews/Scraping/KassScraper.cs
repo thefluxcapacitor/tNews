@@ -31,7 +31,7 @@
             this.age = age;
         }
 
-        public IEnumerable<Torrent> GetLatestTorrents(OperationInfo operationInfo)
+        public IEnumerable<Torrent> GetLatestTorrents(OperationInfo operationInfo, Action<OperationInfo> operationStatusUpdatedCallback)
         {
             var torrentsScraped = 0;
 
@@ -53,6 +53,7 @@
                     nextPage)).Result;
 
                 operationInfo.StatusInfo = string.Format("Scraping torrents page #{0}", nextPage);
+                operationStatusUpdatedCallback(operationInfo);
 
                 CQ document = response.Content.ReadAsStringAsync().Result;
                 var rows = document[".data tr"];
@@ -76,6 +77,7 @@
                     {
                         torrentsScraped++;
                         operationInfo.ExtraData["scraped"] = torrentsScraped.ToString(CultureInfo.InvariantCulture);
+                        operationStatusUpdatedCallback(operationInfo);
 
                         this.ScrapeDetails(torrent, client);
                     }

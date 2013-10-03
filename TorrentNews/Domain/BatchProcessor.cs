@@ -9,9 +9,16 @@
     using TorrentNews.Dal;
     using TorrentNews.Scraping;
 
-    public static class BatchProcessor
+    public class BatchProcessor
     {
-        public static void ProcessTorrentNews(int maxPages, string age, OperationInfo operation)
+        private readonly bool updateProgressInDatabase;
+
+        public BatchProcessor(bool updateProgressInDatabase)
+        {
+            this.updateProgressInDatabase = updateProgressInDatabase;
+        }
+
+        public void ProcessTorrentNews(int maxPages, string age, OperationInfo operation)
         {
             Task.Factory.StartNew(
                     (op) =>
@@ -28,22 +35,28 @@
 
                         var torrentsRepo = new TorrentsRepository();
                         var moviesRepo = new MoviesRepository();
+                        
+                        var opsRepo = new OperationsRepository();
+                        var o = new Operation { Id = Guid.NewGuid().ToString(), Info = op2, AddedOn = DateTime.UtcNow };
+                        op2.OpId = o.Id;
+                        opsRepo.Save(o);
 
-                        BatchProcessor.RemoveOldTorrents(op2, torrentsRepo);
-                        BatchProcessor.UpdateTorrents(maxPages, age, torrentsRepo, op2, moviesRepo);
-                        BatchProcessor.UpdateMovies(moviesRepo, op2);
-                        BatchProcessor.UpdateAwards(moviesRepo, torrentsRepo, op2);
+                        this.RemoveOldTorrents(op2, torrentsRepo, opsRepo);
+                        this.UpdateTorrents(maxPages, age, torrentsRepo, op2, moviesRepo, opsRepo);
+                        this.UpdateMovies(moviesRepo, op2, opsRepo);
+                        this.UpdateAwards(moviesRepo, torrentsRepo, op2, opsRepo);
                     },
                     operation,
                     operation.CancellationTokenSource.Token)
                 .ContinueWith(
-                    (task, op) => BatchProcessor.UpdateProcessStatus(op, task),
+                    (task, op) => this.UpdateProcessStatus(op, task),
                     operation);
         }
 
-        private static void UpdateAwards(MoviesRepository moviesRepo, TorrentsRepository torrentsRepo, OperationInfo op)
+        private void UpdateAwards(MoviesRepository moviesRepo, TorrentsRepository torrentsRepo, OperationInfo op, OperationsRepository opsRepo)
         {
             op.StatusInfo = "Updating awards";
+            this.UpdateOperationInfo(op, opsRepo);
 
             var moviesCache = new Dictionary<string, Movie>();
             var torrents = torrentsRepo.GetAllSortedByImdbIdAndAddedOn();
@@ -65,11 +78,11 @@
 
                 if (next == null || !current.HasImdbId() || next.ImdbId != current.ImdbId)
                 {
-                    current.Latest = GetValue(current.Latest, true, ref isDirty);
+                    current.Latest = this.GetValue(current.Latest, true, ref isDirty);
                 }
                 else
                 {
-                    current.Latest = GetValue(current.Latest, false, ref isDirty);
+                    current.Latest = this.GetValue(current.Latest, false, ref isDirty);
                 }
 
                 Movie movie = null;
@@ -84,19 +97,19 @@
 
                 if (movie != null)
                 {
-                    current.ImdbAward = GetValue(current.ImdbAward, movie.ImdbVotes >= 1000 && movie.ImdbRating >= 70, ref isDirty);
-                    current.MetacriticAward = GetValue(current.MetacriticAward, movie.McMetascore >= 70, ref isDirty);
+                    current.ImdbAward = this.GetValue(current.ImdbAward, movie.ImdbVotes >= 1000 && movie.ImdbRating >= 70, ref isDirty);
+                    current.MetacriticAward = this.GetValue(current.MetacriticAward, movie.McMetascore >= 70, ref isDirty);
                 }
                 else
                 {
-                    current.ImdbAward = GetValue(current.ImdbAward, false, ref isDirty);
-                    current.MetacriticAward = GetValue(current.MetacriticAward, false, ref isDirty);
+                    current.ImdbAward = this.GetValue(current.ImdbAward, false, ref isDirty);
+                    current.MetacriticAward = this.GetValue(current.MetacriticAward, false, ref isDirty);
                 }
 
-                current.SuperPopularityAward = GetValue(current.SuperPopularityAward, current.Seed >= 3000 || current.CommentsCount >= 100, ref isDirty);
-                current.PopularityAward = GetValue(current.PopularityAward, !current.SuperPopularityAward && (current.Seed >= 1000 || current.CommentsCount >= 20), ref isDirty);
+                current.SuperPopularityAward = this.GetValue(current.SuperPopularityAward, current.Seed >= 3000 || current.CommentsCount >= 100, ref isDirty);
+                current.PopularityAward = this.GetValue(current.PopularityAward, !current.SuperPopularityAward && (current.Seed >= 1000 || current.CommentsCount >= 20), ref isDirty);
 
-                current.Score = GetValue(current.Score, CalcScore(current), ref isDirty);
+                current.Score = this.GetValue(current.Score, this.CalcScore(current), ref isDirty);
 
                 if (isDirty)
                 {
@@ -107,7 +120,7 @@
             }
         }
 
-        private static int CalcScore(Torrent t)
+        private int CalcScore(Torrent t)
         {
             ////1000 seeds or 20 comments: popular -> 100 points
             ////3000 seeds or 100 comments: very popular -> 200 points
@@ -120,7 +133,7 @@
                 Convert.ToInt32(t.MetacriticAward) * 500;
         }
 
-        private static T GetValue<T>(T originalValue, T newValue, ref bool isDirty)
+        private T GetValue<T>(T originalValue, T newValue, ref bool isDirty)
         {
             if (!originalValue.Equals(newValue))
             {
@@ -130,9 +143,10 @@
             return newValue;
         }
 
-        private static void UpdateMovies(MoviesRepository moviesRepo, OperationInfo op)
+        private void UpdateMovies(MoviesRepository moviesRepo, OperationInfo op, OperationsRepository opsRepo)
         {
             op.StatusInfo = "Scraping movies";
+            this.UpdateOperationInfo(op, opsRepo);
 
             var scraper = new ImdbScraper();
 
@@ -145,10 +159,11 @@
 
                 moviesScraped++;
                 op.ExtraData["moviesScraped"] = moviesScraped.ToString(CultureInfo.InvariantCulture);
+                this.UpdateOperationInfo(op, opsRepo);
             }
         }
 
-        private static void UpdateProcessStatus(object op, Task task)
+        private void UpdateProcessStatus(object op, Task task)
         {
             var op2 = (OperationInfo)op;
             op2.FinishedOn = DateTime.UtcNow;
@@ -161,19 +176,22 @@
                     break;
                 case TaskStatus.Faulted:
                     op2.Status = OperationStatus.Faulted;
-                    op2.Error = task.Exception != null ? task.Exception.ToString() : "Unexpected error";
+                    op2.Error = task.Exception != null ? task.Exception.ToString() : "Unexpected error";                    
                     break;
                 case TaskStatus.Canceled:
                     op2.Status = OperationStatus.Cancelled;
                     break;
             }
+
+            var opsRepo = new OperationsRepository();
+            this.UpdateOperationInfo(op2, opsRepo, true);
         }
 
-        private static void UpdateTorrents(int maxPages, string age, TorrentsRepository torrentsRepo, OperationInfo op, MoviesRepository moviesRepo)
+        private void UpdateTorrents(int maxPages, string age, TorrentsRepository torrentsRepo, OperationInfo op, MoviesRepository moviesRepo, OperationsRepository opsRepo)
         {
             var counter = 0;
             var scraper = new KassScraper(torrentsRepo, maxPages, age);
-            var torrents = scraper.GetLatestTorrents(op);
+            var torrents = scraper.GetLatestTorrents(op, o => this.UpdateOperationInfo(o, opsRepo));
             foreach (var t in torrents)
             {
                 torrentsRepo.Save(t);
@@ -203,16 +221,33 @@
 
                 counter++;
                 op.ExtraData["updated"] = counter.ToString(CultureInfo.InvariantCulture);
+                this.UpdateOperationInfo(op, opsRepo);
 
                 op.CancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
         }
 
-        private static void RemoveOldTorrents(OperationInfo op, TorrentsRepository torrentsRepo)
+        private void RemoveOldTorrents(OperationInfo op, TorrentsRepository torrentsRepo, OperationsRepository opsRepo)
         {
             op.StatusInfo = "Removing old torrents";
+
+            this.UpdateOperationInfo(op, opsRepo);
+
             var torrentsRemoved = torrentsRepo.RemoveOldTorrents();
             op.ExtraData["removed"] = torrentsRemoved.ToString(CultureInfo.InvariantCulture);
+
+            this.UpdateOperationInfo(op, opsRepo);
+        }
+
+        private void UpdateOperationInfo(OperationInfo op, OperationsRepository opsRepo, bool forceUpdate = false)
+        {
+            if (this.updateProgressInDatabase || forceUpdate)
+            {
+                var o = opsRepo.Find(op.OpId);
+                o.Info = op;
+                o.LastUpdatedOn = DateTime.UtcNow;
+                opsRepo.Save(o);
+            }
         }
     }
 }

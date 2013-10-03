@@ -16,6 +16,8 @@
 
         public string Id { get; set; }
 
+        public string OpId { get; set; }
+
         [IgnoreDataMember, JsonIgnore]
         public OperationStatus Status { get; set; }
 
