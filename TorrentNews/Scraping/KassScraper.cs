@@ -45,7 +45,7 @@
 
             while (nextPage > 0 && (this.maxPages < 0 || nextPage < this.maxPages))
             {
-                var ageFilter = string.IsNullOrEmpty(this.age) ? string.Empty : "age%3A" + this.age;
+                var ageFilter = string.IsNullOrEmpty(this.age) ? string.Empty : "%20age%3A" + this.age;
                 var url = string.Format(
                     "http://kickass.to/usearch/category%3Amovies%20seeds%3A{0}{1}/{2}/?field=time_add&sorder=desc",
                     MinSeeds,
