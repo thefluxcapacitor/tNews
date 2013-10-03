@@ -61,28 +61,29 @@
             var moviesCache = new Dictionary<string, Movie>();
             var torrents = torrentsRepo.GetAllSortedByImdbIdAndAddedOn();
 
-            var cnt = torrents.Count();
             var i = 0;
+            Torrent previous = null;
+            Torrent current = null;
 
-            while (i < cnt)
+            foreach (var t in torrents)
             {
+                current = t;
                 var isDirty = false;
 
-                var current = torrents.ElementAt(i);
-                Torrent next = null;
-
-                if (i + 1 < cnt)
+                if (previous == null)
                 {
-                    next = torrents.ElementAt(i + 1);
-                }
-
-                if (next == null || !current.HasImdbId() || next.ImdbId != current.ImdbId)
-                {
-                    current.Latest = this.GetValue(current.Latest, true, ref isDirty);
+                    previous = current;
                 }
                 else
                 {
-                    current.Latest = this.GetValue(current.Latest, false, ref isDirty);
+                    if (!previous.HasImdbId() || previous.ImdbId != current.ImdbId)
+                    {
+                        previous.Latest = this.GetValue(previous.Latest, true, ref isDirty);
+                    }
+                    else
+                    {
+                        previous.Latest = this.GetValue(previous.Latest, false, ref isDirty);
+                    }
                 }
 
                 Movie movie = null;
@@ -119,6 +120,16 @@
                 i++;
 
                 op.ExtraData["scoresUpdated"] = i.ToString(CultureInfo.InvariantCulture);
+                this.UpdateOperationInfo(op, opsRepo);
+                op.CancellationTokenSource.Token.ThrowIfCancellationRequested();
+            }
+
+            if (current != null)
+            {
+                current.Latest = true;
+                torrentsRepo.Save(current);
+
+                op.ExtraData["scoresUpdated"] = (i + 1).ToString(CultureInfo.InvariantCulture);
                 this.UpdateOperationInfo(op, opsRepo);
                 op.CancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
