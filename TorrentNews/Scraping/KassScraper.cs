@@ -46,13 +46,14 @@
             while (nextPage > 0 && (this.maxPages < 0 || nextPage < this.maxPages))
             {
                 var ageFilter = string.IsNullOrEmpty(this.age) ? string.Empty : "age%3A" + this.age;
-                var response = client.GetAsync(string.Format(
+                var url = string.Format(
                     "http://kickass.to/usearch/category%3Amovies%20seeds%3A{0}{1}/{2}/?field=time_add&sorder=desc",
                     MinSeeds,
                     ageFilter,
-                    nextPage)).Result;
+                    nextPage);
+                var response = client.GetAsync(url).Result;
 
-                operationInfo.StatusInfo = string.Format("Scraping torrents page #{0}", nextPage);
+                operationInfo.StatusInfo = string.Format("Scraping torrents page #{0} from {1}", nextPage, url);
                 operationStatusUpdatedCallback(operationInfo);
 
                 CQ document = response.Content.ReadAsStringAsync().Result;

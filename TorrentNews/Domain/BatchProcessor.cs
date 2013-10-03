@@ -37,8 +37,7 @@
                         var moviesRepo = new MoviesRepository();
                         
                         var opsRepo = new OperationsRepository();
-                        var o = new Operation { Id = Guid.NewGuid().ToString(), Info = op2, AddedOn = DateTime.UtcNow };
-                        op2.OpId = o.Id;
+                        var o = new Operation { Id = op2.Id, Info = op2, AddedOn = DateTime.UtcNow };
                         opsRepo.Save(o);
 
                         this.RemoveOldTorrents(op2, torrentsRepo, opsRepo);
@@ -243,7 +242,7 @@
         {
             if (this.updateProgressInDatabase || forceUpdate)
             {
-                var o = opsRepo.Find(op.OpId);
+                var o = opsRepo.Find(op.Id);
                 o.Info = op;
                 o.LastUpdatedOn = DateTime.UtcNow;
                 opsRepo.Save(o);

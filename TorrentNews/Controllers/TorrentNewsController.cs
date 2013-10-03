@@ -73,7 +73,7 @@
         public HttpResponseMessage GetOperationsLog(string secret)
         {
             var opsRepo = new OperationsRepository();
-            return this.Request.CreateResponse(HttpStatusCode.Accepted, opsRepo.FindAll());
+            return this.Request.CreateResponse(HttpStatusCode.Accepted, opsRepo.FindAll().OrderByDescending(item => item.AddedOn));
         }
 
         [HttpGet, SecretRequired]
