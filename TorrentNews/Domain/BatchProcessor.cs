@@ -32,6 +32,7 @@
                         op2.ExtraData.Add("updated", "N/A");
                         op2.ExtraData.Add("scraped", "N/A");
                         op2.ExtraData.Add("moviesScraped", "N/A");
+                        op2.ExtraData.Add("scoresUpdated", "N/A");
 
                         var torrentsRepo = new TorrentsRepository();
                         var moviesRepo = new MoviesRepository();
@@ -116,6 +117,10 @@
                 }
 
                 i++;
+
+                op.ExtraData["scoresUpdated"] = i.ToString(CultureInfo.InvariantCulture);
+                this.UpdateOperationInfo(op, opsRepo);
+                op.CancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
         }
 
@@ -159,6 +164,8 @@
                 moviesScraped++;
                 op.ExtraData["moviesScraped"] = moviesScraped.ToString(CultureInfo.InvariantCulture);
                 this.UpdateOperationInfo(op, opsRepo);
+
+                op.CancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
         }
 
