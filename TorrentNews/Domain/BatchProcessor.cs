@@ -74,12 +74,7 @@
                 current = t;
 
                 //Logic for updating Latest
-                if (previousImdbId == null)
-                {
-                    previousImdbId = current.ImdbId;
-                    previousId = current.Id;
-                }
-                else
+                if (previousImdbId != null)
                 {
                     if (previousImdbId != current.ImdbId)
                     {
@@ -88,6 +83,10 @@
                         torrentsRepo.Save(previous);
                     }
                 }
+
+                previousImdbId = current.ImdbId;
+                previousId = current.Id;
+                //
 
                 var isDirty = false;
 
