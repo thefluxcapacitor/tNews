@@ -1,6 +1,7 @@
 ﻿namespace TorrentNews.Dal
 {
     using System;
+    using System.Collections.Generic;
 
     using MongoDB.Bson;
     using MongoDB.Driver;
@@ -46,6 +47,13 @@
                     Query<Movie>.EQ(m => m.FirstUpdatedOn, null)));
             
             return this.moviesCollection.Find(query);
+        }
+
+        public IEnumerable<Movie> Search(string searchTerm)
+        {
+            var q = Query<Movie>.Matches(m => m.Title, searchTerm);
+            
+            return this.moviesCollection.Find(q);
         }
     }
 }

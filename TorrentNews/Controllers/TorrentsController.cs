@@ -40,6 +40,26 @@
         }
 
         [Authorize]
+        public ActionResult Search(string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm) || searchTerm.Length < 3)
+            {
+                throw new Exception("Search term must be at least 3 characters long");
+            }
+
+            var torrents = this.torrentsRepo.Search(searchTerm).ToList();
+
+            var movies = this.moviesRepo.Search(searchTerm);
+            foreach (var m in movies)
+            {
+                var t = this.torrentsRepo.FindByImdbId(m.Id, 0);
+                torrents.AddRange(t);
+            }
+
+            return this.Json(torrents, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize]
         public ActionResult Starred(int page = 1)
         {
             var helper = new UrlHelper(this.ControllerContext.RequestContext);

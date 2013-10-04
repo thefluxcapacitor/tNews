@@ -181,5 +181,13 @@
                 return 0;
             }
         }
+
+        public IEnumerable<Torrent> Search(string searchTerm)
+        {
+            var q = Query.Or(Query<Torrent>.Matches(t => t.Title, searchTerm), 
+                Query<Torrent>.Matches(t => t.ImdbId, searchTerm));
+
+            return this.torrentsCollection.Find(q);
+        }
     }
 }
