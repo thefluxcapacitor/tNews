@@ -39,7 +39,6 @@
             return this.RedirectToAction("MostRecent");
         }
 
-        [Authorize]
         public ActionResult Search(string searchTerm)
         {
             if (string.IsNullOrEmpty(searchTerm) || searchTerm.Length < 3)
