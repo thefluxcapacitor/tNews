@@ -121,9 +121,15 @@
 
         public void UpdateLatestToFalse()
         {
-            this.torrentsCollection.Update(
-                Query<Torrent>.NE(t => t.Latest, false), 
-                Update<Torrent>.Set(t => t.Latest, false));
+            var aux = this.torrentsCollection.FindAll();
+            foreach (var a in aux)
+            {
+                a.Latest = false;
+                this.torrentsCollection.Save(a);
+            }
+            //this.torrentsCollection.Update(
+            //    Query<Torrent>.NE(t => t.Latest, false), 
+            //    Update<Torrent>.Set(t => t.Latest, false));
         }
 
         public MongoCursor<Torrent> GetAllSortedByImdbIdAndAddedOn()
