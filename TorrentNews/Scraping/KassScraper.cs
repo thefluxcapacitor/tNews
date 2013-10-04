@@ -53,6 +53,11 @@
                     nextPage);
                 var response = client.GetAsync(url).Result;
 
+                if (!url.Equals(response.RequestMessage.RequestUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+
                 operationInfo.StatusInfo = string.Format("Scraping torrents page #{0} from {1}", nextPage, url);
                 operationStatusUpdatedCallback(operationInfo);
 
