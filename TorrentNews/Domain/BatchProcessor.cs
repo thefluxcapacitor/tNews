@@ -65,7 +65,8 @@
             var torrents = torrentsRepo.GetAllSortedByImdbIdAndAddedOn();
 
             var i = 0;
-            Torrent previous = null;
+            string previousImdbId = null;
+            int previousId = 0;
             Torrent current = null;
 
             foreach (var t in torrents)
@@ -73,14 +74,16 @@
                 current = t;
 
                 //Logic for updating Latest
-                if (previous == null)
+                if (previousImdbId == null)
                 {
-                    previous = current;
+                    previousImdbId = current.ImdbId;
+                    previousId = current.Id;
                 }
                 else
                 {
-                    if (previous.ImdbId != current.ImdbId)
+                    if (previousImdbId != current.ImdbId)
                     {
+                        var previous = torrentsRepo.Find(previousId);
                         previous.Latest = true;
                         torrentsRepo.Save(previous);
                     }
