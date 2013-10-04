@@ -119,11 +119,18 @@
             return result.DocumentsAffected;
         }
 
+        public void UpdateLatestToFalse()
+        {
+            this.torrentsCollection.Update(
+                Query<Torrent>.NE(t => t.Latest, false), 
+                Update<Torrent>.Set(t => t.Latest, false));
+        }
+
         public MongoCursor<Torrent> GetAllSortedByImdbIdAndAddedOn()
         {
             return this.torrentsCollection
-                .FindAll()
-                .SetSortOrder(SortBy<Torrent>.Ascending(t => t.ImdbId).Ascending(t => t.AddedOn));
+                .Find(Query<Torrent>.NE(t => t.ImdbId, "NA"))
+                .SetSortOrder(SortBy<Torrent>.Ascending(t => t.ImdbId).Ascending(t => t.AddedOn).Ascending(t => t.Id));
         }
 
         public MongoCursor<Torrent> GetRssItems(string[] sortBy)

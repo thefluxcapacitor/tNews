@@ -58,6 +58,9 @@
             op.StatusInfo = "Updating awards";
             this.UpdateOperationInfo(op, opsRepo);
 
+            //Logic for updating Latest
+            torrentsRepo.UpdateLatestToFalse();
+
             var moviesCache = new Dictionary<string, Movie>();
             var torrents = torrentsRepo.GetAllSortedByImdbIdAndAddedOn();
 
@@ -68,23 +71,22 @@
             foreach (var t in torrents)
             {
                 current = t;
-                var isDirty = false;
 
+                //Logic for updating Latest
                 if (previous == null)
                 {
                     previous = current;
                 }
                 else
                 {
-                    if (!previous.HasImdbId() || previous.ImdbId != current.ImdbId)
+                    if (previous.ImdbId != current.ImdbId)
                     {
-                        previous.Latest = this.GetValue(previous.Latest, true, ref isDirty);
-                    }
-                    else
-                    {
-                        previous.Latest = this.GetValue(previous.Latest, false, ref isDirty);
+                        previous.Latest = true;
+                        torrentsRepo.Save(previous);
                     }
                 }
+
+                var isDirty = false;
 
                 Movie movie = null;
                 if (current.HasImdbId())
@@ -124,14 +126,11 @@
                 op.CancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
 
+            //Logic for updating Latest
             if (current != null)
             {
                 current.Latest = true;
                 torrentsRepo.Save(current);
-
-                op.ExtraData["scoresUpdated"] = (i + 1).ToString(CultureInfo.InvariantCulture);
-                this.UpdateOperationInfo(op, opsRepo);
-                op.CancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
         }
 
