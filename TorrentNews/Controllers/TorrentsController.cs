@@ -5,12 +5,8 @@
     using System.Globalization;
     using System.Linq;
     using System.Net;
-    using System.ServiceModel.Syndication;
-    using System.Text;
     using System.Web;
     using System.Web.Mvc;
-
-    using MongoDB.Driver;
 
     using TorrentNews.Dal;
     using TorrentNews.Domain;
@@ -120,7 +116,7 @@
 
             if (!st)
             {
-                var sortBy = new string[] { "-AddedOn", "-Score", "_id" };
+                var sortBy = new string[] { "-AddedOn", "_id" };
                 torrents = this.torrentsRepo.GetPageMostRecentTorrents(page, sortBy, minScore);
                 model.ShowGoToBookmark = true;
                 model.ShowBookmarks = true;
@@ -165,6 +161,11 @@
                 if (currentUser != null && currentUser.BookmarkPosition != null)
                 {
                     tm.IsBookmarked = currentUser.BookmarkPosition.BookmarkedTorrentId == t.Id;
+                    tm.IsNew = (tm.AddedOn > currentUser.BookmarkPosition.BookmarkedTorrentAddedOn) || (tm.AddedOn == currentUser.BookmarkPosition.BookmarkedTorrentAddedOn && tm.Id < currentUser.BookmarkPosition.BookmarkedTorrentId);
+                }
+                else
+                {
+                    tm.IsNew = currentUser != null;
                 }
 
                 model.Torrents.Add(tm);
@@ -243,7 +244,7 @@
         {
             var user = this.GetCurrentUser();
 
-            var sortBy = new string[] { "-AddedOn", "-Score", "_id" };
+            var sortBy = new string[] { "-AddedOn", "_id" };
 
             var page = 1;
             var torrents = this.torrentsRepo.GetPageMostRecentTorrents(page, sortBy, -1);
@@ -415,105 +416,5 @@
                             };
             return model;
         }
-
-        ////public ActionResult MostRecentFeed()
-        ////{
-        ////    var torrentsRepo = new TorrentsRepository();
-        ////    var moviesRepo = new MoviesRepository();
-
-        ////    var moviesCache = new Dictionary<string, Movie>();
-
-        ////    var rssItems = new List<SyndicationItem>();
-
-        ////    var torrents = torrentsRepo.GetRssItems(new string[] { "-AddedOn", "Score" }).SetLimit(500);
-        ////    foreach (var t in torrents)
-        ////    {
-        ////        Movie m = null;
-        ////        if (t.HasImdbId())
-        ////        {
-        ////            if (!moviesCache.TryGetValue(t.ImdbId, out m))
-        ////            {
-        ////                m = moviesRepo.Find(t.ImdbId);
-        ////                moviesCache.Add(t.ImdbId, m);
-        ////            }
-        ////        }
-
-        ////        var model = new TorrentRssModel();
-        ////        AutoMapper.Mapper.Map(t, model);
-        ////        if (m != null)
-        ////        {
-        ////            AutoMapper.Mapper.Map(m, model);
-        ////        }
-
-        ////        string rssItemTitle;
-        ////        if (m != null)
-        ////        {
-        ////            var metacritic = 
-        ////                m.McMetascore == 0 ? 
-        ////                string.Empty : 
-        ////                string.Format("- MC {0}/{1} ", m.McMetascore, m.McCriticsCount);
-
-        ////            rssItemTitle = string.Format(
-        ////                "{0} ({1}) - IMDB {2}/{3} {4}- Seeds {5}",
-        ////                m.Title, 
-        ////                m.Year, 
-        ////                Math.Round((decimal)m.ImdbRating / 10, 1), 
-        ////                m.ImdbVotes, 
-        ////                metacritic, 
-        ////                t.Seed);
-        ////        }
-        ////        else
-        ////        {
-        ////            rssItemTitle = string.Format("{0} - Seeds {1}", t.Title, t.Seed);
-        ////        }
-
-        ////        var rssItem = new SyndicationItem(
-        ////            rssItemTitle, 
-        ////            SyndicationContent.CreateHtmlContent(this.GetSyndicationItemHtml(model)),
-        ////            new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host + "/Torrents/Details/" + t.Id.ToString(CultureInfo.InvariantCulture)),
-        ////            t.Id.ToString(CultureInfo.InvariantCulture),
-        ////            t.AddedOn);
-                
-        ////        rssItems.Add(rssItem);
-        ////    }
-
-        ////    var feed = new SyndicationFeed(
-        ////        "Torrent news",
-        ////        "Latest torrents",
-        ////        new Uri(this.Request.Url.Scheme + "://" + this.Request.Url.Host),
-        ////        this.Request.Url.Scheme + "://" + this.Request.Url.Host + "/Torrents/MostRecentFeed",
-        ////        DateTime.UtcNow);
-
-        ////    feed.Items = rssItems;
-
-        ////    return new RssResult(feed);
-        ////}
-
-        ////private string GetSyndicationItemHtml(TorrentRssModel model)
-        ////{
-        ////    var html = new StringBuilder();
-            
-        ////    if (model.HasImdbId())
-        ////    {
-        ////        html.Append("<div style=\"margin-bottom: 10px;\">" + model.Plot + "</div>");
-                
-        ////        html.Append("<div><b>Genres: </b>" + model.Genres + "</div>");
-        ////        html.Append("<div><b>Director: </b>" + model.Directors + "</div>");
-        ////        html.Append("<div><b>Cast: </b>" + model.Cast + "</div>");
-        ////        html.Append("<div><b>Content rating: </b>" + (model.ContentRating ?? "N/A") + "</div>");
-        ////        ////html.AppendFormat("<div><b>IMDB link: </b><a href=\"{0}\">{0}</a></div>", "http://www.imdb.com/title/" + model.ImdbId);
-        ////    }
-
-        ////    if (model.Score > 0)
-        ////    {
-        ////        html.Append("<div><b>Score: </b>" + model.Score.ToString(CultureInfo.InvariantCulture) + "</div>");
-        ////    }
-
-        ////    html.Append("<div><b>Torrent: </b>" + model.Title + "</div>");
-        ////    html.Append("<div><b>Age: </b>" + model.Age + "</div>");
-
-        ////    return html.ToString();
-        ////}
-
     }
 }

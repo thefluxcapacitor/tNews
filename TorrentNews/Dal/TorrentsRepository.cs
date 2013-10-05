@@ -139,14 +139,6 @@
                 .SetSortOrder(SortBy<Torrent>.Ascending(t => t.ImdbId).Ascending(t => t.AddedOn).Ascending(t => t.Id));
         }
 
-        public MongoCursor<Torrent> GetRssItems(string[] sortBy)
-        {
-            var sortOrder = GetSortOrder(sortBy);
-            return this.torrentsCollection
-                .Find(Query<Torrent>.NE(t => t.ImdbId, "NA"))
-                .SetSortOrder(sortOrder);
-        }
-
         public MongoCursor<Torrent> FindByImdbId(string imdbId, int maxTorrents)
         {
             var result = this.torrentsCollection

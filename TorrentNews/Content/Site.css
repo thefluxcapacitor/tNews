@@ -507,47 +507,8 @@ td {
 .trailerButton {
 }
 
-/*.trailerButton {
-    background-image: url('/Images/youtube.gif');
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: none;
-    cursor: pointer;
-}
-
-.trailerButton.normal {
-    opacity: 0.5;
-}
-
-.trailerButton.normal:hover {
-    opacity: 1;
-}
-
-.trailerButton.pushed {
-    opacity: 1;
-}
-
-.trailerButton.pushed:hover {
-    opacity: 0.5;
-}*/
-
 .detailsButton {
 }
-
-/*.detailsButton {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: none;
-    cursor: pointer;
-    opacity: 0.5;
-    background-image: url('/Images/tnews_32.png');
-}
-
-.detailsButton:hover {
-    opacity: 1;
-}*/
 
 div.relatedTorrent {
     overflow: hidden;
@@ -855,3 +816,11 @@ input.registerButton {
     color: red;
 }
 
+.new-flag {
+    font-size: 10px;
+    background-color: tomato;
+    color: white;
+    margin-left: 13px;
+    padding: 2px;
+    border-radius: 2px;
+}

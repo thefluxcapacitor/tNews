@@ -95,7 +95,7 @@
                         @Html.Partial("_RelatedTorrentsList", t)
                     }
 
-                    <div class="debug">@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")</div>
+                    <div class="debug">@t.AddedOn.ToString("yyyy-MM-dd HH:mm:ss.fffZ")</div>
                     <div class="debug">@t.Id</div>
 
                 </div>
@@ -126,11 +126,21 @@
                     }
                     <div id="bm@(t.Id)" class="bookmark @bmClass"
                          title="Set bookmark" 
-                         data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd hh:mm:ss.fffZ")"
+                         data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd HH:mm:ss.fffZ")"
                          data-torrent-id="@t.Id">
                         <span class="animation-spinner animation-bookmark hidden">&nbsp;</span>
                         <span class="@bmIconClass button-with-spinner"></span>
                     </div>
+                    
+                    @{
+                        var newFlagClass = string.Empty;
+                        if (!t.IsNew)
+                        {
+                            newFlagClass = "hidden";
+                        }
+
+                        <span class="new-flag @newFlagClass">NEW</span>
+                    }
                 </td>
             }
         </tr>

@@ -50,21 +50,6 @@
                     dest => dest.Genres,
                     opt => opt.MapFrom(src => src.Genres.Any() ? src.Genres.Aggregate((c, n) => c + ", " + n) : string.Empty));
 
-            AutoMapper.Mapper.CreateMap<Torrent, TorrentRssModel>();
-
-            AutoMapper.Mapper.CreateMap<Movie, TorrentRssModel>()
-                .ForMember(
-                    dest => dest.Title, opt => opt.Ignore())
-                .ForMember(
-                    dest => dest.Directors,
-                    opt => opt.MapFrom(src => src.Directors.Any() ? src.Directors.Aggregate((c, n) => c + ", " + n) : string.Empty))
-                .ForMember(
-                    dest => dest.Cast,
-                    opt => opt.MapFrom(src => src.Cast.Any() ? src.Cast.Aggregate((c, n) => c + ", " + n) : string.Empty))
-                .ForMember(
-                    dest => dest.Genres,
-                    opt => opt.MapFrom(src => src.Genres.Any() ? src.Genres.Aggregate((c, n) => c + ", " + n) : string.Empty));
-
             AutoMapper.Mapper.CreateMap<Torrent, RelatedTorrentModel>();
         }
 

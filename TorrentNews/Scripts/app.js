@@ -181,6 +181,10 @@ function configureBookmarks() {
             btn.toggleClass('bookmark-set bookmark-unset');
             btn.find('span.button-with-spinner').toggleClass('icon-bookmark icon-bookmark-empty');
 
+            btn.parent().parent().nextAll().find('.new-flag').hide();
+            btn.parent().parent().find('.new-flag').hide();
+            btn.parent().parent().prevAll().find('.new-flag').show();
+
         }).fail(function (xhr) {
 
             if (xhr.status == 403) {
