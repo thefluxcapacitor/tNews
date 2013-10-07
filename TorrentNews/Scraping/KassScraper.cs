@@ -173,20 +173,21 @@
             var torrentDetailsUrl = torrentLink.Attr("href");
             var torrentId = torrentDetailsUrl.GetHashCode();
 
+            var rowCells = rowCq.Find("td");
+
             var torrent = this.repo.Find(torrentId);
             if (torrent == null)
             {
                 torrent = new Torrent();
                 torrent.Id = torrentId;
                 torrent.DetailsUrl = torrentDetailsUrl;
+                torrent.SetAddedOnFromAge(now, rowCells[3].InnerText);
             }
 
             torrent.Title = torrentLink.Text();
 
-            var rowCells = rowCq.Find("td");
             torrent.Size = rowCells[1].Cq().Text();
             torrent.Files = rowCells[2].Cq().Text();
-            torrent.SetAddedOnFromAge(now, rowCells[3].InnerText);
 
             var seed = rowCells[4].Cq().Text();
             if (!string.IsNullOrEmpty(seed))
