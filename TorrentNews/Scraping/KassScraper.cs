@@ -89,7 +89,7 @@
                         break;
                     }
 
-                    if (now.Date.Subtract(torrent.AddedOn).TotalHours <= MinAgeInHoursToScrapeTorrent ||
+                    if (now.Subtract(torrent.AddedOn).TotalHours <= MinAgeInHoursToScrapeTorrent ||
                         (isNew && torrent.AddedOn <= mostRecentTorrent.AddedOn))
                     {
                         continue;
