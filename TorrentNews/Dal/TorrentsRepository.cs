@@ -194,5 +194,13 @@
 
             return this.torrentsCollection.Find(q);
         }
+
+        public Torrent GetMostRecentTorrent()
+        {
+            return this.torrentsCollection
+                .FindAll()
+                .SetSortOrder(SortBy<Torrent>.Descending(t => t.AddedOn))
+                .FirstOrDefault();
+        }
     }
 }

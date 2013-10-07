@@ -16,7 +16,9 @@
     {
         private const int MaxDaysToKeepTorrents = 7 * 4;
 
-        private const int MinSeeds = 0;
+        private const int MinAgeInHoursToScrapeTorrent = 12;
+
+        private const int MinSeeds = 20;
 
         private readonly TorrentsRepository repo;
 
@@ -33,6 +35,12 @@
 
         public IEnumerable<Torrent> GetLatestTorrents(OperationInfo operationInfo, Action<OperationInfo> operationStatusUpdatedCallback)
         {
+            //scrape solo cosas de mas de 12 hs de age
+            //si no tiene min de 20 seeds no agregar
+            //si tiene mas de 20 seeds agregar solamente si el age es menor al mas nuevo cuando se empezo a scrapear
+
+            var mostRecentTorrent = this.repo.GetMostRecentTorrent();
+
             var torrentsScraped = 0;
 
             var client = new HttpClient(new HttpClientHandler
@@ -72,11 +80,19 @@
                         continue;
                     }
 
-                    var torrent = this.GetTorrentFromRow(rowCq, now);
+                    bool isNew;
+                    var torrent = this.GetTorrentFromRow(rowCq, now, out isNew);
+
                     if (now.Date.Subtract(torrent.AddedOn).TotalDays > MaxDaysToKeepTorrents)
                     {
                         nextPage = -1;
                         break;
+                    }
+
+                    if (now.Date.Subtract(torrent.AddedOn).TotalHours <= MinAgeInHoursToScrapeTorrent ||
+                        (isNew && torrent.AddedOn <= mostRecentTorrent.AddedOn))
+                    {
+                        continue;
                     }
 
                     if (string.IsNullOrEmpty(torrent.ImdbId))
@@ -167,7 +183,7 @@
             return result.ToString();
         }
 
-        private Torrent GetTorrentFromRow(CQ rowCq, DateTime now)
+        private Torrent GetTorrentFromRow(CQ rowCq, DateTime now, out bool isNew)
         {
             var torrentLink = rowCq.Find("div.torrentname > a.normalgrey");
             var torrentDetailsUrl = torrentLink.Attr("href");
@@ -182,6 +198,11 @@
                 torrent.Id = torrentId;
                 torrent.DetailsUrl = torrentDetailsUrl;
                 torrent.SetAddedOnFromAge(now, rowCells[3].InnerText);
+                isNew = true;
+            }
+            else
+            {
+                isNew = false;
             }
 
             torrent.Title = torrentLink.Text();
