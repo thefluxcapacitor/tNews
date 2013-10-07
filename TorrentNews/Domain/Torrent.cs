@@ -203,7 +203,7 @@
                 return TimeSpan.FromDays(value * 30);
             }
 
-            throw new ArgumentException("Invalid unit for Age field", "age");
+            throw new ArgumentException(string.Format("Invalid unit for Age field ({0})", age), "age");
         }
     }
 }
