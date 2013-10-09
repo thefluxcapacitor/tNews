@@ -89,8 +89,10 @@
                         break;
                     }
 
-                    if (now.Subtract(torrent.AddedOn).TotalHours <= MinAgeInHoursToScrapeTorrent ||
-                        (isNew && torrent.AddedOn <= mostRecentTorrent.AddedOn))
+                    var tooNewTorrent = now.Subtract(torrent.AddedOn).TotalHours <= MinAgeInHoursToScrapeTorrent;
+                    var notPreviouslyAddedButOldTorrent = isNew && torrent.AddedOn <= mostRecentTorrent.AddedOn;
+                    var torrentWithManySeeds = torrent.Seed >= 1000; // if the torrent has many seeds I'll add it anyway, at least to be displayed in the list of related torrents
+                    if (tooNewTorrent || (notPreviouslyAddedButOldTorrent && !torrentWithManySeeds))
                     {
                         continue;
                     }
