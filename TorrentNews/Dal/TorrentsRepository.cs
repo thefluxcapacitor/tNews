@@ -202,5 +202,17 @@
                 .SetSortOrder(SortBy<Torrent>.Descending(t => t.AddedOn))
                 .FirstOrDefault();
         }
+
+        public Torrent FindNext(Torrent torrent, int minScore)
+        {
+            return this.torrentsCollection.Find(
+                Query.And(
+                    Query<Torrent>.GTE(t => t.AddedOn, torrent.AddedOn), 
+                    Query<Torrent>.GTE(t => t.Score, minScore),
+                    Query<Torrent>.LTE(t => t.Id, torrent.Id),
+                    Query<Torrent>.EQ(t => t.Latest, true)))
+                .SetSortOrder(SortBy<Torrent>.Ascending(t => t.AddedOn).Ascending(t => t.Id))
+                .FirstOrDefault();
+        }
     }
 }

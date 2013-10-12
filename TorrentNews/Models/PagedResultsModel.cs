@@ -9,5 +9,7 @@
         public bool ShowGoToBookmark { get; set; }
 
         public bool BookmarkSet { get; set; }
+
+        public int MinScore { get; set; }
     }
 }
