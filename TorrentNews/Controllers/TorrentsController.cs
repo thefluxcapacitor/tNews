@@ -42,7 +42,8 @@
                 throw new Exception("Search term must be at least 3 characters long");
             }
 
-            var torrents = this.torrentsRepo.Search(searchTerm).Take(50).ToList();
+            var torrents = this.torrentsRepo.Search(searchTerm)
+                .OrderByDescending(t => t.AddedOn).ThenBy(t => t.Id).Take(50).ToList();
 
             var movies = this.moviesRepo.Search(searchTerm).Take(50 - torrents.Count);
             foreach (var m in movies)
@@ -50,8 +51,6 @@
                 var t = this.torrentsRepo.FindByImdbId(m.Id, 0);
                 torrents.AddRange(t);
             }
-
-            torrents = torrents.OrderByDescending(t => t.AddedOn).ThenBy(t => t.Id).ToList();
 
             var model = new TorrentsListModel();
 

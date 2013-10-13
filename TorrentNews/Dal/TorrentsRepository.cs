@@ -211,7 +211,7 @@
                     Query<Torrent>.GTE(t => t.Score, minScore),
                     Query<Torrent>.LTE(t => t.Id, torrent.Id),
                     Query<Torrent>.EQ(t => t.Latest, true)))
-                .SetSortOrder(SortBy<Torrent>.Ascending(t => t.AddedOn).Ascending(t => t.Id))
+                .SetSortOrder(SortBy<Torrent>.Ascending(t => t.AddedOn).Descending(t => t.Id))
                 .FirstOrDefault();
         }
     }
