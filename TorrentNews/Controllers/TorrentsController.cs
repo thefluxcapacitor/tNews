@@ -42,16 +42,74 @@
                 throw new Exception("Search term must be at least 3 characters long");
             }
 
-            var torrents = this.torrentsRepo.Search(searchTerm).ToList();
+            var torrents = this.torrentsRepo.Search(searchTerm).Take(50).ToList();
 
-            var movies = this.moviesRepo.Search(searchTerm);
+            var movies = this.moviesRepo.Search(searchTerm).Take(50 - torrents.Count);
             foreach (var m in movies)
             {
                 var t = this.torrentsRepo.FindByImdbId(m.Id, 0);
                 torrents.AddRange(t);
             }
 
-            return this.Json(torrents, JsonRequestBehavior.AllowGet);
+            torrents = torrents.OrderByDescending(t => t.AddedOn).ThenBy(t => t.Id).ToList();
+
+            var model = new TorrentsListModel();
+
+            var currentUser = this.GetCurrentUser();
+            var starred = this.GetUserStarred(currentUser);
+
+            this.AddTorrentsToTorrentsListModel(torrents, starred, currentUser, model);
+
+            return this.View("MostRecent", model);
+        }
+
+        private void AddTorrentsToTorrentsListModel(IEnumerable<Torrent> torrents, IList<StarredMovie> starred, User currentUser, TorrentsListModel model)
+        {
+            var moviesCache = new Dictionary<string, Movie>();
+
+            foreach (var t in torrents)
+            {
+                Movie m = null;
+                if (t.HasImdbId())
+                {
+                    if (!moviesCache.TryGetValue(t.ImdbId, out m))
+                    {
+                        m = this.moviesRepo.Find(t.ImdbId);
+                        moviesCache.Add(t.ImdbId, m);
+                    }
+                }
+
+                var tm = new TorrentModel();
+                AutoMapper.Mapper.Map(t, tm);
+                if (m != null)
+                {
+                    AutoMapper.Mapper.Map(m, tm);
+
+                    if (string.IsNullOrEmpty(tm.Poster))
+                    {
+                        tm.Poster = m.Poster;
+                    }
+                }
+
+                this.AddRelatedTorrents(tm, Constants.RelatedTorrentsCount);
+
+                if (starred != null)
+                {
+                    tm.IsStarred = starred.Any(item => item.ImdbId.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (currentUser != null && currentUser.BookmarkPosition != null)
+                {
+                    tm.IsBookmarked = currentUser.BookmarkPosition.BookmarkedTorrentId == t.Id;
+                    tm.IsNew = (tm.AddedOn > currentUser.BookmarkPosition.BookmarkedTorrentAddedOn) || (tm.AddedOn == currentUser.BookmarkPosition.BookmarkedTorrentAddedOn && tm.Id < currentUser.BookmarkPosition.BookmarkedTorrentId);
+                }
+                else
+                {
+                    tm.IsNew = currentUser != null;
+                }
+
+                model.Torrents.Add(tm);
+            }
         }
 
         [Authorize]
@@ -111,8 +169,6 @@
             var currentUser = this.GetCurrentUser();
             var starred = this.GetUserStarred(currentUser);
 
-            var moviesCache = new Dictionary<string, Movie>();
-
             IEnumerable<Torrent> torrents;
 
             if (!st)
@@ -128,49 +184,7 @@
                 torrents = this.torrentsRepo.GetPageStarredTorrents(page, starred);
             }
 
-            foreach (var t in torrents)
-            {
-                Movie m = null;
-                if (t.HasImdbId())
-                {
-                    if (!moviesCache.TryGetValue(t.ImdbId, out m))
-                    {
-                        m = this.moviesRepo.Find(t.ImdbId);
-                        moviesCache.Add(t.ImdbId, m);
-                    }
-                }
-
-                var tm = new TorrentModel();
-                AutoMapper.Mapper.Map(t, tm);
-                if (m != null)
-                {
-                    AutoMapper.Mapper.Map(m, tm);
-
-                    if (string.IsNullOrEmpty(tm.Poster))
-                    {
-                        tm.Poster = m.Poster;
-                    }
-                }
-
-                this.AddRelatedTorrents(tm, Constants.RelatedTorrentsCount);
-
-                if (starred != null)
-                {
-                    tm.IsStarred = starred.Any(item => item.ImdbId.Equals(t.ImdbId, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (currentUser != null && currentUser.BookmarkPosition != null)
-                {
-                    tm.IsBookmarked = currentUser.BookmarkPosition.BookmarkedTorrentId == t.Id;
-                    tm.IsNew = (tm.AddedOn > currentUser.BookmarkPosition.BookmarkedTorrentAddedOn) || (tm.AddedOn == currentUser.BookmarkPosition.BookmarkedTorrentAddedOn && tm.Id < currentUser.BookmarkPosition.BookmarkedTorrentId);
-                }
-                else
-                {
-                    tm.IsNew = currentUser != null;
-                }
-
-                model.Torrents.Add(tm);
-            }
+            this.AddTorrentsToTorrentsListModel(torrents, starred, currentUser, model);
 
             if (model.Torrents.Count >= Constants.PageSize)
             {
