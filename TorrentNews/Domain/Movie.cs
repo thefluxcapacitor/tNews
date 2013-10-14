@@ -25,6 +25,10 @@
 
         public string Poster { get; set; }
 
+        public string Country { get; set; }
+
+        public string Language { get; set; }
+
         public string ContentRating { get; set; }
 
         public int ImdbRating { get; set; }

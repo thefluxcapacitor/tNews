@@ -32,6 +32,7 @@
                         op2.ExtraData.Add("updated", "N/A");
                         op2.ExtraData.Add("scraped", "N/A");
                         op2.ExtraData.Add("moviesScraped", "N/A");
+                        op2.ExtraData.Add("unwantedMoviesRemoved", "N/A");
                         op2.ExtraData.Add("scoresUpdated", "N/A");
 
                         var torrentsRepo = new TorrentsRepository();
@@ -44,6 +45,7 @@
                         this.RemoveOldTorrents(op2, torrentsRepo, opsRepo);
                         this.UpdateTorrents(maxPages, age, torrentsRepo, op2, moviesRepo, opsRepo);
                         this.UpdateMovies(moviesRepo, op2, opsRepo);
+                        this.RemoveUnwantedTorrents(moviesRepo, torrentsRepo, op2, opsRepo);
                         this.UpdateAwards(moviesRepo, torrentsRepo, op2, opsRepo);
                     },
                     operation,
@@ -51,6 +53,26 @@
                 .ContinueWith(
                     (task, op) => this.UpdateProcessStatus(op, task),
                     operation);
+        }
+
+        private void RemoveUnwantedTorrents(MoviesRepository moviesRepo, TorrentsRepository torrentsRepo, OperationInfo op, OperationsRepository opsRepo)
+        {
+            op.StatusInfo = "Removing unwanted torrents";
+            this.UpdateOperationInfo(op, opsRepo);
+
+            var i = 0;
+            var moviesToRemove = moviesRepo.GetUnwantedMovies();
+            foreach (var m in moviesToRemove)
+            {
+                torrentsRepo.RemoveByImdbId(m.Id);
+                moviesRepo.Remove(m.Id);
+
+                i++;
+
+                op.ExtraData["unwantedMoviesRemoved"] = i.ToString(CultureInfo.InvariantCulture);
+                this.UpdateOperationInfo(op, opsRepo);
+                op.CancellationTokenSource.Token.ThrowIfCancellationRequested();
+            }
         }
 
         private void UpdateAwards(MoviesRepository moviesRepo, TorrentsRepository torrentsRepo, OperationInfo op, OperationsRepository opsRepo)

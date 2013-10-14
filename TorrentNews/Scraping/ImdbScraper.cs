@@ -118,6 +118,10 @@
                 .Map(item => item.Cq().Text()).ToArray();
             movie.ContentRating = d["span[itemprop=contentRating]"].First().Attr("content");
 
+            movie.Country = d["div#titleDetails a[href^=\"/country/\"]"].First().Text();
+
+            movie.Language = d["div#titleDetails a[href^=\"/language/\"]"].First().Text();
+
             ////foreach (var image in d["img[itemprop=image]"])
             ////{
             ////    var aux = image.Cq();

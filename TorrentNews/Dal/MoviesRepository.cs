@@ -55,5 +55,21 @@
             
             return this.moviesCollection.Find(q);
         }
+
+        public IEnumerable<Movie> GetUnwantedMovies()
+        {
+            return this.moviesCollection.Find(
+                Query.Or(
+                    Query<Movie>.EQ(m => m.Country, "India"),
+                    Query<Movie>.EQ(m => m.Language, "Telugu"),
+                    Query<Movie>.EQ(m => m.Language, "Hindi"),
+                    Query<Movie>.EQ(m => m.Language, "Tamil"),
+                    Query<Movie>.EQ(m => m.Language, "Panjabi")));
+        }
+
+        public void Remove(string id)
+        {
+            this.moviesCollection.Remove(Query<Movie>.EQ(m => m.Id, id));
+        }
     }
 }

@@ -15,6 +15,11 @@
         <p><span class="label">Director: </span>@Html.ImdbNames(t.Directors)</p>
         <p><span class="label">Cast: </span>@Html.ImdbNames(t.Cast)</p>
 
+        if (!string.IsNullOrEmpty(t.Country) || !string.IsNullOrEmpty(t.Language))
+        {
+            <p><span class="label">Country/Language: </span>@t.Country / @t.Language</p>
+        }
+        
         if (!string.IsNullOrEmpty(t.Duration))
         {
             <p><span class="label">Duration: </span>@t.Duration min.</p>

@@ -214,5 +214,10 @@
                 .SetSortOrder(SortBy<Torrent>.Ascending(t => t.AddedOn).Descending(t => t.Id))
                 .FirstOrDefault();
         }
+
+        public void RemoveByImdbId(string imdbId)
+        {
+            this.torrentsCollection.Remove(Query<Torrent>.EQ(t => t.ImdbId, imdbId));
+        }
     }
 }
