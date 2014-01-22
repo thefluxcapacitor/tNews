@@ -40,11 +40,12 @@
         public MongoCursor<Movie> GetMoviesToUpdate()
         {
             var twoWeeksAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7 * 2));
-            var query = Query.And(
-                Query<Movie>.LT(m => m.ImdbVotes, 1000),
+            var query =
                 Query.Or(
-                    Query<Movie>.GT(m => m.FirstUpdatedOn, twoWeeksAgo),
-                    Query<Movie>.EQ(m => m.FirstUpdatedOn, null)));
+                    Query.And(
+                        Query<Movie>.LT(m => m.ImdbVotes, 1000),
+                        Query.Or(Query<Movie>.GT(m => m.FirstUpdatedOn, twoWeeksAgo), Query<Movie>.EQ(m => m.FirstUpdatedOn, null))),
+                    Query<Movie>.EQ(m => m.ImdbVotes, 0));
             
             return this.moviesCollection.Find(query);
         }
