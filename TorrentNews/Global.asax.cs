@@ -1,7 +1,9 @@
 ﻿namespace TorrentNews
 {
+    using System;
     using System.Linq;
     using System.Net.Http.Headers;
+    using System.Web;
     using System.Web.Http;
     using System.Web.Mvc;
     using System.Web.Optimization;
@@ -32,6 +34,17 @@
 
             ConfigureMappings();
         }
+
+        protected void Application_EndRequest(object sender, EventArgs e)
+        {
+            var cookie = this.Request.Cookies[".ASPXAUTH"];
+            if (cookie != null)
+            {
+                var respCookie = new HttpCookie(".ASPXAUTH", cookie.Value);
+                respCookie.Expires = DateTime.Now.AddDays(7);
+                this.Request.Cookies.Set(respCookie);
+            }
+        } 
 
         private static void ConfigureMappings()
         {
