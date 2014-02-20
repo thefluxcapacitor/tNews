@@ -35,16 +35,16 @@
             ConfigureMappings();
         }
 
-        protected void Application_EndRequest(object sender, EventArgs e)
-        {
-            var cookie = this.Request.Cookies[".ASPXAUTH"];
-            if (cookie != null)
-            {
-                var respCookie = new HttpCookie(".ASPXAUTH", cookie.Value);
-                respCookie.Expires = DateTime.Now.AddDays(7);
-                this.Request.Cookies.Set(respCookie);
-            }
-        } 
+        //protected void Application_EndRequest(object sender, EventArgs e)
+        //{
+        //    var cookie = this.Request.Cookies[".ASPXAUTH"];
+        //    if (cookie != null)
+        //    {
+        //        var respCookie = new HttpCookie(".ASPXAUTH", cookie.Value);
+        //        respCookie.Expires = DateTime.Now.AddDays(7);
+        //        this.Request.Cookies.Set(respCookie);
+        //    }
+        //} 
 
         private static void ConfigureMappings()
         {
