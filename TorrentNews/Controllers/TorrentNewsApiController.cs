@@ -13,8 +13,10 @@
     {
         public ReleaseSource GetBestReleaseSource(string title, int year)
         {
-            var bestRelease = new ReleaseSource() { Quality = -1 };
+            HttpContext.Current.Response.AppendHeader("Access-Control-Allow-Origin", "http://www.imdb.com");
 
+            var bestRelease = new ReleaseSource() { Quality = -1 };
+            
             var client = new HttpClient(new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
