@@ -187,7 +187,7 @@
 
         private Torrent GetTorrentFromRow(CQ rowCq, DateTime now, out bool isNew)
         {
-            var torrentLink = rowCq.Find("div.torrentname > a.normalgrey");
+            var torrentLink = rowCq.Find("div.torrentname > a.cellMainLink");
             var torrentDetailsUrl = torrentLink.Attr("href");
             var torrentId = torrentDetailsUrl.GetHashCode();
 
