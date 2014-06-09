@@ -201,6 +201,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\TorrentNewsApiController.cs" />
+    <Compile Include="Controllers\TorrentsV2Controller.cs" />
     <Compile Include="Dal\OperationsRepository.cs" />
     <Compile Include="Domain\Operation.cs" />
     <Compile Include="Domain\TorrentHelper.cs" />
@@ -379,6 +380,10 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Torrents\Starred.cshtml" />
+    <Content Include="Views\TorrentsV2\Details.cshtml" />
+    <Content Include="Views\TorrentsV2\MostRecent.cshtml" />
+    <Content Include="Views\TorrentsV2\Starred.cshtml" />
+    <Content Include="Views\Shared\_TorrentsTableV2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

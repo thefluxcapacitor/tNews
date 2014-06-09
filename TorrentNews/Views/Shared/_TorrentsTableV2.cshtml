@@ -1,0 +1,67 @@
+﻿@using TorrentNews.Models
+@model TorrentNews.Models.TorrentsListModel
+
+<table id="moviesTable" class="moviesTable">
+    @for (var i = 0 ; i < Model.Torrents.Count(); i = i + 5)
+    {
+        TorrentModel bookmarkedTorrent = null;
+        
+        <tr>
+            @for (var j = i; j < Model.Torrents.Count() && j < i + 5; j++)
+{
+    var t = Model.Torrents[j];
+
+    <td class="torrentCell">
+        <div class="torrentTitleBand" style="position: relative;">
+            @if (Model.ShowBookmarks)
+            {
+                <div class="bookmarkCell" style="display: inline;">
+                    @{
+                var bmClass = t.IsBookmarked ? "bookmark-set" : "bookmark-unset";
+                var bmIconClass = t.IsBookmarked ? "icon-bookmark" : "icon-bookmark-empty";
+                    }
+
+                    <span id="bm@(t.Id)" class="bookmark @bmClass"
+                          title="Set bookmark"
+                          data-torrent-addedon="@t.AddedOn.ToString("yyyy-MM-dd HH:mm:ss.fffZ")"
+                          data-torrent-id="@t.Id">
+                        <span class="animation-spinner animation-bookmark hidden">&nbsp;</span>
+                        <span class="@bmIconClass button-with-spinner"></span>
+                    </span>
+
+                </div>
+            }
+
+            <a class="hasTooltip" href="@Url.Action("Details", new { id = t.Id })" target="_blank" style="display: inline;">@t.MovieTitle (@t.Year)</a>
+            <div class="hidden tooltip movieInfoTooltip">
+                @Html.Partial("_MovieInfo", t)
+            </div>
+        </div>
+        
+
+        <div>
+            <a id="bestReleaseSource" class="tag tag@(t.ReleaseSource.Quality)"
+               href="http://en.wikipedia.org/wiki/Pirated_movie_release_types" target="_blank">@t.ReleaseSource.DisplayValue</a>
+
+            <a href="http://www.imdb.com/title/@t.ImdbId" target="_blank">
+                @if (!string.IsNullOrEmpty(t.Poster))
+                {
+                    <img class="posterV2" src="@t.Poster" onerror="this.onerror = null; this.src = '/Images/noimage-poster.png';" />
+                }
+                else
+                {
+                    <img class="posterV2" src="/Images/noimage-poster.png" />
+                }
+            </a>
+        </div>
+
+        <div class="torrentRatingsBand">
+            <span>@(Math.Round((decimal)t.ImdbRating / 10, 1)) (@t.ImdbVotes)</span> <span>@t.McMetascore (@t.McCriticsCount critics)</span>
+        </div>
+
+    </td>
+}
+            
+        </tr>
+    }
+</table>

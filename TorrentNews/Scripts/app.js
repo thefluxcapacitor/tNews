@@ -153,7 +153,7 @@ function ajaxStarAddRemove(url, button) {
 }
 
 function configureBookmarks() {
-    $('#moviesTable td.bookmarkCell div.bookmark').click(function() {
+    $('#moviesTable .bookmarkCell .bookmark').click(function() {
 
         var button = $(this);
 

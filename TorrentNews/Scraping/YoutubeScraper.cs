@@ -19,7 +19,7 @@
             var response = client.GetAsync(this.GetTrailersSearchUrl(searchString)).Result;
             
             CQ d = response.Content.ReadAsStringAsync().Result;
-            var result = d[".context-data-item"].First().Map( // remove .First if more than one trailer is needed
+            var result = d[".yt-uix-sessionlink.yt-uix-tile-link"].First().Map( // remove .First if more than one trailer is needed
                 item =>
                     {
                         var itemCq = item.Cq();

@@ -210,6 +210,10 @@ td {
     margin-top: 20px;
 }
 
+.moviesTable {
+    margin: auto;
+}
+
 #moviesTable td {
     vertical-align: top;
 }
@@ -271,6 +275,13 @@ td {
     width: 200px;
     height: 281px;
     border: none;
+}
+
+#moviesTable img.posterV2 {
+    width: 200px;
+    height: 281px;
+    border: none;
+    position: relative;
 }
 
 .score {
@@ -823,4 +834,43 @@ input.registerButton {
     margin-left: 13px;
     padding: 2px;
     border-radius: 2px;
+}
+
+.torrentRatingsBand {
+    font-size: smaller;
+    background-color: #333;
+    color: #ccc;
+    padding: 5px 10px 5px 7px;
+}
+
+.torrentTitleBand {
+    font-size: smaller;
+    padding: 3px;
+    font-weight: bold;
+    height: 25px;
+}
+
+.torrentCell {
+    max-width: 200px;
+    /*-moz-min-width: 50px;
+    -ms-min-width: 50px;
+    -o-min-width: 50px;
+    -webkit-min-width: 50px;*/
+    min-width: 200px;
+}
+
+#bestReleaseSource {
+    position: absolute;
+    z-index: 1;
+    /*-ms-opacity: 0.8;
+    opacity: 0.8;*/
+}
+
+.tooltip a {
+    color: white;
+}
+
+.movieInfoTooltip {
+    background-color: black;
+    font-weight: normal;
 }

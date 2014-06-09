@@ -7,11 +7,11 @@
             <td class="posterCell">
                 <a href="@Url.Action("Details", new { id = t.Id })" target="_blank">
                     @if (!string.IsNullOrEmpty(t.Poster))
-                    {
-                        <img class="poster" src="@t.Poster"/>
-                    }
-                    else
-                    {
+{
+    <img class="poster" src="@t.Poster" onerror="this.onerror = null; this.src = '/Images/noimage-poster.png';" />
+}
+else
+{
                         <img class="poster" src="/Images/noimage-poster.png"/>
                     }
                 </a>

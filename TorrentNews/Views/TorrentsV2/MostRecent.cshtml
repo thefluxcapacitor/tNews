@@ -1,0 +1,30 @@
+﻿@model TorrentNews.Models.TorrentsListModel
+
+@{
+    ViewBag.Title = "Most recent torrents - Torrent news";
+}
+
+@Html.Partial("_Pager", Model)
+
+@if (Model.Torrents.Any())
+{
+    @Html.Partial("_TorrentsTableV2", Model)
+}
+else
+{
+    <h2 id="nothingFoundMessage">Nothing found!</h2>   
+}
+
+@Html.Partial("_Pager", Model)
+
+@section scripts
+{
+    <script type="text/javascript" src="/Scripts/app.js"></script>
+    
+    <script type="text/javascript">
+        configureTrailerButton();
+        configureTooltips();
+        configureStarButtons();
+        configureBookmarks();
+    </script>
+}
